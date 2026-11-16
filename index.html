@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>אתונה שלנו</title>
+<meta name="description" content="המדריך האישי לנסיעת הבנות לאתונה: מפה חיה, שופינג, מסעדות, מסלול וכלים">
+<meta name="theme-color" content="#f5f7fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1524" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="אתונה">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<main id="app">
+  <!-- בית -->
+  <section class="view" id="v-home" data-view="home">
+    <header class="hero">
+      <p class="eyebrow" id="heroDates"></p>
+      <h1>יָאסוּ, <span>אתונה</span></h1>
+      <p class="hero-sub" id="heroCount"></p>
+      <svg class="hero-art" viewBox="0 0 320 120" aria-hidden="true">
+        <g fill="currentColor">
+          <path d="M40 46 160 8l120 38v8H40z"/>
+          <rect x="46" y="58" width="228" height="7"/>
+          <g id="cols"></g>
+          <rect x="36" y="106" width="248" height="6"/><rect x="26" y="113" width="268" height="7"/>
+        </g>
+      </svg>
+    </header>
+    <div class="stack">
+      <div id="weather" class="weather" aria-label="תחזית"></div>
+      <div id="alertBox"></div>
+      <section class="card" id="hotelCard"></section>
+      <section class="card" id="flightsCard"></section>
+      <div class="quick">
+        <button class="qbtn" data-act="near"><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></button>
+        <button class="qbtn" data-act="share"><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></button>
+        <button class="qbtn" data-go="plan"><b>התוכנית להיום</b><small id="todayPlan"></small></button>
+        <button class="qbtn" data-act="favs"><b>הרשימה שלי</b><small id="favCount"></small></button>
+      </div>
+      <section>
+        <div class="sec-head"><h2>אסור לפספס</h2><button class="link" data-go="places">לכל המקומות</button></div>
+        <div class="rail" id="topRail"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- מפה -->
+  <section class="view" id="v-map" data-view="map" hidden>
+    <div id="map"></div>
+    <div class="map-chips chips" id="mapChips"></div>
+    <div class="map-fabs">
+      <button class="fab" id="btnLocate" aria-label="המיקום שלי">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+      </button>
+      <button class="fab" id="btnHotel" aria-label="המלון">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V10l9-7 9 7v11h-6v-6H9v6z"/></svg>
+      </button>
+    </div>
+    <div class="map-status" id="gpsStatus" hidden></div>
+  </section>
+
+  <!-- מקומות -->
+  <section class="view" id="v-places" data-view="places" hidden>
+    <header class="page-head">
+      <h1>מקומות</h1>
+      <input type="search" id="search" placeholder="חיפוש: סנדלים, גג, סובלאקי…" autocomplete="off">
+    </header>
+    <div class="chips" id="placeChips"></div>
+    <div class="sortbar" id="sortbar">
+      <button data-sort="rec" class="on">מומלצים</button>
+      <button data-sort="me">קרוב אליי</button>
+      <button data-sort="hotel">קרוב למלון</button>
+    </div>
+    <div class="list" id="placeList"></div>
+  </section>
+
+  <!-- מסלול -->
+  <section class="view" id="v-plan" data-view="plan" hidden>
+    <header class="page-head">
+      <h1>ארבעה ימים</h1>
+      <p class="muted">הצעה גמישה. לוחצים על מקום כדי לראות פרטים ולנווט.</p>
+    </header>
+    <div class="daytabs" id="dayTabs"></div>
+    <div id="planBody"></div>
+  </section>
+
+  <!-- עוד -->
+  <section class="view" id="v-more" data-view="more" hidden>
+    <header class="page-head"><h1>ארגז כלים</h1></header>
+    <div class="stack">
+      <details class="card acc" open>
+        <summary>מחשבון אירו ⇄ שקל</summary>
+        <div class="conv">
+          <label>אירו<input id="eur" type="number" inputmode="decimal" value="20"></label>
+          <label>שקלים<input id="ils" type="number" inputmode="decimal"></label>
+        </div>
+        <p class="muted small">שער: <input id="rate" class="rate" type="number" step="0.01" inputmode="decimal"> ₪ לאירו <span id="rateSrc"></span></p>
+      </details>
+
+      <details class="card acc">
+        <summary>קופה משותפת</summary>
+        <p class="muted small">מי שילמה על מה, ומי חייבת למי בסוף.</p>
+        <form id="kupaPeople" class="row">
+          <input id="personName" placeholder="שם של חברה" autocomplete="off">
+          <button class="btn sm">הוספה</button>
+        </form>
+        <div class="tags" id="peopleTags"></div>
+        <form id="kupaExp" class="grid2">
+          <input id="expDesc" placeholder="על מה? (מונית, ארוחה…)" autocomplete="off">
+          <input id="expAmt" type="number" step="0.01" inputmode="decimal" placeholder="סכום ב־€">
+          <select id="expPayer" aria-label="מי שילמה"></select>
+          <button class="btn sm">רישום</button>
+        </form>
+        <div id="kupaList"></div>
+        <div id="kupaSum"></div>
+      </details>
+
+      <details class="card acc">
+        <summary>רשימת אריזה <span class="pill" id="packCount"></span></summary>
+        <div id="packList" class="checks"></div>
+        <form id="packAdd" class="row">
+          <input id="packNew" placeholder="להוסיף פריט" autocomplete="off">
+          <button class="btn sm">הוספה</button>
+        </form>
+      </details>
+
+      <details class="card acc">
+        <summary>טיפים שכדאי לדעת</summary>
+        <div id="tips"></div>
+      </details>
+
+      <details class="card acc">
+        <summary>יוונית בשתי דקות</summary>
+        <div id="phrases" class="phrases"></div>
+      </details>
+
+      <details class="card acc">
+        <summary>מספרי חירום</summary>
+        <div id="emergency" class="emg"></div>
+        <p class="muted small">לחיצה על מספר מחייגת. כדאי לשמור גם את מספר הביטוח.</p>
+      </details>
+
+      <p class="muted small center">שעות ומחירים משתנים – כדאי לוודא בגוגל מפות לפני שיוצאים.<br>כל מה שהזנת נשמר רק בטלפון הזה.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar" aria-label="ניווט">
+  <button data-go="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>בית</button>
+  <button data-go="map"><svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></svg>מפה</button>
+  <button data-go="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>מקומות</button>
+  <button data-go="plan"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>מסלול</button>
+  <button data-go="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>עוד</button>
+</nav>
+
+<!-- גיליון מקום -->
+<dialog id="sheet" class="sheet"><div id="sheetBody"></div></dialog>
+
+<!-- טופס טיסה -->
+<dialog id="flightDlg" class="sheet">
+  <form id="flightForm" method="dialog" class="form">
+    <h2>טיסה</h2>
+    <label>כיוון
+      <select id="fDir"><option value="out">הלוך – לאתונה</option><option value="back">חזור – הביתה</option></select>
+    </label>
+    <div class="grid2">
+      <label>מספר טיסה<input id="fNum" placeholder="LY541" autocapitalize="characters" autocomplete="off" required></label>
+      <label>חברת תעופה<input id="fAir" placeholder="אל על" autocomplete="off"></label>
+      <label>תאריך<input id="fDate" type="date" required></label>
+      <label>שעת המראה<input id="fTime" type="time" required></label>
+      <label>שעת נחיתה<input id="fArr" type="time"></label>
+      <label>מספר הזמנה<input id="fRef" autocomplete="off" autocapitalize="characters"></label>
+    </div>
+    <label>הערות<input id="fNote" placeholder="טרמינל, מושב, כבודה…" autocomplete="off"></label>
+    <div class="row end">
+      <button type="button" class="btn ghost" id="fCancel">ביטול</button>
+      <button class="btn" value="save">שמירה</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
