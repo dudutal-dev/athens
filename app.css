@@ -472,3 +472,13 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 .tabbar button { font-size: 12.5px; gap: 2px; }
 .tic { padding: 4px 9px; border-radius: 14px; }
 .tbadge { top: 5px; }
+/* הסרגל התחתון חייב להיכנס גם במסך צר מאוד (אייפון עם תצוגה מוגדלת, כ־310 פיקסלים) */
+.tabbar { grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 3px; }
+.tabbar button { min-width: 0; overflow: hidden; white-space: nowrap; }
+@media (max-width: 379px) {
+  .tabbar { height: 68px; inset-inline: 5px; padding: 0 2px; border-radius: 24px; }
+  .tabbar .tic svg { width: 26px; height: 26px; }
+  .tic { padding: 4px 5px; border-radius: 12px; }
+  .tabbar button { font-size: 10.5px; letter-spacing: -.2px; }
+  :root { --tab-h: 80px; }
+}
