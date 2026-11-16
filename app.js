@@ -343,7 +343,9 @@
     const d = $('#locDlg'); if (!d.open) d.showModal();
   }
   $('#locOk').onclick = () => { $('#locDlg').close(); beginGPS(true); };          // לחיצה של המשתמשת – מכאן קופץ חלון האישור של הטלפון
-  $('#locLater').onclick = $('#locClose').onclick = () => $('#locDlg').close();
+  const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } }, lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
+  $('#locLater').onclick = () => { lsSet('athina.locLater', '1'); $('#locDlg').close(); };
+  $('#locClose').onclick = () => $('#locDlg').close();
   $('#locReload').onclick = () => location.reload();
   async function startGPS(loud, cb) {
     if (cb) { if (me) cb(); else firstFix.push(cb); }
@@ -351,9 +353,10 @@
     if (!navigator.geolocation) { if (loud) toast('המכשיר לא תומך באיתור מיקום'); return; }
     let st = 'prompt';
     try { st = (await navigator.permissions.query({ name: 'geolocation' })).state; } catch {}
-    if (st === 'granted') return beginGPS(loud);
-    if (st === 'denied') { if (loud || !askedOnce) locDlg('help'); askedOnce = true; return; }
-    if (loud || !askedOnce) locDlg('ask');
+    // אישרה פעם אחת? לא שואלים שוב – מפעילים ישר. (באייפון הדפדפן לא זוכר את האישור בין פתיחות, אז זוכרים בעצמנו)
+    if (st === 'granted' || lsGet('athina.locOk')) return beginGPS(loud);
+    if (st === 'denied') { if (loud) locDlg('help'); else gpsMsg('המיקום חסום בהגדרות הטלפון'); return; }
+    if (loud || (!askedOnce && !lsGet('athina.locLater'))) locDlg('ask');
     askedOnce = true;
   }
   function beginGPS(loud) {
@@ -363,11 +366,12 @@
       const first = !me;
       me = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy };
       drawMe(); gpsMsg('');
+      if (first) { lsSet('athina.locOk', '1'); lsSet('athina.locLater', null); }
       if (first) { firstFix.splice(0).forEach(f => f()); renderHotel(); if (!$('#v-places').hidden) renderPlaces(); if (map && !$('#v-map').hidden) { follow = true; $('#btnLocate').classList.add('on'); drawMe(); } }
       else if (!$('#v-places').hidden && ui.sort === 'me' && Date.now() - (startGPS.last || 0) > 20000) { startGPS.last = Date.now(); renderPlaces(); }
     }, err => {
       navigator.geolocation.clearWatch(watchId); watchId = null; gpsMsg('');
-      if (err.code === 1) locDlg('help'); else if (loud) toast('לא הצלחנו לאתר מיקום כרגע. נסי שוב במקום פתוח');
+      if (err.code === 1) { lsSet('athina.locOk', null); if (loud) locDlg('help'); else gpsMsg('המיקום חסום בהגדרות הטלפון'); } else if (loud) toast('לא הצלחנו לאתר מיקום כרגע. נסי שוב במקום פתוח');
     }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
   }
 
@@ -434,7 +438,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 19;
+  const VERSION = 20;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
