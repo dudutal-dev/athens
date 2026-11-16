@@ -360,3 +360,7 @@ progress { width: 100%; height: 8px; margin-top: 10px; accent-color: var(--pink)
 #grpQuick { margin-bottom: 10px; }
 .gfav { color: var(--pink); }
 .link.center { align-self: center; }
+
+.bday-m { font-size: 13px; color: #6b5566; }
+/* אייפון מגדיל את המסך כשנכנסים לשדה עם אות קטנה מ־16 */
+input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 22px; }
