@@ -102,7 +102,7 @@
     $('#entryPersonalTxt').textContent = e.byId ? 'לשמור גם ביומן האישי שלי' : 'ביומן האישי שלי';
     $('#entryDel').textContent = 'מחיקה'; $('#entryDel').dataset.sure = '';
     $('#entryShare').hidden = e.type !== 'photo' || !navigator.share;
-    $('#entryDlg').showModal();
+    $('#entryDlg').showModal(); $('#entryText').blur();   // בלי מקלדת עד שנוגעים בשדה הכתיבה
   }
   function drawTags() { $('#entryTags').innerHTML = QUICK_TAGS.map(t => `<button type="button" class="tag ${cur.tags.includes(t) ? 'on' : ''}" data-t="${t}">#${t}</button>`).join(''); }
   $('#entryTags').onclick = ev => { const t = ev.target.dataset.t; if (!t) return; const i = cur.tags.indexOf(t); i < 0 ? cur.tags.push(t) : cur.tags.splice(i, 1); drawTags(); };
