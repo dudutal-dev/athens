@@ -120,6 +120,8 @@
     if (!p || !p.d) return;
     const mine = p.d === G.id, mem = G.members[p.d] ||= {};
     mem.n = p.n; mem.seen = Math.max(mem.seen || 0, p.ts);
+    if (p.t === 'av') { if (okAv(p.av)) mem.av = p.av; else delete mem.av; }
+    if (p.t === 'hi' && !mine && G.av && Date.now() - p.ts < 5 * 60e3) setTimeout(() => send({ t: 'av', av: G.av }), 1000 + Math.random() * 3000);   // חברה חדשה: שולחות לה את התמונה שלנו
     if (p.t === 'chat' || p.t === 'hi') {
       if (G.msgs.some(x => x.id === mid)) return;
       const pend = p.c && G.msgs.find(x => x.id === 'c' + p.c);
@@ -146,6 +148,17 @@
     if ((moved > .06 && age > 90e3) || age > 6 * 60e3) { lastLoc = { ...me, t: Date.now() }; send({ t: 'loc', lat: +me.lat.toFixed(5), lng: +me.lng.toFixed(5) }); }
   }, 15000);
 
+  // תמונת פרופיל: קטנה מאוד (72 פיקסלים), כדי שתיכנס בהודעה אחת מוצפנת
+  const okAv = s => typeof s === 'string' && s.length < 4000 && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(s);
+  const face = (id, m, cls = 'friend') => { const av = id === G.id ? G.av : m && m.av;
+    return `<span class="${cls}" style="--c:${color(id)}">${okAv(av) ? `<img src="${av}" alt="">` : esc(((id === G.id ? G.name : m && m.n) || '?').slice(0, 2))}</span>`; };
+  async function makeAvatar(file) {
+    let src; try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { src = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); }); }
+    const w = src.width || src.naturalWidth, h = src.height || src.naturalHeight, s = Math.min(w, h), c = document.createElement('canvas'); c.width = c.height = 72;
+    c.getContext('2d').drawImage(src, (w - s) / 2, (h - s) / 2, s, s, 0, 0, 72, 72);
+    for (const q of [.72, .6, .5, .4, .3]) { const d = c.toDataURL('image/jpeg', q); if (d.length <= 2700) return d; }
+    return c.toDataURL('image/jpeg', .2);
+  }
   const COLORS = ['#e03177', '#0d5eaf', '#0ca678', '#f08c00', '#7048e8', '#1098ad', '#e8590c', '#c2255c'];
   const color = id => COLORS[[...id].reduce((s, c) => s + c.charCodeAt(0), 0) % COLORS.length];
   const ago = ts => { const m = Math.round((Date.now() - ts) / 6e4); return m < 1 ? 'עכשיו' : m < 60 ? `לפני ${m} דק׳` : m < 1440 ? `לפני ${Math.round(m / 60)} שע׳` : `לפני ${Math.round(m / 1440)} ימים`; };
@@ -156,7 +169,7 @@
     friendLayer.clearLayers(); if (!key) return;
     Object.entries(G.members).forEach(([id, m]) => {
       if (id === G.id || !m.lat || Date.now() - m.lt > 3 * 36e5) return;
-      const icon = L.divIcon({ className: '', html: `<div class="friend" style="--c:${color(id)}">${esc((m.n || '?').slice(0, 2))}</div>`, iconSize: [38, 38], iconAnchor: [19, 19] });
+      const icon = L.divIcon({ className: '', html: face(id, m, 'friend pinf'), iconSize: [44, 44], iconAnchor: [22, 22] });
       L.marker([m.lat, m.lng], { icon, zIndexOffset: 900 }).addTo(friendLayer).bindPopup(`<b>${esc(m.n)}</b><br>${ago(m.lt)}`);
     });
   }
@@ -173,20 +186,23 @@
     const tb = $('#chatBadge'); tb.hidden = !unread; tb.textContent = unread;
     $('#chatEmpty').hidden = joined; $('#chatBody').hidden = !joined; $('#chatStatus').textContent = !joined ? '' : `${Object.keys({ [G.id]: 1, ...G.members }).length} בנות · ${online ? 'מחוברת' : 'מתחברת…'}`;
     badge.hidden = !unread; badge.textContent = unread;
-    $('#grpHint').textContent = joined ? `${Object.keys(G.members).length || 1} בקבוצה` : 'צ׳אט ומיקום חי';
+    const ids = joined ? [G.id, ...Object.keys(G.members).filter(i => i !== G.id)] : [];
+    $('#grpHint').textContent = joined ? `${ids.length} בקבוצה` : 'צ׳אט ומיקום חי';
+    $('#grpFaces').innerHTML = ids.slice(0, 6).map(i => face(i, G.members[i])).join('') + (ids.length > 6 ? `<span class="friend more">+${ids.length - 6}</span>` : '');
+    $('#myFace').innerHTML = joined ? face(G.id) : ''; $('#avClear').hidden = !G.av;
     if (!joined) return;
     $('#grpCode').textContent = G.code; $('#grpShare').checked = !!G.share;
     const me = A.me;
     $('#grpMembers').innerHTML = Object.entries({ [G.id]: { n: G.name, seen: Date.now() }, ...G.members }).filter((e, i, a) => a.findIndex(x => x[0] === e[0]) === i).map(([id, m]) => {
       const mine = id === G.id, fresh = m.lat && Date.now() - m.lt < 3 * 36e5;
-      return `<div class="mem"><span class="friend" style="--c:${color(id)}">${esc((m.n || '?').slice(0, 2))}</span><span><b>${esc(m.n || '')}${mine ? ' (אני)' : ''}</b>
+      return `<div class="mem">${face(id, m)}<span><b>${esc(m.n || '')}${mine ? ' (אני)' : ''}</b>
         <small>${mine ? (G.share ? 'משתפת מיקום' : 'לא משתפת מיקום') : fresh ? `${ago(m.lt)}${me ? ' · ' + A.distTxt(A.km(me, m)) + ' ממך' : ''}` : m.seen ? 'נראתה ' + ago(m.seen) : ''}</small></span>
         ${!mine && fresh ? `<button class="btn ghost sm" data-see="${id}">במפה</button>` : ''}</div>`;
     }).join('');
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     box.innerHTML = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרפה לקבוצה</p>` :
-      `<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}<span>${esc(m.x)}</span>
-        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</small></div>`).join('')
+      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}<span>${esc(m.x)}</span>
+        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. כתבי משהו לבנות.</p>';
     if (atEnd) box.scrollTop = box.scrollHeight;
     const favs = Object.entries(G.favs).filter(e => A.byId[e[0]]);
@@ -197,9 +213,9 @@
     if (!window.crypto?.subtle) return A.toast('הדפדפן הזה לא תומך בהצפנה הדרושה');
     code = norm(code); if (code.length < 6) return A.toast('הקוד קצר מדי');
     if (!name) return A.toast('איך קוראים לך?');
-    G = { ...blank(), id: G.id, name, code: code.replace(/(.{4})(?=.)/g, '$1-') }; save();
+    G = { ...blank(), id: G.id, av: G.av, name, code: code.replace(/(.{4})(?=.)/g, '$1-') }; save();
     await derive(code); connect(); render();
-    setTimeout(() => send({ t: 'hi' }), 800);
+    setTimeout(() => send({ t: 'hi' }).then(() => G.av && send({ t: 'av', av: G.av })), 800);
     A.toast(isNew ? 'הקבוצה נוצרה. שלחי את הקוד לבנות' : 'הצטרפת לקבוצה');
   }
   $('#grpJoinForm').onsubmit = e => { e.preventDefault(); join($('#grpCodeIn').value, $('#grpName').value.trim(), false); };
@@ -234,7 +250,7 @@
   $('#grpMembers').onclick = e => { const b = e.target.closest('[data-see]'); if (!b) return; const m = G.members[b.dataset.see]; A.go('map'); setTimeout(() => { A.map?.setView([m.lat, m.lng], 16); drawFriends(); }, 150); };
   $('#grpLeave').onclick = async e => {
     const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב ליציאה'; return; }
-    await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name }; save();
+    await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save();
     b.dataset.sure = ''; b.textContent = 'יציאה מהקבוצה'; drawFriends(); render();
   };
   A.hooks.group = () => { render(); pushUI(); if (G.share) A.startGPS(false); };
@@ -266,6 +282,10 @@
   // מחדשים את הרישום בשקט בכל פתיחה, למקרה שהמנוי התחלף
   async function pushRefresh() { if (!PUSH_URL || !G.push || !key || !pushSupported() || Notification.permission !== 'granted') return;
     try { const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); if (sub) fetch(PUSH_URL + '/sub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, sub: sub.toJSON() }) }).catch(() => {}); } catch {} }
+
+  $('#avIn').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try { G.av = await makeAvatar(f); save(); render(); drawFriends(); A.toast((await send({ t: 'av', av: G.av })) ? 'התמונה נשלחה לבנות' : 'התמונה נשמרה, ותישלח כשיהיה חיבור'); } catch { A.toast('לא הצלחנו לקרוא את התמונה'); } };
+  $('#avClear').onclick = () => { delete G.av; save(); render(); drawFriends(); send({ t: 'av', av: '' }); };
 
   // ───── התחלה ─────
   $('#grpName').value = G.name || '';

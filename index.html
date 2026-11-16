@@ -63,7 +63,7 @@
         </ul>
       </details>
       <div class="quick">
-        <button class="qbtn wide" data-go="group"><i class="ic" data-ic="chat" style="--c:#e03177;--c2:#ff8fb3"></i><span><b>הבנות</b><small id="grpHint">צ׳אט ומיקום חי</small></span><em class="nbadge" id="grpBadge" hidden></em></button>
+        <button class="qbtn wide" data-go="group"><i class="ic" data-ic="chat" style="--c:#e03177;--c2:#ff8fb3"></i><span><b>הבנות</b><small id="grpHint">צ׳אט ומיקום חי</small></span><span class="faces" id="grpFaces"></span><em class="nbadge" id="grpBadge" hidden></em></button>
         <button class="qbtn" data-act="near"><i class="ic" data-ic="compass" style="--c:#0d5eaf;--c2:#3b9bff"></i><span><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></span></button>
         <button class="qbtn" data-act="share"><i class="ic" data-ic="send" style="--c:#0ca678;--c2:#51cf66"></i><span><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></span></button>
         <button class="qbtn" data-go="plan"><i class="ic" data-ic="cal" style="--c:#7048e8;--c2:#b197fc"></i><span><b>התוכנית להיום</b><small id="todayPlan"></small></span></button>
@@ -151,6 +151,9 @@
     <div class="stack" id="grpMain" hidden>
       <section class="card">
         <div class="card-head"><div><small class="muted">קוד הקבוצה</small><div class="gcode" id="grpCode" dir="ltr"></div></div><button class="btn sm" id="grpInvite">הזמנת חברות</button></div>
+        <div class="myav"><span id="myFace"></span><div><b>התמונה שלי</b><small class="muted">הבנות יראו אותה בצ׳אט, במפה ובעמוד הבית</small>
+          <div class="row"><label class="btn sm" for="avIn">בחירת תמונה</label><button class="link" id="avClear" type="button" hidden>הסרה</button></div></div></div>
+        <input type="file" id="avIn" accept="image/*" hidden>
         <label class="switch"><input type="checkbox" id="grpShare"><span>לשתף את המיקום שלי עם הבנות</span></label>
         <div id="grpMembers" class="mems"></div>
       </section>

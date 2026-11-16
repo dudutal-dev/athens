@@ -453,3 +453,15 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 .show-seg button.on { background: #fff; color: #0a1630; }
 .show-n { color: rgba(255,255,255,.7); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 48px; text-align: center; direction: ltr; }
 .show-ctl button.wait { opacity: .55; }
+
+/* ───── תמונות פרופיל ───── */
+.friend { overflow: hidden; } .friend img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.friend.sm { width: 30px; height: 30px; font-size: 11px; border-width: 2px; align-self: flex-end; }
+.friend.pinf { width: 44px; height: 44px; }
+.friend.more { background: var(--surface2); color: var(--ink); }
+.faces { display: flex; margin-inline-start: auto; direction: ltr; } .faces .friend { margin-inline-start: -10px; width: 40px; height: 40px; } .faces .friend:first-child { margin-inline-start: 0; }
+.qbtn.wide .nbadge { margin-inline-start: 8px; }
+.mrow { display: flex; gap: 6px; align-self: flex-start; max-width: 88%; } .mrow.mine { align-self: flex-end; } .mrow .msg { max-width: 100%; align-self: auto; }
+.myav { display: flex; gap: 14px; align-items: center; padding: 10px 0 12px; }
+.myav #myFace .friend { width: 64px; height: 64px; font-size: 20px; } .myav small { display: block; font-size: 13px; margin-bottom: 6px; }
+.faces { margin-inline-start: 0; margin-left: 0; margin-right: auto; }
