@@ -394,6 +394,8 @@
   }
 
   // ───── boot ─────
+  $$('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[el.dataset.ic] || ''}"/></svg>`);
+  $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
   const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {},
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();

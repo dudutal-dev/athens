@@ -42,12 +42,14 @@
       <section class="card" id="hotelCard"></section>
       <section class="card" id="flightsCard"></section>
       <div class="quick">
-        <button class="qbtn" data-act="near"><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></button>
-        <button class="qbtn" data-act="share"><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></button>
-        <button class="qbtn" data-go="plan"><b>התוכנית להיום</b><small id="todayPlan"></small></button>
-        <button class="qbtn" data-jump="meCard"><b>הפרטים והמסמכים</b><small>דרכון, ביטוח, אישורים</small></button>
-        <button class="qbtn" data-jump="offlineCard"><b>מפה בלי אינטרנט</b><small id="offHint">הורדה לטלפון</small></button>
-        <button class="qbtn" data-act="favs"><b>הרשימה שלי</b><small id="favCount"></small></button>
+        <button class="qbtn" data-act="near"><i class="ic" data-ic="compass" style="--c:#0d5eaf;--c2:#3b9bff"></i><span><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></span></button>
+        <button class="qbtn" data-act="share"><i class="ic" data-ic="send" style="--c:#0ca678;--c2:#51cf66"></i><span><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></span></button>
+        <button class="qbtn" data-go="plan"><i class="ic" data-ic="cal" style="--c:#7048e8;--c2:#b197fc"></i><span><b>התוכנית להיום</b><small id="todayPlan"></small></span></button>
+        <button class="qbtn" data-jump="meCard"><i class="ic" data-ic="id" style="--c:#f08c00;--c2:#ffc94d"></i><span><b>פרטים ומסמכים</b><small>דרכון, ביטוח, אישורים</small></span></button>
+        <button class="qbtn" data-jump="taxCard"><i class="ic" data-ic="percent" style="--c:#e8590c;--c2:#ffa94d"></i><span><b>Tax Free</b><small>איך מקבלים החזר מס</small></span></button>
+        <button class="qbtn" data-jump="offlineCard"><i class="ic" data-ic="download" style="--c:#1098ad;--c2:#66d9e8"></i><span><b>מפה בלי אינטרנט</b><small id="offHint">הורדה לטלפון</small></span></button>
+        <button class="qbtn" data-act="favs"><i class="ic" data-ic="heart" style="--c:#e03177;--c2:#ff8fb3"></i><span><b>הרשימה שלי</b><small id="favCount"></small></span></button>
+        <button class="qbtn" data-go="journal"><i class="ic" data-ic="book" style="--c:#c2255c;--c2:#f783ac"></i><span><b>היומן שלנו</b><small>תמונות ורגעים</small></span></button>
       </div>
       <section>
         <div class="sec-head"><h2>אסור לפספס</h2><button class="link" data-go="places">לכל המקומות</button></div>
@@ -120,7 +122,7 @@
     <header class="page-head"><h1>ארגז כלים</h1></header>
     <div class="stack">
       <details class="card acc" id="meCard">
-        <summary>הפרטים והמסמכים שלי</summary>
+        <summary><i class="ic" data-ic="id" style="--c:#f08c00;--c2:#ffc94d"></i>הפרטים והמסמכים שלי</summary>
         <p class="muted small">נשמר רק בטלפון הזה ולא נשלח לשום מקום.</p>
         <div class="grid2" id="meForm">
           <label class="wide">שם מלא, כמו בדרכון<input id="me_name" data-k="name" autocomplete="off"></label>
@@ -150,14 +152,38 @@
       </details>
 
       <section class="card" id="offlineCard">
-        <div class="card-head"><h2>מפה בלי אינטרנט</h2><span class="pill" id="offState"></span></div>
+        <div class="card-head"><h2 class="h-ic"><i class="ic" data-ic="download" style="--c:#1098ad;--c2:#66d9e8"></i>מפה בלי אינטרנט</h2><span class="pill" id="offState"></span></div>
         <p class="muted small">מורידה לטלפון את מפת הרחובות של מרכז אתונה ברמת רחוב ואת כל האזור עד שדה התעופה והריביירה. כ־20 מ״ב, עדיף ב־Wi‑Fi לפני הטיסה. ה־GPS עובד גם בלי חבילת גלישה.</p>
         <progress id="offBar" max="100" value="0" hidden></progress>
         <div class="row" style="margin-top:10px"><button class="btn sea" id="offBtn">הורדת המפה</button><span class="muted small" id="offMsg"></span></div>
       </section>
 
+      <details class="card acc" id="taxCard">
+        <summary><i class="ic" data-ic="percent" style="--c:#e8590c;--c2:#ffa94d"></i>החזר מס – Tax Free</summary>
+        <p>תיירות מחוץ לאיחוד האירופי (דרכון ישראלי) זכאיות להחזר המע״מ על קניות. המע״מ ביוון 24%, וההחזר בפועל אחרי עמלה הוא בערך <b>12–15 אחוז מהמחיר</b>.</p>
+        <div class="conv taxcalc">
+          <label>סכום הקנייה ב־€<input id="taxAmt" type="number" inputmode="decimal" placeholder="200"></label>
+          <label>החזר משוער<output id="taxOut" class="out" dir="auto">—</output></label>
+        </div>
+        <h3 class="sub-h">בחנות</h3>
+        <ol class="steps">
+          <li>מינימום <b>50 אירו בחנות אחת באותו יום</b>. כדאי לרכז קניות בחנות אחת או בכל־בו כמו אטיקה.</li>
+          <li>לחפש שלט Tax Free (Global Blue או Planet) ולבקש בקופה: <b dir="ltr">"Tax free form, please"</b>.</li>
+          <li>להציג <b>דרכון</b>. יש חנויות שמסתפקות בצילום, אבל לא כולן.</li>
+          <li>לשמור את הטופס יחד עם הקבלה, ולא להשתמש במוצרים: הם צריכים לצאת מיוון חדשים, עם התוויות.</li>
+        </ol>
+        <h3 class="sub-h">בשדה התעופה, ביום החזרה</h3>
+        <ol class="steps">
+          <li>להגיע <b>כ־45 דקות מוקדם יותר</b>. במוצאי שבת יכול להיות תור.</li>
+          <li><b>לפני הצ׳ק־אין</b>, אם הקניות במזוודה: לגשת לעמדת המכס או לעמדת האימות של Tax Free באולם היציאות, עם הטפסים, הקבלות, הדרכון, כרטיס הטיסה והמוצרים עצמם.</li>
+          <li>אחרי ביקורת הדרכונים: דלפק Global Blue או Planet. החזר <b>לכרטיס האשראי</b> מלא יותר, במזומן יש עמלה נוספת.</li>
+          <li>אין זמן או שהדלפק סגור? לשלשל את הטופס החתום לתיבת הדואר של חברת ההחזר שליד הדלפק.</li>
+        </ol>
+        <p class="muted small">ההחזר לא חל על מסעדות, מלון ושירותים. הנהלים והעמלות משתנים בין חברות, כדאי לשאול בחנות.</p>
+      </details>
+
       <details class="card acc" open>
-        <summary>מחשבון אירו ⇄ שקל</summary>
+        <summary><i class="ic" data-ic="euro" style="--c:#0d5eaf;--c2:#3b9bff"></i>מחשבון אירו ⇄ שקל</summary>
         <div class="conv">
           <label>אירו<input id="eur" type="number" inputmode="decimal" value="20"></label>
           <label>שקלים<input id="ils" type="number" inputmode="decimal"></label>
@@ -166,7 +192,7 @@
       </details>
 
       <details class="card acc">
-        <summary>קופה משותפת</summary>
+        <summary><i class="ic" data-ic="wallet" style="--c:#0ca678;--c2:#51cf66"></i>קופה משותפת</summary>
         <p class="muted small">מי שילמה על מה, ומי חייבת למי בסוף.</p>
         <form id="kupaPeople" class="row">
           <input id="personName" placeholder="שם של חברה" autocomplete="off">
@@ -184,7 +210,7 @@
       </details>
 
       <details class="card acc">
-        <summary>רשימת אריזה <span class="pill" id="packCount"></span></summary>
+        <summary><i class="ic" data-ic="bag" style="--c:#7048e8;--c2:#b197fc"></i>רשימת אריזה <span class="pill" id="packCount"></span></summary>
         <div id="packList" class="checks"></div>
         <form id="packAdd" class="row">
           <input id="packNew" placeholder="להוסיף פריט" autocomplete="off">
@@ -193,17 +219,17 @@
       </details>
 
       <details class="card acc">
-        <summary>טיפים שכדאי לדעת</summary>
+        <summary><i class="ic" data-ic="bulb" style="--c:#f59f00;--c2:#ffd43b"></i>טיפים שכדאי לדעת</summary>
         <div id="tips"></div>
       </details>
 
       <details class="card acc">
-        <summary>יוונית בשתי דקות</summary>
+        <summary><i class="ic" data-ic="chat" style="--c:#1098ad;--c2:#66d9e8"></i>יוונית בשתי דקות</summary>
         <div id="phrases" class="phrases"></div>
       </details>
 
       <details class="card acc">
-        <summary>מספרי חירום</summary>
+        <summary><i class="ic" data-ic="phone" style="--c:#e03131;--c2:#ff8787"></i>מספרי חירום</summary>
         <div id="emergency" class="emg"></div>
         <p class="muted small">לחיצה על מספר מחייגת. כדאי לשמור גם את מספר הביטוח.</p>
       </details>
@@ -214,12 +240,12 @@
 </main>
 
 <nav class="tabbar" aria-label="ניווט">
-  <button data-go="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>בית</button>
-  <button data-go="map"><svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></svg>מפה</button>
-  <button data-go="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>מקומות</button>
-  <button data-go="journal"><svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h4"/></svg>יומן</button>
-  <button data-go="plan"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>מסלול</button>
-  <button data-go="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>עוד</button>
+  <button data-go="home" style="--c:#0d5eaf" class="on"><i class="tic" data-ic="home"></i>בית</button>
+  <button data-go="map" style="--c:#0ca678"><i class="tic" data-ic="map"></i>מפה</button>
+  <button data-go="places" style="--c:#e03177"><i class="tic" data-ic="pin"></i>מקומות</button>
+  <button data-go="journal" style="--c:#f08c00"><i class="tic" data-ic="book"></i>יומן</button>
+  <button data-go="plan" style="--c:#7048e8"><i class="tic" data-ic="cal"></i>מסלול</button>
+  <button data-go="more" style="--c:#1098ad"><i class="tic" data-ic="grid"></i>עוד</button>
 </nav>
 
 <!-- גיליון מקום -->

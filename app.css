@@ -269,3 +269,46 @@ progress { width: 100%; height: 8px; margin-top: 10px; accent-color: var(--pink)
 .opt b { display: block; font-size: 17px; } .opt small { color: var(--muted); font-size: 13.5px; }
 .steps { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
 .toast { bottom: auto; top: calc(var(--sat) + 64px); }
+
+/* ═════ רענון עיצוב: כחול־לבן יווני, מאנדר, אייקונים צבעוניים ═════ */
+:root { --bg: #f2f6fc; --sea: #0d5eaf; --sea-deep: #0a3d7a; --hero-a: #0a3d7a; --hero-b: #1479de; --btn: #0d5eaf; --tab-h: 74px;
+  --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 10.5H4V2H20V10.5H9V6H15M20 10.5H24' fill='none' stroke='white' stroke-width='1.7'/%3E%3C/svg%3E"); }
+@media (prefers-color-scheme: dark) { :root { --bg: #0b1322; --sea: #6aa9ff; --sea-deep: #0b2a55; --hero-a: #082a57; --hero-b: #0f5cb0; --btn: #2b6fd0; } }
+.card { border-radius: 22px; border: 1px solid var(--line); box-shadow: 0 8px 28px rgba(13, 60, 120, .07); }
+.btn { background: var(--btn); border-radius: 999px; box-shadow: 0 4px 12px color-mix(in srgb, var(--btn) 30%, transparent); }
+.btn.ghost, .btn.sea { box-shadow: none; } .btn.sea { background: var(--btn); }
+.jr-actions .btn:first-child, #entryForm .btn[value=save] { background: var(--pink); box-shadow: 0 4px 12px color-mix(in srgb, var(--pink) 30%, transparent); }
+.chip.on { background: var(--btn); border-color: var(--btn); color: #fff; }
+.daytabs button.on { background: var(--btn); border-color: var(--btn); }
+.link { color: var(--sea); }
+.tl-item::before { background: var(--sea); } .tl-time { color: var(--sea); }
+
+.hero { border-radius: 0 0 32px 32px; padding-bottom: 46px; background: linear-gradient(165deg, var(--hero-a), var(--hero-b)); }
+.hero::before { content: ''; position: absolute; top: calc(var(--sat) + 18px); left: 24px; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffe08a, #f59f00); box-shadow: 0 0 40px 10px rgba(255, 196, 77, .35); }
+.hero::after { content: ''; position: absolute; inset: auto 0 14px 0; height: 12px; background: var(--meander) repeat-x center; opacity: .55; }
+.hero h1 span { color: #ffd6e4; }
+.hero-art { opacity: .13; bottom: 18px; }
+.page-head h1::after { content: ''; display: block; width: 96px; height: 12px; margin-top: 8px; background: var(--sea); -webkit-mask: var(--meander) repeat-x; mask: var(--meander) repeat-x; }
+.jr-head h1.hand::after { background: var(--pink); }
+
+/* אייקונים */
+.ic { width: 44px; height: 44px; border-radius: 14px; flex: none; display: grid; place-items: center; background: linear-gradient(140deg, var(--c), var(--c2, var(--c))); box-shadow: 0 5px 12px color-mix(in srgb, var(--c) 32%, transparent); }
+.ic svg { width: 23px; height: 23px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.qbtn { display: flex; align-items: center; gap: 12px; border-radius: 20px; border: 1px solid var(--line); padding: 12px; min-height: 70px; }
+.qbtn span { min-width: 0; } .qbtn b { font-size: 15.5px; line-height: 1.2; } .qbtn small { display: block; line-height: 1.25; }
+.acc summary { gap: 12px; } .acc summary .ic, .h-ic .ic { width: 38px; height: 38px; border-radius: 12px; } .acc summary .ic svg, .h-ic .ic svg { width: 20px; height: 20px; }
+.h-ic { display: flex; align-items: center; gap: 12px; }
+.badge { border-radius: 16px; background: linear-gradient(140deg, color-mix(in srgb, var(--c) 22%, var(--surface)), color-mix(in srgb, var(--c) 8%, var(--surface))); }
+
+/* סרגל תחתון צף */
+.tabbar { inset: auto 10px calc(var(--sab) + 8px) 10px; height: 62px; padding: 0 4px; border-radius: 24px; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(10, 40, 90, .18); background: color-mix(in srgb, var(--surface) 90%, transparent); }
+.tabbar button { gap: 1px; font-size: 11.5px; color: var(--muted); }
+.tic { display: grid; place-items: center; padding: 3px 12px; border-radius: 12px; }
+.tabbar .tic svg { width: 24px; height: 24px; stroke: var(--c); stroke-width: 1.9; fill: color-mix(in srgb, var(--c) 20%, transparent); }
+.tabbar button.on { color: var(--c); font-weight: 700; }
+.tabbar button.on .tic { background: color-mix(in srgb, var(--c) 16%, transparent); }
+#map { inset: 0; }
+.leaflet-bottom { bottom: calc(var(--tab-h) + var(--sab)); }
+
+.taxcalc .out { display: flex; align-items: center; min-height: 44px; padding: 10px 12px; border-radius: 12px; background: var(--surface2); font-weight: 700; font-size: 16px; color: var(--ink); font-variant-numeric: tabular-nums; }
+#taxCard p, #taxCard .steps { font-size: 15px; }
