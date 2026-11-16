@@ -395,3 +395,24 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 .bday summary h2 { margin: 0; font-size: 26px; } .bday summary h2 span { font-size: 34px; }
 .bday summary small { display: block; font-size: 13.5px; color: #6b5566; font-weight: 600; }
 .bday[open] summary { margin-bottom: 10px; }
+
+/* ───── מסך הצ׳אט ───── */
+.tabbar { grid-template-columns: repeat(7, 1fr); } .tic { padding: 3px 8px; } .tabbar button { font-size: 11px; position: relative; }
+.tbadge { position: absolute; top: 4px; inset-inline-end: calc(50% - 22px); background: #e03131; color: #fff; font: 700 11px var(--body); min-width: 18px; height: 18px; border-radius: 9px; display: grid; place-items: center; padding: 0 5px; font-style: normal; }
+.chatview { display: flex; flex-direction: column; overflow: hidden; padding-bottom: calc(var(--tab-h) + var(--sab) + 4px); }
+.chatview[hidden] { display: none !important; }
+.chat-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(var(--sat) + 14px) 16px 10px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.chat-head h1 { font: 900 24px/1.1 var(--display); }
+.chat-body { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 14px; max-width: 720px; width: 100%; margin-inline: auto; }
+.chat-body .chat { flex: 1; max-height: none; min-height: 0; margin: 0; padding: 12px 0; }
+.chat-body #grpQuick { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -14px 8px; padding: 0 14px; } .chat-body #grpQuick::-webkit-scrollbar { display: none; } .chat-body #grpQuick .tag { flex: none; }
+.chat-body #grpForm { flex-wrap: nowrap; padding-bottom: 6px; }
+.chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 24px; color: var(--muted); }
+.msg { font-size: 16.5px; }
+/* ───── מדריך ───── */
+.guide { display: flex; flex-direction: column; }
+.g { border-top: 1px solid var(--line); padding: 2px 0; }
+.g summary { font: 700 16.5px/1.3 var(--body); padding: 12px 0; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+.g summary::-webkit-details-marker { display: none; } .g summary::after { content: '+'; color: var(--sea); font-weight: 400; font-size: 20px; line-height: 1; } .g[open] summary::after { content: '–'; }
+.g p, .g li { font-size: 15.5px; line-height: 1.6; } .g p { margin-bottom: 10px; } .g ol { margin: 0 0 12px; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; }
+.acc[open] .g:not([open]) > summary::after { content: '+'; } .acc[open] .g > summary { margin-bottom: 0; }

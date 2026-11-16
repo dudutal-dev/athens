@@ -152,12 +152,7 @@
         <label class="switch"><input type="checkbox" id="grpShare"><span>לשתף את המיקום שלי עם הבנות</span></label>
         <div id="grpMembers" class="mems"></div>
       </section>
-      <section class="card">
-        <h2>צ׳אט</h2>
-        <div id="grpChat" class="chat"></div>
-        <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
-        <form id="grpForm" class="row"><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm">שליחה</button></form>
-      </section>
+      <button class="btn" data-go="chat" type="button">פתיחת הצ׳אט</button>
       <section class="card" id="pushNative" hidden>
         <div class="card-head"><h2 class="h-ic"><i class="ic" data-ic="phone" style="--c:#7048e8;--c2:#b197fc"></i>התראות</h2><span class="pill" id="pushState"></span></div>
         <p class="muted small" id="pushTxt">התראה קופצת על כל הודעה בצ׳אט, גם כשהאפליקציה סגורה. לחיצה עליה פותחת את האפליקציה.</p>
@@ -179,6 +174,17 @@
     </div>
   </section>
 
+  <!-- צ׳אט -->
+  <section class="view chatview" id="v-chat" data-view="chat" hidden>
+    <header class="chat-head"><div><h1>צ׳אט הבנות</h1><p class="muted small" id="chatStatus"></p></div><button class="btn ghost sm" data-go="group" type="button">הקבוצה</button></header>
+    <div class="chat-empty" id="chatEmpty" hidden><p>עוד אין קבוצה. פותחים קבוצה או מצטרפות עם קוד, ואז הצ׳אט נפתח כאן.</p><button class="btn" data-go="group" type="button">לקבוצה</button></div>
+    <div class="chat-body" id="chatBody">
+        <div id="grpChat" class="chat"></div>
+        <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
+        <form id="grpForm" class="row"><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm">שליחה</button></form>
+    </div>
+  </section>
+
   <!-- מסלול -->
   <section class="view" id="v-plan" data-view="plan" hidden>
     <header class="page-head">
@@ -193,6 +199,12 @@
   <section class="view" id="v-more" data-view="more" hidden>
     <header class="page-head"><h1>ארגז כלים</h1></header>
     <div class="stack">
+      <details class="card acc" id="guideCard">
+        <summary><i class="ic" data-ic="bulb" style="--c:#0d5eaf;--c2:#3b9bff"></i>מדריך לאפליקציה</summary>
+        <p class="muted small">כל מה שחשוב לדעת, בשפה פשוטה. לוחצים על נושא כדי לפתוח.</p>
+        <div id="guide" class="guide"></div>
+      </details>
+
       <details class="card acc" id="meCard">
         <summary><i class="ic" data-ic="id" style="--c:#f08c00;--c2:#ffc94d"></i>הפרטים והמסמכים שלי</summary>
         <p class="muted small">נשמר רק בטלפון הזה ולא נשלח לשום מקום.</p>
@@ -318,6 +330,7 @@
   <button data-go="places" style="--c:#e03177"><i class="tic" data-ic="pin"></i>מקומות</button>
   <button data-go="journal" style="--c:#f08c00"><i class="tic" data-ic="book"></i>יומן</button>
   <button data-go="plan" style="--c:#7048e8"><i class="tic" data-ic="cal"></i>מסלול</button>
+  <button data-go="chat" style="--c:#e8590c"><i class="tic" data-ic="chat"></i>צ׳אט<em class="tbadge" id="chatBadge" hidden></em></button>
   <button data-go="more" style="--c:#1098ad"><i class="tic" data-ic="grid"></i>עוד</button>
 </nav>
 

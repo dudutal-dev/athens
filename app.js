@@ -61,6 +61,7 @@
     if (view === 'journal') { startGPS(false); APP.hooks.journal?.(); }
     if (view === 'map') APP.hooks.map?.();
     if (view === 'group') APP.hooks.group?.();
+    if (view === 'chat') APP.hooks.chat?.();
     try { history.replaceState(null, '', '#' + view); } catch {}
   }
   document.addEventListener('click', e => {
@@ -413,6 +414,7 @@
   function renderStatic() {
     $('#tips').innerHTML = TIPS.map(g => `<div class="tipg"><h3>${g.h}</h3><ul>${g.items.map(i => `<li>${i}</li>`).join('')}</ul></div>`).join('');
     $('#phrases').innerHTML = PHRASES.map(p => `<div class="ph"><b>${p[0]}</b><span>${p[2]}</span><small>${p[1]}</small></div>`).join('');
+    $('#guide').innerHTML = GUIDE.map(s => `<details class="g"><summary>${s.h}</summary>${s.p.map(x => Array.isArray(x) ? `<ol>${x.map(i => `<li>${i}</li>`).join('')}</ol>` : `<p>${x}</p>`).join('')}</details>`).join('');
     $('#emergency').innerHTML = EMERGENCY.map(e => `<a href="tel:${e[1].replace(/\s/g, '')}">${e[0]}<span>${e[1]}</span></a>`).join('');
   }
 
@@ -432,7 +434,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 18;
+  const VERSION = 19;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -467,7 +469,7 @@
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather(); loadImages();
-  const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal', 'group'].includes(h)) go(h);
+  const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal', 'group', 'chat'].includes(h)) go(h);
   setInterval(renderFlights, 60000);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();

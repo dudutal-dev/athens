@@ -126,8 +126,8 @@
       if (pend) { pend.id = mid; delete pend.pending; save(); render(); return; }
       G.msgs.push({ id: mid, d: p.d, n: p.n, x: p.t === 'hi' ? null : String(p.x || '').slice(0, 1200), ts: p.ts, lat: p.lat, lng: p.lng });
       G.msgs.sort((a, b) => a.ts - b.ts); if (G.msgs.length > 250) G.msgs.splice(0, G.msgs.length - 250);
-      if (!mine && Date.now() - p.ts < 5 * 60e3) { if (p.t === 'chat') beep(); if ($('#v-group').hidden) { unread++; if (p.t === 'chat') A.toast(`${p.n}: ${String(p.x).slice(0, 60)}`, 4000); } }
-      else if (!mine && $('#v-group').hidden) unread++;
+      if (!mine && Date.now() - p.ts < 5 * 60e3) { if (p.t === 'chat') beep(); if ($('#v-chat').hidden) { unread++; if (p.t === 'chat') A.toast(`${p.n}: ${String(p.x).slice(0, 60)}`, 4000); } }
+      else if (!mine && $('#v-chat').hidden) unread++;
     }
     if (p.lat && p.lng) { mem.lat = p.lat; mem.lng = p.lng; mem.lt = p.ts; }
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
@@ -169,7 +169,9 @@
   function render() {
     const joined = !!G.code;
     $('#grpJoin').hidden = joined; $('#grpMain').hidden = !joined; status();
-    const badge = $('#grpBadge'); if (!$('#v-group').hidden) unread = 0;
+    const badge = $('#grpBadge'); if (!$('#v-chat').hidden) unread = 0;
+    const tb = $('#chatBadge'); tb.hidden = !unread; tb.textContent = unread;
+    $('#chatEmpty').hidden = joined; $('#chatBody').hidden = !joined; $('#chatStatus').textContent = !joined ? '' : `${Object.keys({ [G.id]: 1, ...G.members }).length} בנות · ${online ? 'מחוברת' : 'מתחברת…'}`;
     badge.hidden = !unread; badge.textContent = unread;
     $('#grpHint').textContent = joined ? `${Object.keys(G.members).length || 1} בקבוצה` : 'צ׳אט ומיקום חי';
     if (!joined) return;
@@ -238,7 +240,8 @@
     await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name }; save();
     b.dataset.sure = ''; b.textContent = 'יציאה מהקבוצה'; drawFriends(); render();
   };
-  A.hooks.group = () => { unread = 0; render(); pushUI(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; if (G.share) A.startGPS(false); };
+  A.hooks.group = () => { render(); pushUI(); if (G.share) A.startGPS(false); };
+  A.hooks.chat = () => { unread = 0; render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; };
 
   // ───── התראות מובנות (Web Push דרך השרת שלנו) ─────
   const b64uToU8 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
@@ -273,5 +276,5 @@
   render();
   if (G.code) derive(G.code).then(() => { connect(); if (G.share) A.startGPS(false); pushRefresh(); render(); });
   pushUI();
-  setInterval(() => { if (!$('#v-group').hidden && G.code) render(); }, 60000);
+  setInterval(() => { if ((!$('#v-group').hidden || !$('#v-chat').hidden) && G.code) render(); }, 60000);
 })();
