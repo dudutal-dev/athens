@@ -44,15 +44,20 @@
   function download(file) { const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = file.name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000); }
   // מחזיר true אם הקבצים נמסרו (שיתוף שהושלם או הורדה)
   async function deliver(files) {
-    if (navigator.canShare?.({ files })) { try { await navigator.share({ files }); return true; } catch (e) { return e?.name !== 'AbortError' ? (files.forEach(download), true) : false; } }
+    if (navigator.canShare?.({ files })) { try { await navigator.share({ files }); return true; }
+      catch (e) { if (e?.name === 'AbortError') return false;
+        if (e?.name === 'NotAllowedError') { ready = files; A.toast('הגיבוי מוכן. לחצי שוב כדי לשמור'); return false; }   // עבר זמן מהלחיצה: שומרים את הקבצים, והלחיצה הבאה משתפת מיד
+        files.forEach(download); return true; } }
     files.forEach(download); return true;
   }
   async function mark(list) { const t = Date.now(); for (const e of list) { e.bk = t; await A.journal.put(e).catch(() => {}); } LS.set('athina.bkLast', String(t)); refresh(); }
 
   // ───── פעולות ─────
-  let busy = false;
+  let busy = false, ready = null, readyList = null;
   async function backupNew(viaGesture) {
-    if (busy) return; busy = true;
+    if (busy) return;
+    if (viaGesture && ready) { const f = ready, l = readyList; ready = null; try { await navigator.share({ files: f }); await mark(l); A.toast(`גובו ${l.length} תמונות`); } catch {} return; }
+    busy = true;
     try {
       const todo = (await photos()).filter(e => !e.bk);
       if (!todo.length) { if (viaGesture) A.toast('הכול כבר מגובה'); LS.set('athina.bkLast', String(Date.now())); return refresh(); }
@@ -61,7 +66,7 @@
       const asImages = viaGesture && todo.length <= 20 && navigator.canShare?.({ files: [new File([todo[0].blob], 'a.jpg', { type: 'image/jpeg' })] });
       const files = asImages ? todo.map((e, i) => new File([e.blob], fileName(e, i), { type: 'image/jpeg' })) : await makeZips(todo, 'backup');
       say('');
-      if (viaGesture) { if (await deliver(files)) { await mark(todo); A.toast(`גובו ${todo.length} תמונות`); } }
+      if (viaGesture) { readyList = todo; if (await deliver(files)) { await mark(todo); A.toast(`גובו ${todo.length} תמונות`); } }
       else { files.forEach(download); await mark(todo); A.toast(`גיבוי אוטומטי: ${todo.length} תמונות נשמרו בתיקיית ההורדות`, 5000); }
     } catch { say(''); A.toast('הגיבוי נכשל. נסי שוב'); } finally { busy = false; }
   }

@@ -426,13 +426,22 @@
 <!-- מצגת -->
 <div id="show" class="show" hidden>
   <div class="show-bars" id="showBars"></div>
-  <div class="show-stage" id="showStage"><img id="showImg" alt=""><p id="showStatus" class="show-status" hidden></p></div>
+  <div class="show-stage" id="showStage">
+    <img id="showA" alt=""><img id="showB" alt="">
+    <button class="show-arrow prev" id="showPrev" type="button" aria-label="הקודם">›</button>
+    <button class="show-arrow next" id="showNext" type="button" aria-label="הבא">‹</button>
+    <p id="showStatus" class="show-status" hidden></p>
+  </div>
   <button class="show-x" id="showClose" aria-label="סגירה">×</button>
   <div class="show-ctl">
-    <button id="showPlay" type="button">השהיה</button>
-    <button id="showFmt" type="button">לרוחב</button>
+    <button id="showPlay" type="button" class="round" aria-label="השהיה">❚❚</button>
+    <div class="show-seg" id="showScope"><button type="button" data-s="me">אישי</button><button type="button" data-s="us">משותף</button><button type="button" data-s="all">הכול</button></div>
+    <span id="showN" class="show-n"></span>
+  </div>
+  <div class="show-ctl">
     <button id="showPdf" type="button" class="pri">שיתוף PDF</button>
     <button id="showImgs" type="button">שיתוף תמונות</button>
+    <button id="showFmt" type="button">לרוחב</button>
   </div>
 </div>
 
