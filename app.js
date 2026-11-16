@@ -356,7 +356,7 @@
   }
 
   // ───── boot ─────
-  const APP = window.APP = { S, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {},
+  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {},
     tileUrl: (z, x, y) => `${tileBase}/${z}/${x}/${y}${window.L && L.Browser.retina ? '@2x' : ''}.png` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather();

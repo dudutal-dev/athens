@@ -45,6 +45,8 @@
         <button class="qbtn" data-act="near"><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></button>
         <button class="qbtn" data-act="share"><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></button>
         <button class="qbtn" data-go="plan"><b>התוכנית להיום</b><small id="todayPlan"></small></button>
+        <button class="qbtn" data-jump="meCard"><b>הפרטים והמסמכים</b><small>דרכון, ביטוח, אישורים</small></button>
+        <button class="qbtn" data-jump="offlineCard"><b>מפה בלי אינטרנט</b><small id="offHint">הורדה לטלפון</small></button>
         <button class="qbtn" data-act="favs"><b>הרשימה שלי</b><small id="favCount"></small></button>
       </div>
       <section>
@@ -114,6 +116,36 @@
   <section class="view" id="v-more" data-view="more" hidden>
     <header class="page-head"><h1>ארגז כלים</h1></header>
     <div class="stack">
+      <details class="card acc" id="meCard">
+        <summary>הפרטים והמסמכים שלי</summary>
+        <p class="muted small">נשמר רק בטלפון הזה ולא נשלח לשום מקום.</p>
+        <div class="grid2" id="meForm">
+          <label class="wide">שם מלא, כמו בדרכון<input id="me_name" data-k="name" autocomplete="off"></label>
+          <label>מספר דרכון<input id="me_pass" data-k="pass" autocomplete="off" autocapitalize="characters"></label>
+          <label>תוקף הדרכון<input id="me_passExp" data-k="passExp" type="date"></label>
+          <label>חברת ביטוח<input id="me_ins" data-k="ins" autocomplete="off"></label>
+          <label>מספר פוליסה<input id="me_insNo" data-k="insNo" autocomplete="off"></label>
+          <label class="wide">מוקד החירום של הביטוח<input id="me_insTel" data-k="insTel" type="tel" autocomplete="off"></label>
+          <label>איש קשר לחירום<input id="me_ice" data-k="ice" autocomplete="off"></label>
+          <label>הטלפון שלו<input id="me_iceTel" data-k="iceTel" type="tel" autocomplete="off"></label>
+          <label class="wide">מספר אישור ההזמנה במלון<input id="me_hotelRef" data-k="hotelRef" autocomplete="off"></label>
+          <label class="wide">מידע רפואי חשוב (אלרגיות, תרופות, סוג דם)<input id="me_med" data-k="med" autocomplete="off"></label>
+        </div>
+        <div id="meNote"></div>
+        <h3 class="sub-h">מסמכים מצולמים</h3>
+        <p class="muted small">דרכון, כרטיס עלייה למטוס, ביטוח, אישור מלון. התמונה מטושטשת עד שלוחצים עליה.</p>
+        <select id="docType" aria-label="סוג המסמך">
+          <option>דרכון</option><option>כרטיס עלייה למטוס</option><option>כרטיס טיסה</option><option>ביטוח נסיעות</option><option>אישור הזמנת מלון</option><option>מסמך אחר</option>
+        </select>
+        <div class="row">
+          <label class="btn sm" for="docCam">צילום המסמך</label>
+          <label class="btn ghost sm" for="docUp">העלאה מהגלריה</label>
+        </div>
+        <input type="file" id="docCam" accept="image/*" capture="environment" hidden>
+        <input type="file" id="docUp" accept="image/*" hidden>
+        <div id="docGrid" class="docgrid"></div>
+      </details>
+
       <section class="card" id="offlineCard">
         <div class="card-head"><h2>מפה בלי אינטרנט</h2><span class="pill" id="offState"></span></div>
         <p class="muted small">מורידה לטלפון את מפת מרכז אתונה ברמת רחוב ואת כל האזור עד שדה התעופה והריביירה. כ־20 מ״ב, עדיף ב־Wi‑Fi לפני הטיסה. ה־GPS עובד גם בלי חבילת גלישה.</p>
@@ -228,6 +260,18 @@
       <button class="btn" value="save">שמירה ביומן</button>
     </div>
   </form>
+</dialog>
+
+<dialog id="docDlg" class="sheet">
+  <div class="form">
+    <div class="entry-img"><img id="docImg" alt=""></div>
+    <h2 id="docTitle"></h2>
+    <div class="row end">
+      <button type="button" class="btn ghost sm" id="docDel">מחיקה</button>
+      <button type="button" class="btn ghost sm" id="docShare">שיתוף</button>
+      <button type="button" class="btn" id="docClose">סגירה</button>
+    </div>
+  </div>
 </dialog>
 
 <div id="toast" class="toast" hidden></div>

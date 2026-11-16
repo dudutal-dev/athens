@@ -252,3 +252,12 @@ textarea { font: 400 20px/1.35 var(--hand); color: var(--ink); background: var(-
 textarea:focus { outline: 0; border-color: var(--pink); }
 .tag.on { background: var(--pink); border-color: var(--pink); color: #fff; }
 progress { width: 100%; height: 8px; margin-top: 10px; accent-color: var(--pink); }
+
+/* ───── פרטים ומסמכים ───── */
+.grid2 .wide { grid-column: 1 / -1; }
+.sub-h { font: 700 18px/1.2 var(--display); margin-top: 18px; }
+.docgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.doc { background: var(--surface2); border-radius: 12px; overflow: hidden; text-align: center; }
+.doc img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: blur(9px); transform: scale(1.15); }
+.doc span { display: block; padding: 6px 4px; font-size: 12.5px; font-weight: 600; position: relative; background: var(--surface2); }
+#docTitle { font: 700 22px var(--display); }

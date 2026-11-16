@@ -5,23 +5,23 @@
 
   // ───── אחסון: IndexedDB (התמונות נשמרות בטלפון) ─────
   const dbp = new Promise((res, rej) => {
-    const r = indexedDB.open('athina-journal', 1);
-    r.onupgradeneeded = () => r.result.createObjectStore('entries', { keyPath: 'id' });
+    const r = indexedDB.open('athina-journal', 2);
+    r.onupgradeneeded = () => ['entries', 'docs'].forEach(n => r.result.objectStoreNames.contains(n) || r.result.createObjectStore(n, { keyPath: 'id' }));
     r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
   });
-  const tx = async (mode, fn) => { const db = await dbp; return new Promise((res, rej) => {
-    const t = db.transaction('entries', mode), rq = fn(t.objectStore('entries'));
+  const tx = async (mode, fn, store = 'entries') => { const db = await dbp; return new Promise((res, rej) => {
+    const t = db.transaction(store, mode), rq = fn(t.objectStore(store));
     t.oncomplete = () => res(rq && rq.result); t.onerror = t.onabort = () => rej(t.error); }); };
   const all = () => tx('readonly', s => s.getAll());
   const put = e => tx('readwrite', s => s.put(e));
   const del = id => tx('readwrite', s => s.delete(id));
   navigator.storage?.persist?.().catch(() => {});
 
-  async function shrink(file) {
+  async function shrink(file, max = 1600) {
     let src, w, h;
     try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); w = src.width; h = src.height; }
     catch { src = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); }); w = src.naturalWidth; h = src.naturalHeight; }
-    const k = Math.min(1, 1600 / Math.max(w, h)), c = document.createElement('canvas');
+    const k = Math.min(1, max / Math.max(w, h)), c = document.createElement('canvas');
     c.width = Math.round(w * k); c.height = Math.round(h * k);
     c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
     return new Promise(res => c.toBlob(b => res(b || file), 'image/jpeg', .85));
@@ -167,5 +167,47 @@
     else offUI(`ירדו רק ${ok} מתוך ${total}. נסי שוב בחיבור יציב`);
   };
   offUI();
+
+  // ───── פרטים אישיים ומסמכים ─────
+  const M = A.S.me ||= {};
+  document.querySelectorAll('#meForm [data-k]').forEach(i => { i.value = M[i.dataset.k] || ''; i.oninput = () => { M[i.dataset.k] = i.value.trim(); A.save(); meNote(); }; });
+  function meNote() {
+    const out = [], tel = (n, l) => n ? `<a class="btn ghost sm" href="tel:${esc(n.replace(/[^+\d]/g, ''))}">${l}</a>` : '';
+    if (M.passExp) {
+      const end = A.dayDate(A.S.days - 1), exp = new Date(M.passExp + 'T12:00'), months = (exp - end) / (864e5 * 30.4);
+      if (months < 3) out.push(`<div class="alert"><b>תוקף הדרכון קצר מדי</b>לכניסה ליוון הדרכון צריך להיות בתוקף לפחות שלושה חודשים אחרי מועד היציאה. כדאי לברר מיד.</div>`);
+      else if (months < 6) out.push(`<div class="alert"><b>שימי לב לתוקף הדרכון</b>נשארו פחות משישה חודשים. ליוון זה מספיק, אבל חברת התעופה עשויה לשאול.</div>`);
+    }
+    const calls = tel(M.insTel, 'חיוג למוקד הביטוח') + tel(M.iceTel, `חיוג ל${esc(M.ice || 'איש הקשר')}`);
+    if (calls) out.push(`<div class="row">${calls}</div>`);
+    $('#meNote').innerHTML = out.join('');
+  }
+  meNote();
+
+  const dAll = () => tx('readonly', s => s.getAll(), 'docs'), dPut = d => tx('readwrite', s => s.put(d), 'docs'), dDel = id => tx('readwrite', s => s.delete(id), 'docs');
+  let docs = [], docUrls = [], curDoc = null, docUrl = null;
+  async function renderDocs() {
+    try { docs = await dAll(); } catch { docs = []; }
+    docUrls.forEach(URL.revokeObjectURL); docUrls = [];
+    $('#docGrid').innerHTML = docs.sort((a, b) => a.ts - b.ts).map(d => { const u = URL.createObjectURL(d.blob); docUrls.push(u);
+      return `<button class="doc" data-doc="${d.id}"><img src="${u}" alt=""><span>${esc(d.label)}</span></button>`; }).join('');
+  }
+  async function addDoc(ev) {
+    const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+    try { await dPut({ id: Date.now().toString(36), ts: Date.now(), label: $('#docType').value, blob: await shrink(f, 2200) }); await renderDocs(); A.toast('המסמך נשמר בטלפון'); }
+    catch { A.toast('לא הצלחנו לשמור את המסמך'); }
+  }
+  $('#docCam').onchange = addDoc; $('#docUp').onchange = addDoc;
+  $('#docGrid').onclick = ev => { const b = ev.target.closest('[data-doc]'); if (!b) return; curDoc = docs.find(d => d.id === b.dataset.doc); if (!curDoc) return;
+    if (docUrl) URL.revokeObjectURL(docUrl); $('#docImg').src = docUrl = URL.createObjectURL(curDoc.blob); $('#docTitle').textContent = curDoc.label;
+    $('#docDel').textContent = 'מחיקה'; $('#docDel').dataset.sure = ''; $('#docShare').hidden = !navigator.share; $('#docDlg').showModal(); };
+  $('#docClose').onclick = () => $('#docDlg').close();
+  $('#docDel').onclick = async ev => { const b = ev.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב'; return; }
+    await dDel(curDoc.id).catch(() => {}); $('#docDlg').close(); renderDocs(); };
+  $('#docShare').onclick = () => { const f = new File([curDoc.blob], 'document.jpg', { type: 'image/jpeg' }); if (navigator.canShare?.({ files: [f] })) navigator.share({ files: [f] }).catch(() => {}); };
+  renderDocs();
+
+  document.addEventListener('click', ev => { const j = ev.target.closest('[data-jump]'); if (!j) return; A.go('more');
+    const el = document.getElementById(j.dataset.jump); if (el.tagName === 'DETAILS') el.open = true; el.scrollIntoView({ block: 'start' }); });
   if (location.hash === '#journal') render();
 })();
