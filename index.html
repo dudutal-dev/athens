@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="אתונה">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&family=Gveret+Levin&display=swap">
@@ -39,6 +39,11 @@
     <div class="stack">
       <div id="weather" class="weather" aria-label="תחזית"></div>
       <div id="alertBox"></div>
+      <section class="card install" id="installCard" hidden>
+        <img src="icon-180.png" alt="" width="56" height="56">
+        <div><h2>להוסיף למסך הבית</h2><p class="muted small" id="installTxt"></p>
+        <div class="row"><button class="btn sm" id="installBtn" hidden>התקנה</button><button class="link" id="installHide">הבנתי, להסתיר</button></div></div>
+      </section>
       <section class="card" id="hotelCard"></section>
       <section class="card" id="flightsCard"></section>
       <div class="quick">

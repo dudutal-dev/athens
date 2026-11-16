@@ -148,7 +148,7 @@
     let st = null; try { st = JSON.parse(localStorage.getItem(OFF_KEY)); } catch {}
     $('#offState').textContent = st ? 'שמורה בטלפון' : 'עוד לא הורדה';
     $('#offBtn').textContent = st ? 'הורדה מחדש' : 'הורדת המפה';
-    $('#offMsg').textContent = msg ?? (st ? `${st.n} אריחים · ${new Date(st.t).toLocaleDateString('he-IL')}` : '');
+    $('#offMsg').textContent = msg ?? (st ? `${st.n} קבצים · ${new Date(st.t).toLocaleDateString('he-IL')}` : '');
   }
   let busy = false;
   $('#offBtn').onclick = async () => {
@@ -156,7 +156,7 @@
     if (!('caches' in window)) return offUI('הדפדפן הזה לא תומך בשמירה לאוף־ליין');
     if (!navigator.onLine) return offUI('צריך חיבור לאינטרנט כדי להוריד');
     busy = true; const bar = $('#offBar'); bar.hidden = false; bar.value = 0;
-    const list = tileList(), cache = await caches.open('athina-tiles2'); let done = 0, ok = 0;
+    const list = [...tileList(), ...A.imgs], cache = await caches.open('athina-tiles2'); let done = 0, ok = 0;
     const work = async () => { while (list.length) { const u = list.pop();
       try { if (await cache.match(u)) ok++; else { const r = await fetch(u, { mode: 'cors' }); if (r.ok) { await cache.put(u, r); ok++; } } } catch {}
       done++; if (done % 8 === 0) { bar.value = done / total * 100; $('#offMsg').textContent = `${Math.round(done / total * 100)}%`; } } };

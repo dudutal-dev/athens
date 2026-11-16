@@ -1,12 +1,12 @@
 // שומר את האפליקציה ואת אריחי המפה, כדי שתעבוד גם בלי אינטרנט
-const V = 'athina-v7', TILES = 'athina-tiles2';
+const V = 'athina-v8', TILES = 'athina-tiles2';
 const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'data.js', 'extras.js', 'icon.svg', 'icon-180.png', 'manifest.webmanifest', 'vendor/leaflet.js', 'vendor/leaflet.css'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== TILES).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
-  if (u.host.endsWith('arcgisonline.com') || u.host === 'tile.openstreetmap.org') { // אריחי מפה: קודם מהמטמון
+  if (u.host.endsWith('arcgisonline.com') || u.host === 'tile.openstreetmap.org' || u.host === 'upload.wikimedia.org') { // אריחי מפה: קודם מהמטמון
     e.respondWith(caches.open(TILES).then(async c => (await c.match(u.href)) ||
       fetch(e.request).then(r => { if (r.ok) c.put(u.href, r.clone()); return r; })));
     return;

@@ -335,3 +335,18 @@ const ICONS = {
   phone: 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z',
   percent: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 14l6-6M9.5 8.5h.01M14.5 13.5h.01',
 };
+
+/* תמונות: ערכים בוויקיפדיה האנגלית שמהם נלקחת התמונה הראשית. ILL = תמונת אילוסטרציה (מנה/אזור), לא המקום עצמו */
+const WIKI = {
+  hotel: 'Stadiou Street',
+  ermou: 'Ermou Street', kolonaki: 'Kolonaki', 'monastiraki-market': 'Monastiraki', adrianou: 'Plaka', varvakios: 'Varvakios Agora', glyfada: 'Glyfada',
+  karamanlidika: 'Pastirma', seychelles: 'Metaxourgeio', strofi: 'Odeon of Herodes Atticus', manimani: 'Koukaki', oineas: 'Psyri', kostas: 'Souvlaki', thanasis: 'Gyros',
+  feyrouz: 'Lahmacun', birdman: 'Yakitori', ergon: 'Meze', varoulko: 'Mikrolimano',
+  lukumades: 'Loukoumades', taf: 'Frappé coffee', underdog: 'Thiseio', legreche: 'Gelato', krinos: 'Bougatsa',
+  aforathens: 'Tzistarakis Mosque', '360': "Hadrian's Library", gbroof: 'Hotel Grande Bretagne', clumsies: 'Cocktail', baba: 'Mai Tai', brettos: 'Ouzo',
+  acropolis: 'Parthenon', 'acropolis-museum': 'Acropolis Museum', plaka: 'Anafiotika', agora: 'Temple of Hephaestus', lycabettus: 'Mount Lycabettus', syntagma: 'Evzones',
+  areopagus: 'Areopagus', philopappos: 'Philopappos Monument', stadium: 'Panathenaic Stadium', cycladic: 'Museum of Cycladic Art', benaki: 'Benaki Museum',
+  snfcc: 'Stavros Niarchos Foundation Cultural Center', hammam: 'Hammam', vouliagmeni: 'Lake Vouliagmeni',
+  sounion: 'Sounion', hydra: 'Hydra (island)', aegina: 'Aegina', delphi: 'Delphi', riviera: 'Vouliagmeni', piraeus: 'Piraeus',
+};
+const ILL = ['hotel', 'karamanlidika', 'seychelles', 'strofi', 'manimani', 'oineas', 'kostas', 'thanasis', 'feyrouz', 'birdman', 'ergon', 'lukumades', 'taf', 'underdog', 'legreche', 'krinos', 'aforathens', '360', 'clumsies', 'baba', 'brettos', 'hammam'];

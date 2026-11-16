@@ -19,6 +19,25 @@
   let ui = { cat: 'all', sort: 'rec', q: '', mapCat: 'all', day: 0 };
   const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
 
+  // ───── תמונות מוויקיפדיה (נטענות פעם אחת ונשמרות) ─────
+  let IMG = {}; try { IMG = JSON.parse(localStorage.getItem('athina.img') || '{}'); } catch {}
+  const pic = (id, cls = 'bg') => IMG[id] ? `<img class="${cls}" src="${esc(IMG[id])}" alt="" loading="lazy" crossorigin="anonymous" onerror="this.remove()">` : '';
+  async function loadImages() {
+    if (Object.keys(IMG).length >= Object.keys(WIKI).length * .6) return;
+    try {
+      const titles = [...new Set(Object.values(WIKI))], found = {};
+      for (let i = 0; i < titles.length; i += 45) {
+        const u = 'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=500&pilimit=50&titles=' + encodeURIComponent(titles.slice(i, i + 45).join('|'));
+        const q = (await (await fetch(u)).json()).query || {}, alias = {};
+        [...(q.normalized || []), ...(q.redirects || [])].forEach(r => alias[r.to] = alias[r.from] || r.from);
+        Object.values(q.pages || {}).forEach(p => { if (p.thumbnail) { found[p.title] = p.thumbnail.source; let t = p.title; while (alias[t]) { t = alias[t]; found[t] = p.thumbnail.source; } } });
+      }
+      Object.entries(WIKI).forEach(([id, t]) => { if (found[t]) IMG[id] = found[t]; });
+      localStorage.setItem('athina.img', JSON.stringify(IMG));
+      renderRail(); renderHotel(); if (!$('#v-places').hidden) renderPlaces();
+    } catch {}
+  }
+
   // ───── helpers ─────
   const toast = (msg, ms = 2600) => { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, ms); };
   const km = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLat = r(b.lat - a.lat), dLng = r(b.lng - a.lng);
@@ -97,12 +116,14 @@
     if (h && !results) {
       const d = me ? km(me, h) : null;
       c.innerHTML = `<div class="card-head"><h2>המלון שלנו</h2><button class="link" id="hotelEdit">שינוי</button></div>
+        ${IMG.hotel && /Esperia/.test(h.name) ? `<figure class="card-img">${pic('hotel', '')}<figcaption>רחוב סטדיו, הרחוב של המלון</figcaption></figure>` : ''}
         <p class="hotel-name">${esc(h.name)}</p>
         <p class="muted small">${esc(h.addr || '')}${d != null ? ` · <b>${distTxt(d)} ממך</b>` : ''}</p>
         ${h.el ? `<div class="taxi"><small>להראות לנהג המונית</small>${esc(h.el)}</div>` : ''}
         <div class="row" style="margin-top:12px">
           <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(h.q || `${h.lat},${h.lng}`)}">ניווט למלון</a>
           <button class="btn ghost" id="hotelMap">הצגה במפה</button>
+          <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.q || h.name + ' Athens')}">תמונות המלון</a>
         </div>`;
       $('#hotelEdit').onclick = () => renderHotel([]);
       $('#hotelMap').onclick = () => { go('map'); map.setView([h.lat, h.lng], 16); };
@@ -187,7 +208,7 @@
   function renderFavCount() { $('#favCount').textContent = S.favs.length ? `${S.favs.length} מקומות שמורים` : 'סמני ♥ על מקומות'; }
   function renderRail() {
     $('#topRail').innerHTML = PLACES.filter(p => p.top).sort((a, b) => (a.cat === 'shop' ? 0 : 1) - (b.cat === 'shop' ? 0 : 1)).map(p =>
-      `<button class="tile" style="--c:${CATS[p.cat].color}" data-open="${p.id}"><i>${CATS[p.cat].emoji}</i><span><b>${esc(p.he)}</b><small>${esc(p.area)}</small></span></button>`).join('');
+      `<button class="tile" style="--c:${CATS[p.cat].color}" data-open="${p.id}">${pic(p.id)}<i>${CATS[p.cat].emoji}</i><span><b>${esc(p.he)}</b><small>${esc(p.area)}</small></span></button>`).join('');
   }
 
   // ───── places ─────
@@ -209,7 +230,7 @@
     if (ui.sort === 'hotel' && !S.hotel) note = '<p class="muted small">עוד לא הוגדר מלון. אפשר להוסיף אותו בעמוד הבית.</p>';
     $('#placeList').innerHTML = note + (list.length ? list.map(p => {
       const d = o ? km(o, p) : null, fav = S.favs.includes(p.id);
-      return `<div class="place" style="--c:${CATS[p.cat].color}"><button class="badge" data-open="${p.id}" aria-hidden="true" tabindex="-1">${CATS[p.cat].emoji}</button>
+      return `<div class="place" style="--c:${CATS[p.cat].color}"><button class="badge" data-open="${p.id}" aria-hidden="true" tabindex="-1">${pic(p.id, 'th') || CATS[p.cat].emoji}</button>
         <button data-open="${p.id}" style="text-align:start"><h3>${esc(p.he)}</h3><p>${esc(p.desc)}</p>
         <div class="meta">${p.top ? '<span class="star">★ מומלץ</span>' : ''}<span>${esc(p.area)}</span>${p.price ? `<span>${p.price}</span>` : ''}${d != null ? `<span class="dist">${distTxt(d)}${walkTxt(d)}</span>` : ''}</div></button>
         <button class="heart ${fav ? 'on' : ''}" data-act="fav" data-id="${p.id}" aria-label="שמירה">${fav ? '♥' : '♡'}</button></div>`;
@@ -222,14 +243,14 @@
   function openPlace(id) {
     const p = byId[id]; if (!p) return; const c = CATS[p.cat], fav = S.favs.includes(id);
     const dm = me ? km(me, p) : null, dh = S.hotel ? km(S.hotel, p) : null;
-    $('#sheetBody').innerHTML = `<div class="sh-top" style="--c:${c.color}"><button class="sh-close" data-act="closeSheet" aria-label="סגירה">×</button>
+    $('#sheetBody').innerHTML = `<div class="sh-top ${IMG[id] ? 'has-img' : ''}" style="--c:${c.color}">${pic(id)}${IMG[id] ? `<span class="credit">${ILL.includes(id) ? 'אילוסטרציה · ' : ''}ויקיפדיה</span>` : ''}<button class="sh-close" data-act="closeSheet" aria-label="סגירה">×</button>
       <small>${c.emoji} ${c.he} · ${esc(p.area)}${p.price ? ' · ' + p.price : ''}</small><h2>${esc(p.he)}</h2></div>
       <div class="sh-body"><p>${esc(p.desc)}</p>
       ${p.tip ? `<div class="sh-tip"><b>טיפ:</b> ${esc(p.tip)}</div>` : ''}
       ${dm != null || dh != null ? `<div class="meta">${dm != null ? `<span class="dist">ממך: ${distTxt(dm)}${walkTxt(dm)}</span>` : ''}${dh != null ? `<span>מהמלון: ${distTxt(dh)}${walkTxt(dh)}</span>` : ''}</div>` : ''}
       <div class="sh-acts">
         <a class="btn wide" target="_blank" rel="noopener" href="${gDir(p)}">ניווט בגוגל מפות</a>
-        <a class="btn ghost" target="_blank" rel="noopener" href="${gPlace(p)}">שעות וביקורות</a>
+        <a class="btn ghost" target="_blank" rel="noopener" href="${gPlace(p)}">תמונות וביקורות</a>
         <button class="btn ghost" data-act="showOnMap" data-id="${id}">הצגה במפה</button>
         <button class="btn ghost wide ${fav ? 'on' : ''}" data-act="fav" data-id="${id}">${fav ? '♥ ברשימה שלי' : '♡ לרשימה שלי'}</button>
       </div></div>`;
@@ -393,13 +414,28 @@
     $('#emergency').innerHTML = EMERGENCY.map(e => `<a href="tel:${e[1].replace(/\s/g, '')}">${e[0]}<span>${e[1]}</span></a>`).join('');
   }
 
+  // ───── התקנה למסך הבית ─────
+  (() => {
+    const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    let hidden = false; try { hidden = localStorage.getItem('athina.installHide'); } catch {}
+    if (standalone || hidden) return;
+    const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua), card = $('#installCard');
+    $('#installTxt').innerHTML = ios
+      ? (/CriOS/.test(ua) ? 'בכרום: לחיצה על כפתור השיתוף <b>בשורת הכתובת למעלה</b> ← "הוספה למסך הבית".' : 'לחיצה על כפתור השיתוף למטה ← לגלול ← <b>"הוספה למסך הבית"</b>.') + ' האפליקציה תיפתח מהאייקון במסך מלא, גם בלי קליטה.'
+      : 'בתפריט הדפדפן (⋮) ← <b>"הוספה למסך הבית"</b> או "התקנת האפליקציה".';
+    card.hidden = false;
+    $('#installHide').onclick = () => { card.hidden = true; try { localStorage.setItem('athina.installHide', '1'); } catch {} };
+    addEventListener('beforeinstallprompt', e => { e.preventDefault(); const b = $('#installBtn'); b.hidden = false; b.onclick = async () => { e.prompt(); await e.userChoice; card.hidden = true; }; });
+    addEventListener('appinstalled', () => card.hidden = true);
+  })();
+
   // ───── boot ─────
   $$('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[el.dataset.ic] || ''}"/></svg>`);
   $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
-  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {},
+  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {}, get imgs() { return Object.values(IMG); },
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
-  renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather();
+  renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather(); loadImages();
   const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal'].includes(h)) go(h);
   setInterval(renderFlights, 60000);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
