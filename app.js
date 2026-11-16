@@ -7,7 +7,7 @@
   const KEY = 'athina.v1';
 
   // ───── state ─────
-  const def = { hotel: null, flights: [], favs: [], pack: null, people: [], exps: [], rate: 3.9, start: '2026-11-17', days: 4 };
+  const def = { hotel: null, flights: [], favs: [], pack: null, people: [], exps: [], rate: 3.9, start: '2026-11-18', days: 4 };
   let S = { ...def };
   try { S = { ...def, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch {}
   if (!S.pack) S.pack = PACK_DEFAULT.map(t => ({ t, done: false }));
