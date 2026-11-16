@@ -175,7 +175,7 @@
     badge.hidden = !unread; badge.textContent = unread;
     $('#grpHint').textContent = joined ? `${Object.keys(G.members).length || 1} בקבוצה` : 'צ׳אט ומיקום חי';
     if (!joined) return;
-    $('#grpCode').textContent = G.code; $('#grpTopic').textContent = ntopic; $('#grpShare').checked = !!G.share;
+    $('#grpCode').textContent = G.code; $('#grpShare').checked = !!G.share;
     const me = A.me;
     $('#grpMembers').innerHTML = Object.entries({ [G.id]: { n: G.name, seen: Date.now() }, ...G.members }).filter((e, i, a) => a.findIndex(x => x[0] === e[0]) === i).map(([id, m]) => {
       const mine = id === G.id, fresh = m.lat && Date.now() - m.lt < 3 * 36e5;
@@ -222,12 +222,9 @@
     const ok = await send({ t: 'chat', x, c, ...loc });
     if (!ok) { G.msgs = G.msgs.filter(y => y !== m); render(); return false; }
     if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${x.slice(0, 140)}`, site: location.origin + location.pathname }) }).catch(() => {});
-    if (Date.now() - lastPing > 20000) { lastPing = Date.now();   // התראה לאפליקציית ntfy: רק שם השולחת, בלי תוכן ההודעה
-      fetch(BASE, { method: 'POST', body: JSON.stringify({ topic: ntopic, title: 'אתונה שלנו', message: `הודעה חדשה מ${G.name}. לפתוח את "אתונה" ממסך הבית`, tags: ['speech_balloon'] }) }).catch(() => {}); }
     return true;
   }
   $('#grpForm').onsubmit = async e => { e.preventDefault(); const i = $('#grpText'), x = i.value.trim(); if (!x) return; i.value = ''; if (!await say(x)) i.value = x; };
-  $('#grpTopicCopy').onclick = () => { const t = ntopic; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => A.toast('שם הערוץ הועתק. להדביק באפליקציית ntfy'), () => { const el = $('#grpTopic'); const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); A.toast('סמני והעתיקי את שם הערוץ'); }); };
   $('#grpQuick').onclick = async e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.here != null) { const me = A.me; if (!me) { A.startGPS(true); return A.toast('מאתרת מיקום… לחצי שוב בעוד רגע'); }
