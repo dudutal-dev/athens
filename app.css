@@ -386,3 +386,12 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 .show-ctl { display: flex; gap: 8px; padding: 0 12px; justify-content: center; flex-wrap: wrap; }
 .show-ctl button { color: #fff; background: rgba(255,255,255,.16); border-radius: 999px; padding: 10px 16px; font-weight: 700; font-size: 14.5px; min-height: 42px; }
 .show-ctl button.pri { background: var(--pink); }
+
+/* כרטיס יום ההולדת מקופל */
+.bday summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bday summary::-webkit-details-marker { display: none; }
+.bday summary::after { content: '+'; font: 400 28px/1 var(--body); color: #e03177; }
+.bday[open] summary::after { content: '–'; }
+.bday summary h2 { margin: 0; font-size: 26px; } .bday summary h2 span { font-size: 34px; }
+.bday summary small { display: block; font-size: 13.5px; color: #6b5566; font-weight: 600; }
+.bday[open] summary { margin-bottom: 10px; }
