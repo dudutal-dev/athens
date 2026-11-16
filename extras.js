@@ -15,6 +15,8 @@
   const all = () => tx('readonly', s => s.getAll());
   const put = e => tx('readwrite', s => s.put(e));
   const del = id => tx('readwrite', s => s.delete(id));
+  const get = id => tx('readonly', s => s.get(id));
+  const sharePref = () => { try { return localStorage.getItem('athina.jshare') !== '0'; } catch { return true; } };
   navigator.storage?.persist?.().catch(() => {});
 
   async function shrink(file, max = 1600) {
@@ -55,14 +57,16 @@
       const d = new Date(g[0].ts), n = Math.floor((d - t0) / 864e5) + 1;
       const title = n >= 1 && n <= A.S.days ? `יום ${n}` : d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' });
       return `<h2 class="jr-day">${title}<small>${A.fmtDay(d)} ${A.fmtDate(d)} · ${g.length} רגעים</small></h2><div class="jr-grid">` + g.map(e => {
-        const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
+        const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}${e.by ? ' · ' + esc(e.by) : e.shared ? ' · משותף' : ''}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
         if (e.type === 'note') return `<button class="note" data-id="${e.id}">${esc(e.text)}${meta}</button>`;
+        if (!e.blob) return `<button class="pol" data-id="${e.id}"><span class="tape"></span><span class="ph-wait">התמונה של ${esc(e.by || '')} בדרך…</span>${meta}</button>`;
         const u = URL.createObjectURL(e.blob); urls.push(u);
         return `<button class="pol" data-id="${e.id}"><span class="tape"></span><img src="${u}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">${e.text ? `<span class="cap">${esc(e.text)}</span>` : ''}${meta}</button>`;
       }).join('') + '</div>';
     }).join('');
   }
   A.hooks.journal = render;
+  A.journal = { get, put, del, render, shrink };
 
   // ───── עורך ─────
   let editUrl = null;
@@ -79,6 +83,8 @@
       list.map(p => `<option value="${p.id}">${CATS[p.cat].emoji} ${esc(p.he)}${ref ? ' · ' + A.distTxt(A.km(ref, p)) : ''}</option>`).join('');
     $('#entryPlace').value = e.place || '';
     drawTags();
+    const canShare = !!A.hooks.inGroup?.() && !e.byId;
+    $('#entryShareRow').hidden = !canShare; $('#entryShared').checked = canShare && (e.shared ?? sharePref());
     $('#entryDel').textContent = 'מחיקה'; $('#entryDel').dataset.sure = '';
     $('#entryShare').hidden = e.type !== 'photo' || !navigator.share;
     $('#entryDlg').showModal();
@@ -88,13 +94,17 @@
   $('#entryForm').onsubmit = async () => {
     cur.text = $('#entryText').value.trim(); cur.place = $('#entryPlace').value;
     if (cur.type === 'note' && !cur.text) return;
-    try { await put(cur); A.toast('נשמר ביומן'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
+    const row = $('#entryShareRow'), share = !row.hidden && $('#entryShared').checked, was = cur.shared;
+    if (!row.hidden) { cur.shared = share; try { localStorage.setItem('athina.jshare', share ? '1' : '0'); } catch {} }
+    try { await put(cur); A.toast(share ? 'נשמר ונשלח לבנות…' : 'נשמר ביומן'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
+    if (share) A.hooks.shareEntry?.(cur, !was).then(ok => A.toast(ok ? 'מופיע ביומן של כולן' : 'נשמר אצלך, אבל השיתוף נכשל. נסי לשמור שוב כשיש קליטה'));
+    else if (was && !cur.byId) A.hooks.unshareEntry?.(cur.id);
     render();
   };
   $('#entryDel').onclick = async ev => {
     const b = ev.currentTarget;
     if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב'; return; }
-    await del(cur.id).catch(() => {}); $('#entryDlg').close(); render();
+    await del(cur.id).catch(() => {}); if (cur.shared && !cur.byId) A.hooks.unshareEntry?.(cur.id); $('#entryDlg').close(); render();
   };
   $('#entryShare').onclick = () => {
     const f = new File([cur.blob], `athens-${cur.id}.jpg`, { type: 'image/jpeg' }), text = $('#entryText').value.trim();
@@ -121,7 +131,8 @@
     for (const f of files) try {
       const blob = await shrink(f), bmp = await createImageBitmap(blob).catch(() => null);
       last = newEntry('photo', { blob, w: bmp?.width, h: bmp?.height, ts: f.lastModified || Date.now(), place: '', lat: undefined, lng: undefined });
-      await put(last); ok++;
+      if (A.hooks.inGroup?.() && sharePref()) last.shared = true;
+      await put(last); ok++; if (last.shared) await A.hooks.shareEntry?.(last, true);
     } catch {}
     await render();
     A.toast(ok ? `נוספו ${ok} תמונות. לחיצה על תמונה מוסיפה מילים ומיקום` : 'לא הצלחנו להוסיף את התמונות');

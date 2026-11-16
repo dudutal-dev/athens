@@ -45,7 +45,7 @@
     let m; try { m = JSON.parse(data); } catch { return; }
     if (m.event !== 'message' || !m.message) return;
     G.last = m.id;
-    dec(m.message).then(p => handle(p, m.id)).catch(() => {});   // הודעה שלא נפתחת עם המפתח שלנו – מתעלמים
+    dec(m.message).then(p => handle(p, m.id, m.attachment && m.attachment.url)).catch(() => {});   // הודעה שלא נפתחת עם המפתח שלנו – מתעלמים
   }
   const live = () => (ws && ws.readyState === 1) || (es && es.readyState === 1);
   function connect() {
@@ -74,7 +74,49 @@
     o.frequency.value = 880; v.gain.setValueAtTime(.12, actx.currentTime); v.gain.exponentialRampToValueAtTime(.001, actx.currentTime + .25);
     o.connect(v).connect(actx.destination); o.start(); o.stop(actx.currentTime + .25); navigator.vibrate?.(80); } catch {} }
 
-  function handle(p, mid) {
+  // ───── יומן משותף: התמונה מוצפנת בטלפון ועולה כקובץ מצורף ─────
+  async function encBytes(buf) { const iv = crypto.getRandomValues(new Uint8Array(12)), ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, buf));
+    const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return out; }
+  async function decBytes(buf) { const raw = new Uint8Array(buf); return crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, key, raw.slice(12)); }
+  const served = {}, asked = {};
+  async function shareEntry(e, withImage) {
+    if (!key) return false;
+    try {
+      const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h };
+      const payload = await enc({ t: 'j', e: meta, n: G.name, d: G.id, ts: Date.now() });
+      let r;
+      if (e.type === 'photo' && e.blob && withImage) {
+        const small = await A.journal.shrink(e.blob, 1280), body = await encBytes(await small.arrayBuffer());
+        r = await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body });
+      } else r = await fetch(BASE + topic, { method: 'POST', body: payload });
+      if (r.ok) served[e.id] = Date.now();
+      return r.ok;
+    } catch { return false; }
+  }
+  A.hooks.inGroup = () => !!key;
+  A.hooks.shareEntry = shareEntry;
+  A.hooks.unshareEntry = id => send({ t: 'jdel', id });
+  async function journalIn(p, url) {
+    const J = A.journal; if (!J || p.d === G.id || !p.e || !p.e.id) return;
+    let e = await J.get(p.e.id).catch(() => null); const isNew = !e;
+    if (e && !e.byId) return;                                    // רשומה שלי – לא דורסים
+    e = e ? { ...e, text: p.e.text, place: p.e.place, tags: p.e.tags || [] } : { ...p.e, tags: p.e.tags || [], shared: true, by: p.n, byId: p.d };
+    if (e.type === 'photo' && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: 'image/jpeg' }); served[e.id] = Date.now(); } catch {}
+    await J.put(e).catch(() => {}); J.render();
+    if (e.type === 'photo' && !e.blob && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
+    if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${p.n} הוסיפה ${e.type === 'photo' ? 'תמונה' : 'רשומה'} ליומן`, 4000);
+  }
+  async function journalReq(p) {   // מישהי חסרה תמונה: מי שמחזיקה אותה מעלה שוב, אחרי השהיה אקראית כדי שרק אחת תענה
+    const J = A.journal; if (!J || p.d === G.id) return;
+    const e = await J.get(p.id).catch(() => null); if (!e || !e.blob || !e.shared) return;
+    const t0 = Date.now(); await new Promise(r => setTimeout(r, (e.byId ? 2500 : 300) + Math.random() * 3000));
+    if ((served[e.id] || 0) >= t0) return;
+    served[e.id] = Date.now();
+    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h }, n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
+    try { const small = await J.shrink(e.blob, 1280); await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) }); } catch {}
+  }
+
+  function handle(p, mid, att) {
     if (!p || !p.d) return;
     const mine = p.d === G.id, mem = G.members[p.d] ||= {};
     mem.n = p.n; mem.seen = Math.max(mem.seen || 0, p.ts);
@@ -90,6 +132,9 @@
     if (p.lat && p.lng) { mem.lat = p.lat; mem.lng = p.lng; mem.lt = p.ts; }
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
     if (p.t === 'bye') delete G.members[p.d];
+    if (p.t === 'j') { if (att && p.e) served[p.e.id] = Date.now(); journalIn(p, att); }
+    if (p.t === 'jreq') journalReq(p);
+    if (p.t === 'jdel' && p.d !== G.id) A.journal?.get(p.id).then(e => { if (e && e.byId === p.d) A.journal.del(p.id).then(() => A.journal.render()); }).catch(() => {});
     save(); render(); drawFriends();
   }
 

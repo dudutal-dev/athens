@@ -367,3 +367,6 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 
 .msg.pending { opacity: .6; } .msg.pending small::after { content: ' · נשלחת…'; }
 #grpTopic { flex: 1; min-width: 0; overflow-wrap: anywhere; background: var(--surface2); padding: 8px 10px; border-radius: 10px; font: 600 13px ui-monospace, Menlo, monospace; user-select: all; -webkit-user-select: all; }
+
+.ph-wait { display: grid; place-items: center; aspect-ratio: 4 / 3; background: #e9e4d8; color: #7a7f8c; font-size: 13px; text-align: center; padding: 8px; border-radius: 2px; }
+#entryShareRow { border: 0; padding: 4px 0; margin: 0; }

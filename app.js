@@ -431,6 +431,24 @@
     addEventListener('appinstalled', () => card.hidden = true);
   })();
 
+  // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
+  const VERSION = 13;
+  async function checkUpdate() {
+    if (location.protocol !== 'https:' || !navigator.onLine) return;
+    try {
+      const v = (await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json()).v;
+      if (!(v > VERSION) || sessionStorage.getItem('athina.upd') === String(v)) return;
+      const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName) && document.activeElement.value;
+      if (document.querySelector('dialog[open]') || typing) return;        // לא קוטעים באמצע פעולה; ננסה שוב בבדיקה הבאה
+      sessionStorage.setItem('athina.upd', String(v));
+      toast('מתעדכנת לגרסה חדשה…');
+      const reg = await navigator.serviceWorker?.getRegistration(); await reg?.update().catch(() => {});
+      setTimeout(() => location.reload(), 900);
+    } catch {}
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
+  setInterval(checkUpdate, 5 * 60e3); setTimeout(checkUpdate, 3000);
+
   // ───── boot ─────
   $$('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[el.dataset.ic] || ''}"/></svg>`);
   $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
