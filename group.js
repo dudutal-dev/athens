@@ -219,6 +219,7 @@
     G.msgs.push(m); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight;
     const ok = await send({ t: 'chat', x, c, ...loc });
     if (!ok) { G.msgs = G.msgs.filter(y => y !== m); render(); return false; }
+    if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${x.slice(0, 140)}`, site: location.origin + location.pathname }) }).catch(() => {});
     if (Date.now() - lastPing > 20000) { lastPing = Date.now();   // התראה לאפליקציית ntfy: רק שם השולחת, בלי תוכן ההודעה
       fetch(BASE, { method: 'POST', body: JSON.stringify({ topic: ntopic, title: 'אתונה שלנו', message: `הודעה חדשה מ${G.name}. לפתוח את "אתונה" ממסך הבית`, tags: ['speech_balloon'] }) }).catch(() => {}); }
     return true;
@@ -237,12 +238,40 @@
     await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name }; save();
     b.dataset.sure = ''; b.textContent = 'יציאה מהקבוצה'; drawFriends(); render();
   };
-  A.hooks.group = () => { unread = 0; render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; if (G.share) A.startGPS(false); };
+  A.hooks.group = () => { unread = 0; render(); pushUI(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; if (G.share) A.startGPS(false); };
+
+  // ───── התראות מובנות (Web Push דרך השרת שלנו) ─────
+  const b64uToU8 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+  const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  async function pushUI() {
+    const card = $('#pushNative'); card.hidden = !PUSH_URL; if (!PUSH_URL) return;
+    let on = false; try { on = pushSupported() && Notification.permission === 'granted' && !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription()); } catch {}
+    $('#pushState').textContent = on ? 'פעילות' : 'כבויות'; $('#pushOn').hidden = on; $('#pushTest').hidden = !on;
+    if (!pushSupported()) $('#pushTxt').textContent = 'כדי לקבל התראות באייפון צריך לפתוח את האפליקציה מהאייקון שבמסך הבית (לא מהדפדפן), ו־iOS 16.4 ומעלה.';
+    else if (Notification.permission === 'denied') $('#pushTxt').textContent = 'ההתראות חסומות. לאשר בהגדרות הטלפון ← התראות ← אתונה, ואז לחזור לכאן.';
+  }
+  async function pushEnable() {
+    if (!pushSupported()) return A.toast('צריך לפתוח את האפליקציה מהאייקון שבמסך הבית');
+    try {
+      if (await Notification.requestPermission() !== 'granted') { pushUI(); return A.toast('לא אושרו התראות'); }
+      const reg = await navigator.serviceWorker.ready, key = (await (await fetch(PUSH_URL + '/key')).json()).key;
+      const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToU8(key) });
+      const r = await fetch(PUSH_URL + '/sub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, sub: sub.toJSON() }) });
+      if (!r.ok) throw 0;
+      G.push = true; save(); A.toast('ההתראות פעילות'); pushUI();
+    } catch { A.toast('הפעלת ההתראות נכשלה. נסי שוב'); }
+  }
+  $('#pushOn').onclick = pushEnable;
+  $('#pushTest').onclick = async () => { try { const r = await (await fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, self: true, title: 'אתונה שלנו', body: 'התראת ניסיון 🎉', site: location.origin + location.pathname }) })).json(); A.toast(r.sent ? 'נשלחה. היא אמורה לקפוץ תוך שניות' : 'השליחה נכשלה'); } catch { A.toast('השליחה נכשלה'); } };
+  // מחדשים את הרישום בשקט בכל פתיחה, למקרה שהמנוי התחלף
+  async function pushRefresh() { if (!PUSH_URL || !G.push || !key || !pushSupported() || Notification.permission !== 'granted') return;
+    try { const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); if (sub) fetch(PUSH_URL + '/sub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, sub: sub.toJSON() }) }).catch(() => {}); } catch {} }
 
   // ───── התחלה ─────
   $('#grpName').value = G.name || '';
   const j = location.hash.match(/^#join-([A-Za-z0-9-]+)/); if (j && !G.code) { $('#grpCodeIn').value = j[1]; A.go('group'); }
   render();
-  if (G.code) derive(G.code).then(() => { connect(); if (G.share) A.startGPS(false); });
+  if (G.code) derive(G.code).then(() => { connect(); if (G.share) A.startGPS(false); pushRefresh(); render(); });
+  pushUI();
   setInterval(() => { if (!$('#v-group').hidden && G.code) render(); }, 60000);
 })();

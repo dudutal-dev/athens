@@ -157,6 +157,11 @@
         <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
         <form id="grpForm" class="row"><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm">שליחה</button></form>
       </section>
+      <section class="card" id="pushNative" hidden>
+        <div class="card-head"><h2 class="h-ic"><i class="ic" data-ic="phone" style="--c:#7048e8;--c2:#b197fc"></i>התראות</h2><span class="pill" id="pushState"></span></div>
+        <p class="muted small" id="pushTxt">התראה קופצת על כל הודעה בצ׳אט, גם כשהאפליקציה סגורה. לחיצה עליה פותחת את האפליקציה.</p>
+        <div class="row" style="margin-top:10px"><button class="btn" id="pushOn" type="button">הפעלת התראות</button><button class="btn ghost sm" id="pushTest" type="button" hidden>התראת ניסיון</button></div>
+      </section>
       <details class="card acc" id="pushCard">
         <summary><i class="ic" data-ic="phone" style="--c:#7048e8;--c2:#b197fc"></i>התראה גם כשהאפליקציה סגורה</summary>
         <p class="small">אפליקציית רשת כמו שלנו לא יכולה להקפיץ התראות כשהיא סגורה. הפתרון: אפליקציית ההתראות החינמית <b>ntfy</b>, שתקפיץ "הודעה חדשה מ…" בכל הודעה בצ׳אט. תוכן ההודעה לא נשלח אליה, רק השם.</p>
@@ -300,6 +305,7 @@
         <p class="muted small">לחיצה על מספר מחייגת. כדאי לשמור גם את מספר הביטוח.</p>
       </details>
 
+      <div class="center"><button class="btn ghost sm" id="updBtn" type="button">בדיקת עדכון</button> <span class="muted small" id="verTxt"></span></div>
       <p class="muted small center">שעות ומחירים משתנים – כדאי לוודא בגוגל מפות לפני שיוצאים.<br>כל מה שהזנת נשמר רק בטלפון הזה.</p>
     </div>
   </section>

@@ -432,7 +432,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 14;
+  const VERSION = 15;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -442,10 +442,21 @@
       if (document.querySelector('dialog[open]') || typing) return;        // לא קוטעים באמצע פעולה; ננסה שוב בבדיקה הבאה
       sessionStorage.setItem('athina.upd', String(v));
       toast('מתעדכנת לגרסה חדשה…');
-      const reg = await navigator.serviceWorker?.getRegistration(); await reg?.update().catch(() => {});
-      setTimeout(() => location.reload(), 900);
+      setTimeout(hardReload, 700);
     } catch {}
   }
+  async function hardReload() {   // טוען מחדש את כל קבצי האפליקציה מהשרת
+    try { const reg = await navigator.serviceWorker?.getRegistration(); await reg?.update(); } catch {}
+    try { const ks = await caches.keys(); await Promise.all(ks.filter(k => k.startsWith('athina-v')).map(k => caches.delete(k))); } catch {}
+    location.replace(location.pathname + '?u=' + Date.now() + location.hash);
+  }
+  $('#verTxt').textContent = 'גרסה ' + VERSION;
+  $('#updBtn').onclick = async () => {
+    if (!navigator.onLine) return toast('צריך חיבור לאינטרנט');
+    try { const v = (await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json()).v;
+      if (v > VERSION) { toast(`מתעדכנת לגרסה ${v}…`); setTimeout(hardReload, 600); } else toast('זו הגרסה העדכנית (' + VERSION + ')'); } catch { toast('הבדיקה נכשלה, נסי שוב'); }
+  };
+  navigator.serviceWorker?.addEventListener('message', e => { if (e.data?.go) go(e.data.go); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
   setInterval(checkUpdate, 5 * 60e3); setTimeout(checkUpdate, 3000);
 

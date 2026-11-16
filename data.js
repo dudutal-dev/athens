@@ -351,3 +351,6 @@ const WIKI = {
   sounion: 'Sounion', hydra: 'Hydra (island)', aegina: 'Aegina', delphi: 'Delphi', riviera: 'Vouliagmeni', piraeus: 'Piraeus',
 };
 const ILL = ['hotel', 'karamanlidika', 'seychelles', 'strofi', 'manimani', 'oineas', 'kostas', 'thanasis', 'feyrouz', 'birdman', 'ergon', 'lukumades', 'taf', 'underdog', 'legreche', 'krinos', 'aforathens', '360', 'clumsies', 'baba', 'brettos', 'hammam'];
+
+/* כתובת שרת ההתראות (Cloudflare Worker). ריק = התראות מובנות כבויות */
+const PUSH_URL = '';
