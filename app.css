@@ -261,3 +261,11 @@ progress { width: 100%; height: 8px; margin-top: 10px; accent-color: var(--pink)
 .doc img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: blur(9px); transform: scale(1.15); }
 .doc span { display: block; padding: 6px 4px; font-size: 12.5px; font-weight: 600; position: relative; background: var(--surface2); }
 #docTitle { font: 700 22px var(--display); }
+
+/* ───── בחירת מפה והרשאת מיקום ───── */
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { text-align: start; background: var(--surface2); border: 2px solid transparent; border-radius: 14px; padding: 12px 14px; }
+.opt.on { border-color: var(--pink); }
+.opt b { display: block; font-size: 17px; } .opt small { color: var(--muted); font-size: 13.5px; }
+.steps { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.toast { bottom: auto; top: calc(var(--sat) + 64px); }

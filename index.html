@@ -64,6 +64,9 @@
       <button class="fab" id="btnLocate" aria-label="המיקום שלי">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
       </button>
+      <button class="fab" id="btnLayers" aria-label="סוג המפה">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5zM3 12l9 5 9-5M3 16l9 5 9-5"/></svg>
+      </button>
       <button class="fab" id="btnHotel" aria-label="המלון">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V10l9-7 9 7v11h-6v-6H9v6z"/></svg>
       </button>
@@ -148,7 +151,7 @@
 
       <section class="card" id="offlineCard">
         <div class="card-head"><h2>מפה בלי אינטרנט</h2><span class="pill" id="offState"></span></div>
-        <p class="muted small">מורידה לטלפון את מפת מרכז אתונה ברמת רחוב ואת כל האזור עד שדה התעופה והריביירה. כ־20 מ״ב, עדיף ב־Wi‑Fi לפני הטיסה. ה־GPS עובד גם בלי חבילת גלישה.</p>
+        <p class="muted small">מורידה לטלפון את מפת הרחובות של מרכז אתונה ברמת רחוב ואת כל האזור עד שדה התעופה והריביירה. כ־20 מ״ב, עדיף ב־Wi‑Fi לפני הטיסה. ה־GPS עובד גם בלי חבילת גלישה.</p>
         <progress id="offBar" max="100" value="0" hidden></progress>
         <div class="row" style="margin-top:10px"><button class="btn sea" id="offBtn">הורדת המפה</button><span class="muted small" id="offMsg"></span></div>
       </section>
@@ -260,6 +263,31 @@
       <button class="btn" value="save">שמירה ביומן</button>
     </div>
   </form>
+</dialog>
+
+<dialog id="layerDlg" class="sheet">
+  <div class="form"><h2>סוג המפה</h2><div id="layerList" class="opts"></div>
+  <p class="muted small">לניווט מדויק צעד־צעד: לחיצה על מקום ואז "ניווט בגוגל מפות".</p></div>
+</dialog>
+
+<dialog id="locDlg" class="sheet">
+  <div class="form" id="locAsk">
+    <h2>להציג אותך על המפה?</h2>
+    <p>כדי לסמן איפה את נמצאת, לחשב מרחקים ולתייג תמונות ביומן, האפליקציה צריכה גישה למיקום. אחרי הלחיצה הטלפון ישאל, ויש לבחור <b>"אפשר"</b>.</p>
+    <p class="muted small">המיקום נשאר בטלפון ולא נשלח לאף אחד.</p>
+    <div class="row end"><button type="button" class="btn ghost" id="locLater">לא עכשיו</button><button type="button" class="btn" id="locOk">אישור מיקום</button></div>
+  </div>
+  <div class="form" id="locHelp" hidden>
+    <h2>המיקום חסום בטלפון</h2>
+    <p>הטלפון לא נותן לדפדפן גישה למיקום, ולכן חלון האישור לא קופץ. מתקנים פעם אחת:</p>
+    <ol class="steps">
+      <li><b>אייפון:</b> הגדרות ← פרטיות ואבטחה ← שירותי מיקום. לוודא שהמתג למעלה דולק.</li>
+      <li>באותה רשימה לבחור את הדפדפן (<b>Chrome</b>, או <b>אתרי Safari</b>) ולסמן <b>"בעת השימוש ביישום"</b> ו<b>"מיקום מדויק"</b>.</li>
+      <li>לחזור לכאן, ללחוץ "רענון", וכשהטלפון שואל לבחור <b>"אפשר"</b>.</li>
+      <li><b>אנדרואיד:</b> לחיצה על המנעול ליד הכתובת ← הרשאות ← מיקום ← אישור.</li>
+    </ol>
+    <div class="row end"><button type="button" class="btn ghost" id="locClose">סגירה</button><button type="button" class="btn" id="locReload">רענון</button></div>
+  </div>
 </dialog>
 
 <dialog id="docDlg" class="sheet">

@@ -251,13 +251,35 @@
 
   // ───── map ─────
   const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-  const tileBase = `https://a.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}`;
+  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+  const LAYERS = {
+    streets: { he: 'רחובות', sub: 'מומלצת. ברורה לקריאה, וזו המפה שנשמרת לאוף־ליין', url: ESRI + 'World_Street_Map/MapServer/tile/{z}/{y}/{x}', max: 18, attr: 'Tiles © Esri' },
+    osm: { he: 'מפורטת', sub: 'הכי הרבה פרטים: חנויות, מעברים, תחנות. שמות ביוונית', url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', max: 19, attr: '© OpenStreetMap' },
+    sat: { he: 'לוויין', sub: 'תצלום אוויר. טוב להתמצאות לפי בניינים וכיכרות', url: ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', max: 18, attr: 'Tiles © Esri, Maxar' },
+  };
+  let tiles = null;
+  function setLayer(k, quiet) {
+    if (!LAYERS[k]) k = 'streets';
+    if (!quiet) { S.layer = k; save(); } if (!map) return;
+    if (tiles) tiles.remove();
+    const c = LAYERS[k]; let bad = 0, good = 0;
+    tiles = L.tileLayer(c.url, { maxZoom: 20, maxNativeZoom: c.max, crossOrigin: true, attribution: c.attr }).addTo(map);
+    tiles.on('tileload', () => good++);
+    tiles.on('tileerror', () => { if (++bad === 6 && !good && navigator.onLine && k !== 'osm') { toast('המפה הזו לא נטענת, עוברת למפה המפורטת'); setLayer('osm', true); } });
+    if (!quiet) toast('מפה: ' + c.he);
+  }
+  function layerMenu() {
+    $('#layerList').innerHTML = Object.entries(LAYERS).map(([k, c]) => `<button class="opt ${S.layer === k ? 'on' : ''}" data-layer="${k}"><b>${c.he}</b><small>${c.sub}</small></button>`).join('');
+    $('#layerDlg').showModal();
+  }
+  $('#layerList').onclick = e => { const b = e.target.closest('[data-layer]'); if (b) { setLayer(b.dataset.layer); $('#layerDlg').close(); } };
+  $('#btnLayers').onclick = layerMenu;
   let map, layer, meMarker, meCircle, hotelMarker, follow = false, markers = {};
   function initMap() {
     if (map) { setTimeout(() => map.invalidateSize(), 50); return; }
     if (!window.L) { $('#map').innerHTML = '<p class="empty" style="padding:80px 20px;text-align:center">המפה צריכה חיבור לאינטרנט.</p>'; return; }
     map = L.map('map', { zoomControl: false, attributionControl: true }).setView(S.hotel ? [S.hotel.lat, S.hotel.lng] : ATHENS, 14);
-    L.tileLayer(tileBase + '/{z}/{x}/{y}{r}.png', { maxZoom: 20, maxNativeZoom: 18, crossOrigin: true, attribution: '© OpenStreetMap © CARTO' }).addTo(map);
+    setLayer(navigator.onLine ? S.layer || 'streets' : 'streets', true);
     layer = L.layerGroup().addTo(map);
     map.on('dragstart', () => { follow = false; $('#btnLocate').classList.remove('on'); });
     $('#mapChips').innerHTML = chipsHTML(ui.mapCat, true);
@@ -291,21 +313,37 @@
   function gpsMsg(t) { const s = $('#gpsStatus'); s.textContent = t; s.hidden = !t; clearTimeout(gpsMsg.t); if (t) gpsMsg.t = setTimeout(() => s.hidden = true, 5000); }
 
   // ───── GPS ─────
-  let watchId = null, firstFix = [];
-  function startGPS(loud, cb) {
+  let watchId = null, firstFix = [], askedOnce = false;
+  function locDlg(mode) { // mode: ask | help
+    $('#locAsk').hidden = mode !== 'ask'; $('#locHelp').hidden = mode !== 'help';
+    const d = $('#locDlg'); if (!d.open) d.showModal();
+  }
+  $('#locOk').onclick = () => { $('#locDlg').close(); beginGPS(true); };          // לחיצה של המשתמשת – מכאן קופץ חלון האישור של הטלפון
+  $('#locLater').onclick = $('#locClose').onclick = () => $('#locDlg').close();
+  $('#locReload').onclick = () => location.reload();
+  async function startGPS(loud, cb) {
     if (cb) { if (me) cb(); else firstFix.push(cb); }
     if (watchId != null) return;
     if (!navigator.geolocation) { if (loud) toast('המכשיר לא תומך באיתור מיקום'); return; }
+    let st = 'prompt';
+    try { st = (await navigator.permissions.query({ name: 'geolocation' })).state; } catch {}
+    if (st === 'granted') return beginGPS(loud);
+    if (st === 'denied') { if (loud || !askedOnce) locDlg('help'); askedOnce = true; return; }
+    if (loud || !askedOnce) locDlg('ask');
+    askedOnce = true;
+  }
+  function beginGPS(loud) {
+    if (watchId != null) return;
+    gpsMsg('מאתרת מיקום…');
     watchId = navigator.geolocation.watchPosition(pos => {
       const first = !me;
       me = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy };
       drawMe(); gpsMsg('');
-      if (first) { firstFix.splice(0).forEach(f => f()); renderHotel(); if (!$('#v-places').hidden) renderPlaces(); }
+      if (first) { firstFix.splice(0).forEach(f => f()); renderHotel(); if (!$('#v-places').hidden) renderPlaces(); if (map && !$('#v-map').hidden) { follow = true; $('#btnLocate').classList.add('on'); drawMe(); } }
       else if (!$('#v-places').hidden && ui.sort === 'me' && Date.now() - (startGPS.last || 0) > 20000) { startGPS.last = Date.now(); renderPlaces(); }
     }, err => {
-      navigator.geolocation.clearWatch(watchId); watchId = null;
-      const m = err.code === 1 ? 'אין הרשאת מיקום. יש לאשר בהגדרות הדפדפן.' : 'לא הצלחנו לאתר מיקום כרגע';
-      gpsMsg(m); if (loud) toast(m);
+      navigator.geolocation.clearWatch(watchId); watchId = null; gpsMsg('');
+      if (err.code === 1) locDlg('help'); else if (loud) toast('לא הצלחנו לאתר מיקום כרגע. נסי שוב במקום פתוח');
     }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
   }
 
@@ -357,7 +395,7 @@
 
   // ───── boot ─────
   const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {},
-    tileUrl: (z, x, y) => `${tileBase}/${z}/${x}/${y}${window.L && L.Browser.retina ? '@2x' : ''}.png` };
+    tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather();
   const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal'].includes(h)) go(h);
