@@ -124,7 +124,8 @@
   let slides = [], idx = 0, timer = null, fmt = 'p', building = false;
   async function build() {
     if (building) return; building = true;
-    const all = (await A.journal.all().catch(() => [])).filter(e => (e.type === 'photo' && e.blob) || (e.type === 'note' && e.text)).sort((a, b) => a.ts - b.ts);
+    const us = A.journal.tab() === 'us';   // ביומן המשותף: רק מה שמשותף. ביומן האישי: כל הטיול שלך, אישי ומשותף
+    const all = (await A.journal.all().catch(() => [])).filter(e => (!us || A.journal.inUs(e)) && ((e.type === 'photo' && e.blob) || (e.type === 'note' && e.text))).sort((a, b) => a.ts - b.ts);
     if (!all.length) { building = false; return A.toast('היומן עוד ריק. אחרי כמה תמונות תהיה כאן מצגת'); }
     const [W, H] = fmt === 'p' ? [1080, 1920] : [1600, 900];
     open(); status(`מכינה את המצגת… 0/${all.length}`);

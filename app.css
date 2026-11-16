@@ -423,3 +423,14 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 .bk-banner span { flex: 1; min-width: 120px; }
 @media (min-width: 752px) { .bk-banner { margin-inline: auto; } }
 #bkDlg .btn:disabled { opacity: .5; }
+
+/* ───── שני יומנים ───── */
+.jr-tabs { display: flex; gap: 4px; background: color-mix(in srgb, var(--ink) 8%, transparent); border-radius: 14px; padding: 4px; }
+.jr-tabs button { flex: 1; padding: 10px 6px; border-radius: 11px; font-weight: 700; font-size: 15px; color: var(--muted); }
+.jr-tabs button.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 5px rgba(0,0,0,.12); }
+.jr-tabs em { font-style: normal; font-size: 12px; font-weight: 700; background: var(--surface2); border-radius: 999px; padding: 1px 7px; margin-inline-start: 4px; } .jr-tabs em:empty { display: none; }
+#v-journal.us .jr-head h1.hand { color: var(--sea); } #v-journal.us .jr-head h1.hand::after { background: var(--sea); }
+#v-journal.us .jr-actions .btn:first-child { background: var(--btn); box-shadow: 0 4px 12px color-mix(in srgb, var(--btn) 30%, transparent); }
+#v-journal.us { background-color: color-mix(in srgb, var(--sea) 6%, var(--paper)); }
+.jr-where { display: flex; flex-direction: column; background: var(--surface2); border-radius: 14px; padding: 8px 12px; }
+.jr-where small { font-size: 12.5px; font-weight: 700; color: var(--muted); } .jr-where .switch { border: 0; padding: 6px 0; margin: 0; }

@@ -116,8 +116,9 @@
   <!-- יומן -->
   <section class="view" id="v-journal" data-view="journal" hidden>
     <header class="page-head jr-head">
-      <p class="jr-kicker">אתונה · דפנה חוגגת 50</p>
-      <h1 class="hand">היומן שלנו</h1>
+      <div class="jr-tabs" role="tablist"><button id="jrTabMe" type="button">היומן שלי <em id="jrNMe"></em></button><button id="jrTabUs" type="button">היומן המשותף <em id="jrNUs"></em></button></div>
+      <p class="jr-kicker" id="jrKicker"></p>
+      <h1 class="hand" id="jrTitle">היומן שלי</h1>
     </header>
     <div class="jr-actions">
       <label class="btn" for="camIn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>צילום</label>
@@ -126,7 +127,7 @@
     </div>
     <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
     <input type="file" id="upIn" accept="image/*" multiple hidden>
-    <div class="jr-show"><button class="btn sea" id="jrShow" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>מצגת הטיול</button><button class="btn ghost" id="bkOpen" type="button">גיבוי תמונות<em class="nbadge" id="bkCount" hidden></em></button></div>
+    <div class="jr-show"><button class="btn sea" id="jrShow" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span id="jrShowTxt">מצגת הטיול</span></button><button class="btn ghost" id="bkOpen" type="button">גיבוי תמונות<em class="nbadge" id="bkCount" hidden></em></button></div>
     <div class="bk-banner" id="bkBanner" hidden><span id="bkBannerTxt"></span><button class="btn sm" id="bkBannerBtn" type="button">גיבוי עכשיו</button><button class="link" id="bkBannerX" type="button">אחר כך</button></div>
     <div id="jrBody"></div>
   </section>
@@ -360,7 +361,9 @@
     </label>
     <label>איפה<select id="entryPlace"></select></label>
     <div class="tags" id="entryTags"></div>
-    <label class="switch" id="entryShareRow" hidden><input type="checkbox" id="entryShared"><span>לשתף ביומן המשותף של הבנות</span></label>
+    <div class="jr-where"><small>איפה לשמור</small>
+    <label class="switch"><input type="checkbox" id="entryPersonal"><span id="entryPersonalTxt">ביומן האישי שלי</span></label>
+    <label class="switch" id="entryShareRow" hidden><input type="checkbox" id="entryShared"><span>ביומן המשותף של הבנות</span></label></div>
     <div class="row end">
       <button type="button" class="btn ghost sm" id="entryDel">מחיקה</button>
       <button type="button" class="btn ghost sm" id="entryShare">שיתוף</button>

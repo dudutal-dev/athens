@@ -16,7 +16,11 @@
   const put = e => tx('readwrite', s => s.put(e));
   const del = id => tx('readwrite', s => s.delete(id));
   const get = id => tx('readonly', s => s.get(id));
-  const sharePref = () => { try { return localStorage.getItem('athina.jshare') !== '0'; } catch { return true; } };
+  // שני יומנים: האישי ('me') והמשותף ('us'). רשומה יכולה להיות באחד מהם או בשניהם
+  let jtab = 'me'; try { jtab = localStorage.getItem('athina.jtab') === 'us' ? 'us' : 'me'; } catch {}
+  const inGroup = () => !!A.hooks.inGroup?.();
+  const inMe = e => e.byId ? e.personal === true : e.personal !== false;
+  const inUs = e => !!e.byId || !!e.shared;
   navigator.storage?.persist?.().catch(() => {});
 
   async function shrink(file, max = 1600) {
@@ -42,12 +46,20 @@
 
   let urls = [], entries = [], cur = null;
   async function render() {
-    try { entries = await all(); } catch { entries = []; }
+    let everything; try { everything = await all(); } catch { everything = []; }
     urls.forEach(URL.revokeObjectURL); urls = [];
-    const body = $('#jrBody');
+    const body = $('#jrBody'), us = jtab === 'us';
+    $('#jrTabMe').classList.toggle('on', !us); $('#jrTabUs').classList.toggle('on', us);
+    $('#jrNMe').textContent = everything.filter(inMe).length || ''; $('#jrNUs').textContent = everything.filter(inUs).length || '';
+    $('#jrTitle').textContent = us ? 'היומן שלנו' : 'היומן שלי';
+    $('#jrKicker').textContent = us ? 'משותף לכל הבנות בקבוצה' : 'אישי · רק בטלפון שלך';
+    $('#jrShowTxt').textContent = us ? 'מצגת משותפת' : 'מצגת הטיול';
+    document.querySelector('#v-journal').classList.toggle('us', us);
+    entries = everything.filter(us ? inUs : inMe);
+    if (us && !inGroup()) { body.innerHTML = `<div class="jr-empty"><p>היומן המשותף נפתח כשמצטרפים לקבוצה.<br>כל תמונה שאחת מוסיפה כאן מופיעה אצל כולן.</p><button class="btn" data-go="group" type="button">לקבוצה</button></div>`; return; }
     if (!entries.length) {
-      body.innerHTML = `<div class="jr-empty"><div class="pol"><span class="tape"></span><div class="ph-img">🏛️</div><span class="cap">התמונה הראשונה שלכן</span></div>
-        <p>כאן ייכתב הטיול.<br>מצלמים, מוסיפים כמה מילים, והמקום והשעה נרשמים לבד.</p></div>`;
+      body.innerHTML = `<div class="jr-empty"><div class="pol"><span class="tape"></span><div class="ph-img">🏛️</div><span class="cap">${us ? 'התמונה הראשונה שלכן' : 'התמונה הראשונה שלך'}</span></div>
+        <p>${us ? 'כאן נאסף הטיול של כולן.<br>מה שמצלמים כאן מופיע אצל כל הבנות.' : 'כאן נכתב הטיול שלך.<br>מה שמצלמים כאן נשאר רק אצלך, אלא אם תסמני אחרת.'}</p></div>`;
       return;
     }
     const groups = {};
@@ -57,7 +69,7 @@
       const d = new Date(g[0].ts), n = Math.floor((d - t0) / 864e5) + 1;
       const title = n >= 1 && n <= A.S.days ? `יום ${n}` : d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' });
       return `<h2 class="jr-day">${title}<small>${A.fmtDay(d)} ${A.fmtDate(d)} · ${g.length} רגעים</small></h2><div class="jr-grid">` + g.map(e => {
-        const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}${e.by ? ' · ' + esc(e.by) : e.shared ? ' · משותף' : ''}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
+        const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}${e.by ? ' · ' + esc(e.by) : ''}${!us && inUs(e) ? ' · גם במשותף' : us && inMe(e) ? ' · גם באישי' : ''}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
         if (e.type === 'note') return `<button class="note" data-id="${e.id}">${esc(e.text)}${meta}</button>`;
         if (!e.blob) return `<button class="pol" data-id="${e.id}"><span class="tape"></span><span class="ph-wait">התמונה של ${esc(e.by || '')} בדרך…</span>${meta}</button>`;
         const u = URL.createObjectURL(e.blob); urls.push(u);
@@ -84,7 +96,10 @@
     $('#entryPlace').value = e.place || '';
     drawTags();
     const canShare = !!A.hooks.inGroup?.() && !e.byId;
-    $('#entryShareRow').hidden = !canShare; $('#entryShared').checked = canShare && (e.shared ?? sharePref());
+    const fresh = e.personal === undefined && e.shared === undefined;   // רשומה חדשה: ברירת המחדל לפי היומן שפתוח עכשיו
+    $('#entryShareRow').hidden = !canShare; $('#entryShared').checked = canShare && (fresh ? jtab === 'us' : !!e.shared);
+    $('#entryPersonal').checked = fresh ? !(jtab === 'us' && canShare) : inMe(e);
+    $('#entryPersonalTxt').textContent = e.byId ? 'לשמור גם ביומן האישי שלי' : 'ביומן האישי שלי';
     $('#entryDel').textContent = 'מחיקה'; $('#entryDel').dataset.sure = '';
     $('#entryShare').hidden = e.type !== 'photo' || !navigator.share;
     $('#entryDlg').showModal();
@@ -94,11 +109,12 @@
   $('#entryForm').onsubmit = async () => {
     cur.text = $('#entryText').value.trim(); cur.place = $('#entryPlace').value;
     if (cur.type === 'note' && !cur.text) return;
-    const row = $('#entryShareRow'), share = !row.hidden && $('#entryShared').checked, was = cur.shared;
-    if (!row.hidden) { cur.shared = share; try { localStorage.setItem('athina.jshare', share ? '1' : '0'); } catch {} }
-    try { await put(cur); A.toast(share ? 'נשמר ונשלח לבנות…' : 'נשמר ביומן'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
-    if (share) A.hooks.shareEntry?.(cur, !was).then(ok => A.toast(ok ? 'מופיע ביומן של כולן' : 'נשמר אצלך, אבל השיתוף נכשל. נסי לשמור שוב כשיש קליטה'));
-    else if (was && !cur.byId) A.hooks.unshareEntry?.(cur.id);
+    const own = !cur.byId, was = !!cur.shared; let per = $('#entryPersonal').checked, share = own && inGroup() && $('#entryShared').checked;
+    if (own && !per && !share) { if (jtab === 'us' && inGroup()) share = true; else per = true; }   // רשומה חייבת להיות לפחות ביומן אחד
+    cur.personal = per; if (own) cur.shared = share;
+    try { await put(cur); A.toast(share ? 'נשמר ונשלח לבנות…' : own ? 'נשמר ביומן האישי' : 'נשמר'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
+    if (share) A.hooks.shareEntry?.(cur, !was).then(ok => A.toast(ok ? (per ? 'מופיע בשני היומנים' : 'מופיע ביומן המשותף') : 'נשמר אצלך, אבל השיתוף נכשל. נסי לשמור שוב כשיש קליטה'));
+    else if (own && was) A.hooks.unshareEntry?.(cur.id);
     render();
   };
   $('#entryDel').onclick = async ev => {
@@ -131,13 +147,16 @@
     for (const f of files) try {
       const blob = await shrink(f), bmp = await createImageBitmap(blob).catch(() => null);
       last = newEntry('photo', { blob, w: bmp?.width, h: bmp?.height, ts: f.lastModified || Date.now(), place: '', lat: undefined, lng: undefined });
-      if (A.hooks.inGroup?.() && sharePref()) last.shared = true;
+      if (jtab === 'us' && inGroup()) { last.shared = true; last.personal = false; } else { last.shared = false; last.personal = true; }
       await put(last); ok++; if (last.shared) await A.hooks.shareEntry?.(last, true);
     } catch {}
     await render();
     A.toast(ok ? `נוספו ${ok} תמונות. לחיצה על תמונה מוסיפה מילים ומיקום` : 'לא הצלחנו להוסיף את התמונות');
     if (ok === 1) openEditor(last);
   };
+  const setTab = t => { jtab = t; try { localStorage.setItem('athina.jtab', t); } catch {} render(); };
+  $('#jrTabMe').onclick = () => setTab('me'); $('#jrTabUs').onclick = () => setTab('us');
+  A.journal.tab = () => jtab; A.journal.inMe = inMe; A.journal.inUs = inUs;
   $('#jrNote').onclick = () => openEditor(newEntry('note'));
 
   // ───── מפה לאוף־ליין ─────
