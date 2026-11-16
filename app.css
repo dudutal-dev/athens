@@ -465,3 +465,10 @@ input, select, textarea { font-size: max(16px, 1em); } .conv input { font-size: 
 .myav { display: flex; gap: 14px; align-items: center; padding: 10px 0 12px; }
 .myav #myFace .friend { width: 64px; height: 64px; font-size: 20px; } .myav small { display: block; font-size: 13px; margin-bottom: 6px; }
 .faces { margin-inline-start: 0; margin-left: 0; margin-right: auto; }
+/* סרגל תחתון גדול יותר */
+:root { --tab-h: 86px; }
+.tabbar { height: 74px; border-radius: 28px; inset-inline: 8px; }
+.tabbar .tic svg { width: 29px; height: 29px; }
+.tabbar button { font-size: 12.5px; gap: 2px; }
+.tic { padding: 4px 9px; border-radius: 14px; }
+.tbadge { top: 5px; }
