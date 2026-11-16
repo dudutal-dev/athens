@@ -220,7 +220,7 @@
     const ok = await send({ t: 'chat', x, c, ...loc });
     if (!ok) { G.msgs = G.msgs.filter(y => y !== m); render(); return false; }
     if (Date.now() - lastPing > 20000) { lastPing = Date.now();   // התראה לאפליקציית ntfy: רק שם השולחת, בלי תוכן ההודעה
-      fetch(BASE, { method: 'POST', body: JSON.stringify({ topic: ntopic, title: 'אתונה שלנו', message: `הודעה חדשה מ${G.name}`, click: location.origin + location.pathname + '#group', tags: ['speech_balloon'] }) }).catch(() => {}); }
+      fetch(BASE, { method: 'POST', body: JSON.stringify({ topic: ntopic, title: 'אתונה שלנו', message: `הודעה חדשה מ${G.name}. לפתוח את "אתונה" ממסך הבית`, tags: ['speech_balloon'] }) }).catch(() => {}); }
     return true;
   }
   $('#grpForm').onsubmit = async e => { e.preventDefault(); const i = $('#grpText'), x = i.value.trim(); if (!x) return; i.value = ''; if (!await say(x)) i.value = x; };
