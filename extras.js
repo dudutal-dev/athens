@@ -1,0 +1,171 @@
+/* יומן תמונות + מפה לאוף־ליין */
+(() => {
+  const A = window.APP, $ = s => document.querySelector(s), esc = A.esc;
+  const QUICK_TAGS = ['בנות', 'שופינג', 'אוכל', 'נוף', 'לילה', 'מצחיק', 'שלל'];
+
+  // ───── אחסון: IndexedDB (התמונות נשמרות בטלפון) ─────
+  const dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('athina-journal', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('entries', { keyPath: 'id' });
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  const tx = async (mode, fn) => { const db = await dbp; return new Promise((res, rej) => {
+    const t = db.transaction('entries', mode), rq = fn(t.objectStore('entries'));
+    t.oncomplete = () => res(rq && rq.result); t.onerror = t.onabort = () => rej(t.error); }); };
+  const all = () => tx('readonly', s => s.getAll());
+  const put = e => tx('readwrite', s => s.put(e));
+  const del = id => tx('readwrite', s => s.delete(id));
+  navigator.storage?.persist?.().catch(() => {});
+
+  async function shrink(file) {
+    let src, w, h;
+    try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); w = src.width; h = src.height; }
+    catch { src = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); }); w = src.naturalWidth; h = src.naturalHeight; }
+    const k = Math.min(1, 1600 / Math.max(w, h)), c = document.createElement('canvas');
+    c.width = Math.round(w * k); c.height = Math.round(h * k);
+    c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+    return new Promise(res => c.toBlob(b => res(b || file), 'image/jpeg', .85));
+  }
+
+  // תיוג מיידי: המקום הקרוב ביותר למיקום הנוכחי
+  function nearest() {
+    const me = A.me; if (!me) return '';
+    if (A.S.hotel && A.km(me, A.S.hotel) < .12) return 'hotel';
+    const best = PLACES.map(p => [A.km(me, p), p.id]).sort((a, b) => a[0] - b[0])[0];
+    return best && best[0] < .3 ? best[1] : '';
+  }
+  const placeName = id => id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
+  const time = ts => new Date(ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+  const dayKey = ts => { const d = new Date(ts); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+
+  let urls = [], entries = [], cur = null;
+  async function render() {
+    try { entries = await all(); } catch { entries = []; }
+    urls.forEach(URL.revokeObjectURL); urls = [];
+    const body = $('#jrBody');
+    if (!entries.length) {
+      body.innerHTML = `<div class="jr-empty"><div class="pol"><span class="tape"></span><div class="ph-img">🏛️</div><span class="cap">התמונה הראשונה שלכן</span></div>
+        <p>כאן ייכתב הטיול.<br>מצלמים, מוסיפים כמה מילים, והמקום והשעה נרשמים לבד.</p></div>`;
+      return;
+    }
+    const groups = {};
+    entries.sort((a, b) => a.ts - b.ts).forEach(e => (groups[dayKey(e.ts)] ||= []).push(e));
+    const t0 = A.dayDate(0); t0.setHours(0, 0, 0, 0);
+    body.innerHTML = Object.values(groups).reverse().map(g => {
+      const d = new Date(g[0].ts), n = Math.floor((d - t0) / 864e5) + 1;
+      const title = n >= 1 && n <= A.S.days ? `יום ${n}` : d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' });
+      return `<h2 class="jr-day">${title}<small>${A.fmtDay(d)} ${A.fmtDate(d)} · ${g.length} רגעים</small></h2><div class="jr-grid">` + g.map(e => {
+        const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
+        if (e.type === 'note') return `<button class="note" data-id="${e.id}">${esc(e.text)}${meta}</button>`;
+        const u = URL.createObjectURL(e.blob); urls.push(u);
+        return `<button class="pol" data-id="${e.id}"><span class="tape"></span><img src="${u}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">${e.text ? `<span class="cap">${esc(e.text)}</span>` : ''}${meta}</button>`;
+      }).join('') + '</div>';
+    }).join('');
+  }
+  A.hooks.journal = render;
+
+  // ───── עורך ─────
+  let editUrl = null;
+  function openEditor(e) {
+    cur = e;
+    const me = A.me, wrap = $('#entryImgWrap');
+    if (editUrl) URL.revokeObjectURL(editUrl);
+    wrap.hidden = e.type !== 'photo';
+    if (e.type === 'photo') $('#entryImg').src = editUrl = URL.createObjectURL(e.blob);
+    $('#entryText').value = e.text || '';
+    const ref = e.lat ? e : me;
+    const list = [...PLACES].sort((a, b) => ref ? A.km(ref, a) - A.km(ref, b) : a.he.localeCompare(b.he, 'he'));
+    $('#entryPlace').innerHTML = '<option value="">בלי מיקום</option>' + (A.S.hotel ? `<option value="hotel">🏨 ${esc(A.S.hotel.name)}</option>` : '') +
+      list.map(p => `<option value="${p.id}">${CATS[p.cat].emoji} ${esc(p.he)}${ref ? ' · ' + A.distTxt(A.km(ref, p)) : ''}</option>`).join('');
+    $('#entryPlace').value = e.place || '';
+    drawTags();
+    $('#entryDel').textContent = 'מחיקה'; $('#entryDel').dataset.sure = '';
+    $('#entryShare').hidden = e.type !== 'photo' || !navigator.share;
+    $('#entryDlg').showModal();
+  }
+  function drawTags() { $('#entryTags').innerHTML = QUICK_TAGS.map(t => `<button type="button" class="tag ${cur.tags.includes(t) ? 'on' : ''}" data-t="${t}">#${t}</button>`).join(''); }
+  $('#entryTags').onclick = ev => { const t = ev.target.dataset.t; if (!t) return; const i = cur.tags.indexOf(t); i < 0 ? cur.tags.push(t) : cur.tags.splice(i, 1); drawTags(); };
+  $('#entryForm').onsubmit = async () => {
+    cur.text = $('#entryText').value.trim(); cur.place = $('#entryPlace').value;
+    if (cur.type === 'note' && !cur.text) return;
+    try { await put(cur); A.toast('נשמר ביומן'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
+    render();
+  };
+  $('#entryDel').onclick = async ev => {
+    const b = ev.currentTarget;
+    if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב'; return; }
+    await del(cur.id).catch(() => {}); $('#entryDlg').close(); render();
+  };
+  $('#entryShare').onclick = () => {
+    const f = new File([cur.blob], `athens-${cur.id}.jpg`, { type: 'image/jpeg' }), text = $('#entryText').value.trim();
+    const data = navigator.canShare?.({ files: [f] }) ? { files: [f], text } : { text };
+    navigator.share(data).catch(() => {});
+  };
+  $('#jrBody').onclick = ev => { const b = ev.target.closest('[data-id]'); if (!b) return; const e = entries.find(x => x.id === b.dataset.id); if (e) openEditor(e); };
+
+  const newEntry = (type, extra) => { const me = A.me; return { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ts: Date.now(), type, text: '', tags: [], place: nearest(), lat: me?.lat, lng: me?.lng, ...extra }; };
+
+  // צילום: נשמר מיד עם שעה ומקום, ואז נפתח להוספת מילים
+  $('#camIn').onchange = async ev => {
+    const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+    try {
+      const blob = await shrink(f), bmp = await createImageBitmap(blob).catch(() => null);
+      const e = newEntry('photo', { blob, w: bmp?.width, h: bmp?.height });
+      await put(e); await render(); openEditor(e);
+    } catch { A.toast('לא הצלחנו לשמור את התמונה'); }
+  };
+  // העלאה מהגלריה: כמה תמונות בבת אחת, לפי תאריך הצילום
+  $('#upIn').onchange = async ev => {
+    const files = [...ev.target.files]; ev.target.value = ''; if (!files.length) return;
+    A.toast(`מוסיפה ${files.length} תמונות…`, 60000); let ok = 0, last;
+    for (const f of files) try {
+      const blob = await shrink(f), bmp = await createImageBitmap(blob).catch(() => null);
+      last = newEntry('photo', { blob, w: bmp?.width, h: bmp?.height, ts: f.lastModified || Date.now(), place: '', lat: undefined, lng: undefined });
+      await put(last); ok++;
+    } catch {}
+    await render();
+    A.toast(ok ? `נוספו ${ok} תמונות. לחיצה על תמונה מוסיפה מילים ומיקום` : 'לא הצלחנו להוסיף את התמונות');
+    if (ok === 1) openEditor(last);
+  };
+  $('#jrNote').onclick = () => openEditor(newEntry('note'));
+
+  // ───── מפה לאוף־ליין ─────
+  const OFF_KEY = 'athina.offline';
+  const AREAS = [ // [דרום, מערב, צפון, מזרח, זום מינימלי, זום מקסימלי]
+    [37.79, 23.60, 38.09, 23.96, 11, 14],     // כל האזור: פיראוס, הריביירה, הקניונים, שדה התעופה
+    [37.955, 23.700, 37.995, 23.765, 15, 16], // מרכז העיר
+    [37.965, 23.715, 37.986, 23.750, 17, 17], // הליבה ההליכתית ברמת רחוב
+  ];
+  const tx2 = (lng, z) => Math.floor((lng + 180) / 360 * 2 ** z);
+  const ty2 = (lat, z) => { const r = lat * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * 2 ** z); };
+  function tileList() {
+    const out = new Set();
+    for (const [s, w, n, e, z0, z1] of AREAS) for (let z = z0; z <= z1; z++)
+      for (let x = tx2(w, z); x <= tx2(e, z); x++) for (let y = ty2(n, z); y <= ty2(s, z); y++) out.add(A.tileUrl(z, x, y));
+    return [...out];
+  }
+  function offUI(msg) {
+    let st = null; try { st = JSON.parse(localStorage.getItem(OFF_KEY)); } catch {}
+    $('#offState').textContent = st ? 'שמורה בטלפון' : 'עוד לא הורדה';
+    $('#offBtn').textContent = st ? 'הורדה מחדש' : 'הורדת המפה';
+    $('#offMsg').textContent = msg ?? (st ? `${st.n} אריחים · ${new Date(st.t).toLocaleDateString('he-IL')}` : '');
+  }
+  let busy = false;
+  $('#offBtn').onclick = async () => {
+    if (busy) return;
+    if (!('caches' in window)) return offUI('הדפדפן הזה לא תומך בשמירה לאוף־ליין');
+    if (!navigator.onLine) return offUI('צריך חיבור לאינטרנט כדי להוריד');
+    busy = true; const bar = $('#offBar'); bar.hidden = false; bar.value = 0;
+    const list = tileList(), cache = await caches.open('athina-tiles'); let done = 0, ok = 0;
+    const work = async () => { while (list.length) { const u = list.pop();
+      try { if (await cache.match(u)) ok++; else { const r = await fetch(u, { mode: 'cors' }); if (r.ok) { await cache.put(u, r); ok++; } } } catch {}
+      done++; if (done % 8 === 0) { bar.value = done / total * 100; $('#offMsg').textContent = `${Math.round(done / total * 100)}%`; } } };
+    const total = list.length;
+    await Promise.all(Array.from({ length: 6 }, work));
+    bar.hidden = true; busy = false;
+    if (ok > total * .9) { try { localStorage.setItem(OFF_KEY, JSON.stringify({ n: ok, t: Date.now() })); } catch {} offUI(); A.toast('המפה שמורה בטלפון ותעבוד גם בלי אינטרנט'); }
+    else offUI(`ירדו רק ${ok} מתוך ${total}. נסי שוב בחיבור יציב`);
+  };
+  offUI();
+  if (location.hash === '#journal') render();
+})();

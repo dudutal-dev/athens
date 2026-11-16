@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&family=Gveret+Levin&display=swap">
 <link rel="stylesheet" href="vendor/leaflet.css">
 <link rel="stylesheet" href="app.css">
 </head>
@@ -84,6 +84,22 @@
     <div class="list" id="placeList"></div>
   </section>
 
+  <!-- יומן -->
+  <section class="view" id="v-journal" data-view="journal" hidden>
+    <header class="page-head jr-head">
+      <p class="jr-kicker">אתונה · נסיעת בנות</p>
+      <h1 class="hand">היומן שלנו</h1>
+    </header>
+    <div class="jr-actions">
+      <label class="btn" for="camIn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>צילום</label>
+      <label class="btn ghost" for="upIn">העלאת תמונות</label>
+      <button class="btn ghost" id="jrNote">כתיבה</button>
+    </div>
+    <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
+    <input type="file" id="upIn" accept="image/*" multiple hidden>
+    <div id="jrBody"></div>
+  </section>
+
   <!-- מסלול -->
   <section class="view" id="v-plan" data-view="plan" hidden>
     <header class="page-head">
@@ -98,6 +114,13 @@
   <section class="view" id="v-more" data-view="more" hidden>
     <header class="page-head"><h1>ארגז כלים</h1></header>
     <div class="stack">
+      <section class="card" id="offlineCard">
+        <div class="card-head"><h2>מפה בלי אינטרנט</h2><span class="pill" id="offState"></span></div>
+        <p class="muted small">מורידה לטלפון את מפת מרכז אתונה ברמת רחוב ואת כל האזור עד שדה התעופה והריביירה. כ־20 מ״ב, עדיף ב־Wi‑Fi לפני הטיסה. ה־GPS עובד גם בלי חבילת גלישה.</p>
+        <progress id="offBar" max="100" value="0" hidden></progress>
+        <div class="row" style="margin-top:10px"><button class="btn sea" id="offBtn">הורדת המפה</button><span class="muted small" id="offMsg"></span></div>
+      </section>
+
       <details class="card acc" open>
         <summary>מחשבון אירו ⇄ שקל</summary>
         <div class="conv">
@@ -159,6 +182,7 @@
   <button data-go="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>בית</button>
   <button data-go="map"><svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></svg>מפה</button>
   <button data-go="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>מקומות</button>
+  <button data-go="journal"><svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h4"/></svg>יומן</button>
   <button data-go="plan"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>מסלול</button>
   <button data-go="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>עוד</button>
 </nav>
@@ -189,10 +213,28 @@
   </form>
 </dialog>
 
+<!-- רשומת יומן -->
+<dialog id="entryDlg" class="sheet">
+  <form id="entryForm" method="dialog" class="form">
+    <div class="entry-img" id="entryImgWrap" hidden><img id="entryImg" alt=""></div>
+    <label class="hand-label">מה היה כאן?
+      <textarea id="entryText" rows="3" placeholder="כמה מילים לזיכרון…"></textarea>
+    </label>
+    <label>איפה<select id="entryPlace"></select></label>
+    <div class="tags" id="entryTags"></div>
+    <div class="row end">
+      <button type="button" class="btn ghost sm" id="entryDel">מחיקה</button>
+      <button type="button" class="btn ghost sm" id="entryShare">שיתוף</button>
+      <button class="btn" value="save">שמירה ביומן</button>
+    </div>
+  </form>
+</dialog>
+
 <div id="toast" class="toast" hidden></div>
 
 <script src="vendor/leaflet.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
+<script src="extras.js"></script>
 </body>
 </html>

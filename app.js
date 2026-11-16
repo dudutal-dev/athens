@@ -37,6 +37,7 @@
     $$('.tabbar button').forEach(b => b.classList.toggle('on', b.dataset.go === view));
     if (view === 'map') initMap();
     if (view === 'places') renderPlaces();
+    if (view === 'journal') { startGPS(false); APP.hooks.journal?.(); }
     try { history.replaceState(null, '', '#' + view); } catch {}
   }
   document.addEventListener('click', e => {
@@ -247,13 +248,14 @@
   $('#dayTabs').onclick = e => { const b = e.target.closest('button'); if (b) { ui.day = +b.dataset.day; renderDayTabs(); renderPlan(); } };
 
   // ───── map ─────
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const tileBase = `https://a.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}`;
   let map, layer, meMarker, meCircle, hotelMarker, follow = false, markers = {};
   function initMap() {
     if (map) { setTimeout(() => map.invalidateSize(), 50); return; }
     if (!window.L) { $('#map').innerHTML = '<p class="empty" style="padding:80px 20px;text-align:center">המפה צריכה חיבור לאינטרנט.</p>'; return; }
     map = L.map('map', { zoomControl: false, attributionControl: true }).setView(S.hotel ? [S.hotel.lat, S.hotel.lng] : ATHENS, 14);
-    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}/{z}/{x}/{y}{r}.png`, { maxZoom: 20, subdomains: 'abcd', attribution: '© OpenStreetMap © CARTO' }).addTo(map);
+    L.tileLayer(tileBase + '/{z}/{x}/{y}{r}.png', { maxZoom: 20, maxNativeZoom: 18, crossOrigin: true, attribution: '© OpenStreetMap © CARTO' }).addTo(map);
     layer = L.layerGroup().addTo(map);
     map.on('dragstart', () => { follow = false; $('#btnLocate').classList.remove('on'); });
     $('#mapChips').innerHTML = chipsHTML(ui.mapCat, true);
@@ -352,9 +354,11 @@
   }
 
   // ───── boot ─────
+  const APP = window.APP = { S, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {},
+    tileUrl: (z, x, y) => `${tileBase}/${z}/${x}/${y}${window.L && L.Browser.retina ? '@2x' : ''}.png` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather();
-  const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more'].includes(h)) go(h);
+  const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal'].includes(h)) go(h);
   setInterval(renderFlights, 60000);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
