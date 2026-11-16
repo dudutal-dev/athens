@@ -157,9 +157,19 @@
         <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
         <form id="grpForm" class="row"><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm">שליחה</button></form>
       </section>
+      <details class="card acc" id="pushCard">
+        <summary><i class="ic" data-ic="phone" style="--c:#7048e8;--c2:#b197fc"></i>התראה גם כשהאפליקציה סגורה</summary>
+        <p class="small">אפליקציית רשת כמו שלנו לא יכולה להקפיץ התראות כשהיא סגורה. הפתרון: אפליקציית ההתראות החינמית <b>ntfy</b>, שתקפיץ "הודעה חדשה מ…" בכל הודעה בצ׳אט. תוכן ההודעה לא נשלח אליה, רק השם.</p>
+        <ol class="steps">
+          <li>להתקין את <b>ntfy</b>: <a target="_blank" rel="noopener" href="https://apps.apple.com/app/ntfy/id1625396347">אייפון</a> · <a target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=io.heckel.ntfy">אנדרואיד</a>, ולאשר לה התראות.</li>
+          <li>להעתיק את שם הערוץ של הקבוצה:<div class="row" style="margin-top:6px"><code id="grpTopic" dir="ltr"></code><button type="button" class="btn sm" id="grpTopicCopy">העתקה</button></div></li>
+          <li>ב־ntfy ללחוץ <b>+</b> (Subscribe to topic), להדביק את השם ולאשר.</li>
+        </ol>
+        <p class="muted small">כל אחת מהבנות עושה את זה פעם אחת. לחיצה על ההתראה פותחת את הצ׳אט.</p>
+      </details>
       <section class="card"><h2>מקומות שסימנו</h2><div id="grpFavs" class="tags"></div></section>
       <button class="link center" id="grpLeave">יציאה מהקבוצה</button>
-      <p class="muted small center">ההודעות מגיעות כשהאפליקציה פתוחה, בלי התראות ברקע. לדברים דחופים עדיף ווטסאפ.</p>
+      <p class="muted small center">כשהאפליקציה פתוחה ההודעות מגיעות מיד, עם צליל.</p>
     </div>
   </section>
 
