@@ -66,7 +66,7 @@
     }).join('');
   }
   A.hooks.journal = render;
-  A.journal = { get, put, del, render, shrink };
+  A.journal = { get, put, del, all, render, shrink };
 
   // ───── עורך ─────
   let editUrl = null;

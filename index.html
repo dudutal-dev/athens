@@ -126,6 +126,7 @@
     </div>
     <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
     <input type="file" id="upIn" accept="image/*" multiple hidden>
+    <div class="jr-show"><button class="btn sea" id="jrShow" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>מצגת הטיול</button><span class="muted small">כל התמונות לפי סדר הצילום, מוכנה לשיתוף</span></div>
     <div id="jrBody"></div>
   </section>
 
@@ -401,6 +402,19 @@
   </div>
 </dialog>
 
+<!-- מצגת -->
+<div id="show" class="show" hidden>
+  <div class="show-bars" id="showBars"></div>
+  <div class="show-stage" id="showStage"><img id="showImg" alt=""><p id="showStatus" class="show-status" hidden></p></div>
+  <button class="show-x" id="showClose" aria-label="סגירה">×</button>
+  <div class="show-ctl">
+    <button id="showPlay" type="button">השהיה</button>
+    <button id="showFmt" type="button">לרוחב</button>
+    <button id="showPdf" type="button" class="pri">שיתוף PDF</button>
+    <button id="showImgs" type="button">שיתוף תמונות</button>
+  </div>
+</div>
+
 <div id="toast" class="toast" hidden></div>
 
 <script src="vendor/leaflet.js"></script>
@@ -408,5 +422,6 @@
 <script src="app.js"></script>
 <script src="extras.js"></script>
 <script src="group.js"></script>
+<script src="show.js"></script>
 </body>
 </html>
