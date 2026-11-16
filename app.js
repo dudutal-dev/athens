@@ -10,6 +10,8 @@
   const def = { hotel: null, flights: [], favs: [], pack: null, people: [], exps: [], rate: 3.9, start: '2026-11-18', days: 4 };
   let S = { ...def };
   try { S = { ...def, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch {}
+  // המלון של הטיול – מוגדר מראש, אפשר לשנות מעמוד הבית
+  if (!S.hotel) S.hotel = { name: 'NYX Esperia Palace Hotel Athens', addr: 'Stadiou 22, בין סינטגמה לפנפיסטימיו', el: 'Σταδίου 22, Αθήνα 105 64', lat: 37.9790, lng: 23.7320, q: 'NYX Esperia Palace Hotel Athens, Stadiou 22' };
   if (!S.pack) S.pack = PACK_DEFAULT.map(t => ({ t, done: false }));
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
 
@@ -99,7 +101,7 @@
         <p class="muted small">${esc(h.addr || '')}${d != null ? ` · <b>${distTxt(d)} ממך</b>` : ''}</p>
         ${h.el ? `<div class="taxi"><small>להראות לנהג המונית</small>${esc(h.el)}</div>` : ''}
         <div class="row" style="margin-top:12px">
-          <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lng}">ניווט למלון</a>
+          <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(h.q || `${h.lat},${h.lng}`)}">ניווט למלון</a>
           <button class="btn ghost" id="hotelMap">הצגה במפה</button>
         </div>`;
       $('#hotelEdit').onclick = () => renderHotel([]);
