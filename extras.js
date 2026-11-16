@@ -1,7 +1,7 @@
 /* יומן תמונות + מפה לאוף־ליין */
 (() => {
   const A = window.APP, $ = s => document.querySelector(s), esc = A.esc;
-  const QUICK_TAGS = ['בנות', 'שופינג', 'אוכל', 'נוף', 'לילה', 'מצחיק', 'שלל'];
+  const QUICK_TAGS = ['דפנה50', 'בנות', 'שופינג', 'אוכל', 'נוף', 'לילה', 'מצחיק', 'שלל'];
 
   // ───── אחסון: IndexedDB (התמונות נשמרות בטלפון) ─────
   const dbp = new Promise((res, rej) => {

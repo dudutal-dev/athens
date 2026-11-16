@@ -328,3 +328,35 @@ progress { width: 100%; height: 8px; margin-top: 10px; accent-color: var(--pink)
 .card-img { margin: 0 0 12px; border-radius: 16px; overflow: hidden; position: relative; }
 .card-img img { display: block; width: 100%; height: 150px; object-fit: cover; }
 .card-img figcaption { position: absolute; bottom: 8px; inset-inline-start: 8px; font-size: 11.5px; background: rgba(0,0,0,.45); color: #fff; padding: 2px 9px; border-radius: 999px; }
+
+/* ───── יום הולדת ───── */
+.bday { background: linear-gradient(150deg, #fff0f6, #fff9db); border-color: #ffd8e8; position: relative; overflow: hidden; color: #2b1a2b; }
+.bday::before { content: ''; position: absolute; inset: 0; opacity: .5; background:
+  radial-gradient(circle at 12% 18%, #ff8fb3 0 4px, transparent 5px), radial-gradient(circle at 86% 12%, #ffd43b 0 5px, transparent 6px),
+  radial-gradient(circle at 70% 30%, #74c0fc 0 3px, transparent 4px), radial-gradient(circle at 28% 8%, #b197fc 0 3px, transparent 4px),
+  radial-gradient(circle at 94% 44%, #ff8fb3 0 3px, transparent 4px), radial-gradient(circle at 6% 52%, #ffd43b 0 3px, transparent 4px); pointer-events: none; }
+.bday > * { position: relative; }
+.bday-k { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; color: #c2255c; }
+.bday h2 { font: 900 30px/1.15 var(--display); margin: 2px 0 6px; } .bday h2 span { color: #e03177; font-size: 40px; }
+.bday-list { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 15px; }
+.bday .tags { margin-top: 6px; } .bday .tag { background: #fff; border-color: #ffd8e8; color: #2b1a2b; }
+.bday .muted { color: #6b5566; }
+
+/* ───── הבנות ───── */
+.qbtn.wide { grid-column: 1 / -1; position: relative; }
+.nbadge { margin-inline-start: auto; background: var(--pink); color: #fff; font: 700 13px var(--body); min-width: 24px; height: 24px; border-radius: 12px; display: grid; place-items: center; padding: 0 7px; }
+.form-in { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.gcode { font: 700 24px/1.2 ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+.switch { flex-direction: row; align-items: center; gap: 10px; font-size: 15.5px; color: var(--ink); padding: 10px 0; border-block: 1px solid var(--line); margin-bottom: 6px; }
+.switch input { width: 22px; height: 22px; min-height: 0; flex: none; accent-color: var(--pink); }
+.mems { display: flex; flex-direction: column; }
+.mem { display: flex; align-items: center; gap: 12px; padding: 9px 0; } .mem > span:nth-child(2) { flex: 1; min-width: 0; } .mem small { display: block; color: var(--muted); font-size: 13px; }
+.friend { width: 38px; height: 38px; border-radius: 50%; background: var(--c); color: #fff; font: 700 14px var(--body); display: grid; place-items: center; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.3); flex: none; }
+.chat { max-height: 42dvh; min-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 10px 0; padding: 4px 0; }
+.msg { align-self: flex-start; max-width: 82%; background: var(--surface2); border-radius: 16px 16px 16px 4px; padding: 8px 12px; overflow-wrap: anywhere; }
+.msg b { display: block; font-size: 12.5px; color: var(--c); } .msg small { display: block; font-size: 11px; color: var(--muted); text-align: end; } .msg a { display: block; font-weight: 700; margin-top: 2px; }
+.msg.mine { align-self: flex-end; background: var(--btn); color: #fff; border-radius: 16px 16px 4px 16px; } .msg.mine small { color: rgba(255,255,255,.75); } .msg.mine a { color: #fff; }
+.sys { text-align: center; font-size: 13px; color: var(--muted); }
+#grpQuick { margin-bottom: 10px; }
+.gfav { color: var(--pink); }
+.link.center { align-self: center; }

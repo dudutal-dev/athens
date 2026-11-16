@@ -59,6 +59,8 @@
     if (view === 'map') initMap();
     if (view === 'places') renderPlaces();
     if (view === 'journal') { startGPS(false); APP.hooks.journal?.(); }
+    if (view === 'map') APP.hooks.map?.();
+    if (view === 'group') APP.hooks.group?.();
     try { history.replaceState(null, '', '#' + view); } catch {}
   }
   document.addEventListener('click', e => {
@@ -78,7 +80,7 @@
     },
     fav(el) {
       const id = el.dataset.id; const i = S.favs.indexOf(id);
-      i < 0 ? S.favs.push(id) : S.favs.splice(i, 1); save();
+      i < 0 ? S.favs.push(id) : S.favs.splice(i, 1); save(); APP.hooks.fav?.(id, i < 0);
       $$(`[data-act="fav"][data-id="${id}"]`).forEach(b => { b.classList.toggle('on', i < 0); if (b.classList.contains('btn')) b.textContent = i < 0 ? '♥ ברשימה שלי' : '♡ לרשימה שלי'; else b.textContent = i < 0 ? '♥' : '♡'; });
       renderFavCount(); if (ui.cat === 'fav') renderPlaces();
     },
@@ -89,7 +91,7 @@
   // ───── home ─────
   function renderHero() {
     const a = dayDate(0), b = dayDate(S.days - 1), i = todayIdx();
-    $('#heroDates').textContent = `${fmtDate(a)} – ${fmtDate(b)} · נסיעת בנות`;
+    $('#heroDates').textContent = `${fmtDate(a)} – ${fmtDate(b)} · חוגגות 50 לדפנה`;
     $('#heroCount').textContent = i < 0 ? (i === -1 ? 'מחר ממריאות!' : `עוד ${-i} ימים להמראה`) : i < S.days ? `יום ${i + 1} מתוך ${S.days} – תיהני!` : 'איזה טיול זה היה';
     const d = Math.min(Math.max(i, 0), S.days - 1);
     ui.day = d; $('#todayPlan').textContent = PLAN[d].title;
@@ -229,10 +231,10 @@
     if (ui.sort === 'me' && !me) note = '<p class="muted small">מאתרת את המיקום שלך… יש לאשר גישה למיקום.</p>';
     if (ui.sort === 'hotel' && !S.hotel) note = '<p class="muted small">עוד לא הוגדר מלון. אפשר להוסיף אותו בעמוד הבית.</p>';
     $('#placeList').innerHTML = note + (list.length ? list.map(p => {
-      const d = o ? km(o, p) : null, fav = S.favs.includes(p.id);
+      const d = o ? km(o, p) : null, fav = S.favs.includes(p.id), gf = window.APP?.hooks.favNames?.(p.id);
       return `<div class="place" style="--c:${CATS[p.cat].color}"><button class="badge" data-open="${p.id}" aria-hidden="true" tabindex="-1">${pic(p.id, 'th') || CATS[p.cat].emoji}</button>
         <button data-open="${p.id}" style="text-align:start"><h3>${esc(p.he)}</h3><p>${esc(p.desc)}</p>
-        <div class="meta">${p.top ? '<span class="star">★ מומלץ</span>' : ''}<span>${esc(p.area)}</span>${p.price ? `<span>${p.price}</span>` : ''}${d != null ? `<span class="dist">${distTxt(d)}${walkTxt(d)}</span>` : ''}</div></button>
+        <div class="meta">${p.top ? '<span class="star">★ מומלץ</span>' : ''}<span>${esc(p.area)}</span>${p.price ? `<span>${p.price}</span>` : ''}${d != null ? `<span class="dist">${distTxt(d)}${walkTxt(d)}</span>` : ''}${gf ? `<span class="gfav">♥ ${esc(gf)}</span>` : ''}</div></button>
         <button class="heart ${fav ? 'on' : ''}" data-act="fav" data-id="${p.id}" aria-label="שמירה">${fav ? '♥' : '♡'}</button></div>`;
     }).join('') : `<p class="empty">${ui.cat === 'fav' ? 'עוד אין מקומות שמורים. לחצי על ♡ ליד מקום כדי לשמור אותו.' : 'לא נמצאו מקומות.'}</p>`);
   }
@@ -432,11 +434,11 @@
   // ───── boot ─────
   $$('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[el.dataset.ic] || ''}"/></svg>`);
   $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
-  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {}, get imgs() { return Object.values(IMG); },
+  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, hooks: {}, get imgs() { return Object.values(IMG); }, get map() { return map; },
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather(); loadImages();
-  const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal'].includes(h)) go(h);
+  const h = location.hash.slice(1); if (['map', 'places', 'plan', 'more', 'journal', 'group'].includes(h)) go(h);
   setInterval(renderFlights, 60000);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();

@@ -46,7 +46,23 @@
       </section>
       <section class="card" id="hotelCard"></section>
       <section class="card" id="flightsCard"></section>
+      <section class="card bday" id="bdayCard">
+        <p class="bday-k">Χρόνια πολλά · חְרוֹנְיָה פּוֹלָה</p>
+        <h2>דפנה חוגגת <span>50</span></h2>
+        <p>ארבעה ימים באתונה לכבודה. כמה רעיונות לחגיגה:</p>
+        <ul class="bday-list">
+          <li><b>ארוחת יום ההולדת</b> מול האקרופוליס. להזמין מראש ולהגיד שזה יום הולדת, ברוב המקומות יביאו קינוח עם נר.
+            <span class="tags"><button class="tag" data-open="gbroof">GB Roof Garden</button><button class="tag" data-open="strofi">סטרופי</button><button class="tag" data-open="varoulko">וארולקו</button></span></li>
+          <li><b>הרמת כוסית בשקיעה</b> על גג, עם תמונה קבוצתית.
+            <span class="tags"><button class="tag" data-open="aforathens">A for Athens</button><button class="tag" data-open="areopagus">גבעת אראופגוס</button></span></li>
+          <li><b>פינוק לכולן</b>: שעתיים של חמאם.
+            <span class="tags"><button class="tag" data-open="hammam">חמאם באת׳ס</button></span></li>
+          <li><b>מזכרת תואמת</b>: צמיד עין או תכשיט יווני זהה לכל אחת.
+            <span class="tags"><button class="tag" data-open="monastiraki-market">שוק הפשפשים</button><button class="tag" data-open="kolonaki">קולונאקי</button></span></li>
+        </ul>
+      </section>
       <div class="quick">
+        <button class="qbtn wide" data-go="group"><i class="ic" data-ic="chat" style="--c:#e03177;--c2:#ff8fb3"></i><span><b>הבנות</b><small id="grpHint">צ׳אט ומיקום חי</small></span><em class="nbadge" id="grpBadge" hidden></em></button>
         <button class="qbtn" data-act="near"><i class="ic" data-ic="compass" style="--c:#0d5eaf;--c2:#3b9bff"></i><span><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></span></button>
         <button class="qbtn" data-act="share"><i class="ic" data-ic="send" style="--c:#0ca678;--c2:#51cf66"></i><span><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></span></button>
         <button class="qbtn" data-go="plan"><i class="ic" data-ic="cal" style="--c:#7048e8;--c2:#b197fc"></i><span><b>התוכנית להיום</b><small id="todayPlan"></small></span></button>
@@ -99,7 +115,7 @@
   <!-- יומן -->
   <section class="view" id="v-journal" data-view="journal" hidden>
     <header class="page-head jr-head">
-      <p class="jr-kicker">אתונה · נסיעת בנות</p>
+      <p class="jr-kicker">אתונה · דפנה חוגגת 50</p>
       <h1 class="hand">היומן שלנו</h1>
     </header>
     <div class="jr-actions">
@@ -110,6 +126,40 @@
     <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
     <input type="file" id="upIn" accept="image/*" multiple hidden>
     <div id="jrBody"></div>
+  </section>
+
+  <!-- הבנות -->
+  <section class="view" id="v-group" data-view="group" hidden>
+    <header class="page-head"><h1>הבנות</h1><p class="muted" id="grpStatus"></p></header>
+    <div class="stack" id="grpJoin">
+      <section class="card">
+        <h2>להצטרף לקבוצה</h2>
+        <form id="grpJoinForm" class="form-in">
+          <label>השם שלך<input id="grpName" autocomplete="off" maxlength="16" placeholder="למשל דפנה"></label>
+          <label>קוד הקבוצה<input id="grpCodeIn" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX" dir="ltr"></label>
+          <button class="btn">הצטרפות עם הקוד</button>
+        </form>
+        <p class="muted small" style="margin:14px 0 8px">הראשונה פותחת קבוצה ושולחת את הקוד לכולן:</p>
+        <button class="btn ghost" id="grpNew" type="button">פתיחת קבוצה חדשה</button>
+      </section>
+      <p class="muted small center">ההודעות והמיקומים מוצפנים בטלפון עם הקוד. רק מי שיש לה את הקוד יכולה לקרוא.</p>
+    </div>
+    <div class="stack" id="grpMain" hidden>
+      <section class="card">
+        <div class="card-head"><div><small class="muted">קוד הקבוצה</small><div class="gcode" id="grpCode" dir="ltr"></div></div><button class="btn sm" id="grpInvite">הזמנת חברות</button></div>
+        <label class="switch"><input type="checkbox" id="grpShare"><span>לשתף את המיקום שלי עם הבנות</span></label>
+        <div id="grpMembers" class="mems"></div>
+      </section>
+      <section class="card">
+        <h2>צ׳אט</h2>
+        <div id="grpChat" class="chat"></div>
+        <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
+        <form id="grpForm" class="row"><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm">שליחה</button></form>
+      </section>
+      <section class="card"><h2>מקומות שסימנו</h2><div id="grpFavs" class="tags"></div></section>
+      <button class="link center" id="grpLeave">יציאה מהקבוצה</button>
+      <p class="muted small center">ההודעות מגיעות כשהאפליקציה פתוחה, בלי התראות ברקע. לדברים דחופים עדיף ווטסאפ.</p>
+    </div>
   </section>
 
   <!-- מסלול -->
@@ -339,5 +389,6 @@
 <script src="data.js"></script>
 <script src="app.js"></script>
 <script src="extras.js"></script>
+<script src="group.js"></script>
 </body>
 </html>
