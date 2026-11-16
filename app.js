@@ -373,7 +373,7 @@
   // ───── tools ─────
   function initConv() {
     const eur = $('#eur'), ils = $('#ils'), rate = $('#rate');
-    const upd = from => { const r = +rate.value || 0; if (from === 'ils') eur.value = r ? (ils.value / r).toFixed(2) : ''; else ils.value = (eur.value * r).toFixed(2); };
+    const upd = from => { const r = +rate.value || 0; if (from === 'ils') eur.value = r && ils.value ? (ils.value / r).toFixed(2) : ''; else ils.value = eur.value ? (eur.value * r).toFixed(2) : ''; };
     rate.value = S.rate; upd();
     eur.oninput = () => upd('eur'); ils.oninput = () => upd('ils');
     rate.oninput = () => { S.rate = +rate.value || S.rate; save(); $('#rateSrc').textContent = '(ידני)'; upd(); };
