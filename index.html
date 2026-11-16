@@ -126,7 +126,8 @@
     </div>
     <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
     <input type="file" id="upIn" accept="image/*" multiple hidden>
-    <div class="jr-show"><button class="btn sea" id="jrShow" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>מצגת הטיול</button><span class="muted small">כל התמונות לפי סדר הצילום, מוכנה לשיתוף</span></div>
+    <div class="jr-show"><button class="btn sea" id="jrShow" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>מצגת הטיול</button><button class="btn ghost" id="bkOpen" type="button">גיבוי תמונות<em class="nbadge" id="bkCount" hidden></em></button></div>
+    <div class="bk-banner" id="bkBanner" hidden><span id="bkBannerTxt"></span><button class="btn sm" id="bkBannerBtn" type="button">גיבוי עכשיו</button><button class="link" id="bkBannerX" type="button">אחר כך</button></div>
     <div id="jrBody"></div>
   </section>
 
@@ -405,6 +406,20 @@
   </div>
 </dialog>
 
+<dialog id="bkDlg" class="sheet">
+  <div class="form">
+    <h2>גיבוי תמונות</h2>
+    <p id="bkState"></p>
+    <button class="btn" id="bkNew" type="button"></button>
+    <button class="btn ghost" id="bkAll" type="button">הורדת כל התמונות ביחד (ZIP)</button>
+    <p class="muted small" id="bkMsg" hidden></p>
+    <label class="switch"><input type="checkbox" id="bkAuto"><span id="bkAutoTxt"></span></label>
+    <p class="muted small" id="bkNote"></p>
+    <p class="muted small">הגיבוי כולל את כל התמונות שביומן, גם המשותפות, ובקובץ ה־ZIP גם רשימה עם הכיתובים. באייפון: בחלון השיתוף לבחור "שמירת תמונות" לגלריה, או "שמירה לקבצים" ← הורדות.</p>
+    <div class="row end"><button type="button" class="btn ghost" id="bkClose">סגירה</button></div>
+  </div>
+</dialog>
+
 <!-- מצגת -->
 <div id="show" class="show" hidden>
   <div class="show-bars" id="showBars"></div>
@@ -426,5 +441,6 @@
 <script src="extras.js"></script>
 <script src="group.js"></script>
 <script src="show.js"></script>
+<script src="backup.js"></script>
 </body>
 </html>
