@@ -94,7 +94,7 @@
   // ───── home ─────
   function renderHero() {
     const a = dayDate(0), b = dayDate(S.days - 1), i = todayIdx();
-    $('#heroDates').textContent = `${fmtDate(a)} – ${fmtDate(b)} · ${TRIP.title}`;
+    $('#heroDates').textContent = `${fmtDate(a)} – ${fmtDate(b)}`; $('#heroTitle').textContent = TRIP.title;
     $('#heroCount').textContent = i < 0 ? (i === -1 ? 'מחר ממריאים!' : `עוד ${-i} ימים להמראה`) : i < S.days ? `יום ${i + 1} מתוך ${S.days}` : 'איזה טיול זה היה';
     const d = Math.min(Math.max(i, 0), S.days - 1);
     ui.day = d; $('#todayPlan').textContent = TRIP.plan[d].title;
@@ -126,9 +126,9 @@
         <p class="muted small">${esc(h.addr || '')}${d != null ? ` · <b>${distTxt(d)} ממך</b>` : ''}</p>
         ${h.el ? `<div class="taxi"><small>להראות לנהג המונית</small>${esc(h.el)}</div>` : ''}
         <div class="row" style="margin-top:12px">
-          <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(h.q || `${h.lat},${h.lng}`)}">ניווט למלון</a>
-          <button class="btn ghost" id="hotelMap">הצגה במפה</button>
-          <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.q || h.name + ' Athens')}">תמונות המלון</a>
+          <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(h.q || `${h.lat},${h.lng}`)}">ניווט</a>
+          <button class="btn ghost" id="hotelMap">במפה</button>
+          <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.q || h.name + ' Athens')}">תמונות</a>
         </div>`;
       $('#hotelEdit').onclick = () => renderHotel([]);
       $('#hotelMap').onclick = () => { go('map'); map.setView([h.lat, h.lng], 16); };
@@ -463,7 +463,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 45;
+  const VERSION = 46;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {

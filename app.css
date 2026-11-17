@@ -585,3 +585,57 @@ html[dir=ltr] .hero-art { left: auto; right: -30px; }
 html[dir=ltr] .gcode { font-size: 22px; letter-spacing: 1px; }
 .entry-img video { width: 100%; object-fit: contain; }
 #entryMapLink { display: inline-block; margin: -6px 0 8px; }
+
+/* ═════ מסך הבית, עיצוב 2: כותרת נקייה, שני צבעים (כחול ים + מבטא ורוד אחד), קיצורים קומפקטיים ═════ */
+.hero { padding-bottom: 44px; }
+.hero::before { display: none; }                         /* בלי השמש: פחות עומס בכותרת */
+.hero-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 2; margin-bottom: 16px; }
+.hero .eyebrow { margin: 0; font: 700 15px/1 var(--body); letter-spacing: .02em; opacity: .92; }
+.hero .eyebrow span { color: #ffd6e4; }
+.hero-set, html[dir=ltr] .hero-set { position: static; width: auto; height: 34px; padding: 0 13px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font: 600 13.5px var(--body); background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.22); }
+.hero h1 { font: 900 clamp(30px, 9.4vw, 44px)/1.1 var(--display); letter-spacing: -.3px; text-wrap: balance; overflow-wrap: anywhere; }
+.hero-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 14px; font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.hero-sub b { background: rgba(255,255,255,.18); border-radius: 999px; padding: 4px 12px; font-size: 13.5px; font-weight: 700; }
+.hero-art, html[dir=ltr] .hero-art { opacity: .09; }
+
+/* אייקונים: גוון אחד במקום צבע לכל כפתור */
+.ic { background: color-mix(in srgb, var(--sea) 11%, var(--surface)); box-shadow: none; }
+.ic svg { stroke: var(--sea); }
+
+/* קיצורים: כרטיס קבוצה רחב, ומתחתיו שמונה אריחים קטנים בשתי שורות */
+.quick { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.qbtn { flex-direction: column; justify-content: flex-start; text-align: center; gap: 7px; padding: 12px 4px 10px; min-height: 0; border-radius: 18px; box-shadow: none; }
+.qbtn small { display: none; }
+.qbtn b { font-size: 12.5px; font-weight: 600; line-height: 1.2; text-wrap: balance; }
+.qbtn .ic { width: 42px; height: 42px; border-radius: 13px; }
+.qbtn.wide { flex-direction: row; align-items: center; text-align: start; gap: 12px; padding: 14px; box-shadow: 0 8px 28px rgba(13, 60, 120, .07); }
+.qbtn.wide small { display: block; } .qbtn.wide b { font-size: 16.5px; font-weight: 700; }
+.qbtn.wide .ic { width: 46px; height: 46px; background: var(--sea); } .qbtn.wide .ic svg { stroke: #fff; }
+
+/* סרגל הלשוניות: אפור שקט, ורק הלשונית הפעילה בכחול */
+.tabbar .tic svg { stroke: var(--muted); fill: none; }
+.tabbar button.on { color: var(--sea); }
+.tabbar button.on .tic { background: color-mix(in srgb, var(--sea) 13%, transparent); }
+.tabbar button.on .tic svg { stroke: var(--sea); fill: color-mix(in srgb, var(--sea) 16%, transparent); }
+
+/* "אסור לפספס": כרטיסים בכחול עמוק במקום צבע לכל קטגוריה */
+.tile { background: linear-gradient(165deg, var(--hero-a), var(--hero-b)); }
+
+/* כרטיס האירוע: לבן ושקט, עם מבטא ורוד אחד */
+.bday { background: var(--surface); border-color: var(--line); color: var(--ink); }
+.bday::before { display: none; }
+.bday summary h2 { font-size: 21px; } .bday summary h2 span { font-size: 21px; color: var(--pink); }
+.bday summary small, .bday .muted, .bday-m { color: var(--muted); }
+.bday summary::after { color: var(--pink); }
+.bday .tag { background: var(--surface2); border-color: var(--line); color: var(--ink); }
+.bday-k { color: var(--pink); }
+
+/* מלון: שלושה כפתורים בשורה אחת */
+#hotelCard .row { flex-wrap: nowrap; gap: 8px; }
+#hotelCard .row .btn { flex: 1 1 0; min-width: 0; padding-inline: 8px; white-space: nowrap; }
+.hotel-name { font-size: 20px; }
+.starthome { border-width: 1px; }
+.start-dots span.on { background: var(--sea); }
+.wx { box-shadow: none; border: 1px solid var(--line); }
+.alert { background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-inline-start: 4px solid var(--pink); border-radius: 16px; font-size: 14.5px; }
+.alert b { color: var(--pink); }

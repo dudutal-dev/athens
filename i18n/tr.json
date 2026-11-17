@@ -3884,8 +3884,8 @@
   "es": "Gestionar"
  },
  "ניווט": {
-  "en": "Navigation",
-  "es": "Navegación"
+  "en": "Directions",
+  "es": "Cómo llegar"
  },
  "ניווט בגוגל מפות": {
   "en": "Directions in Google Maps",
@@ -4938,6 +4938,10 @@
  "תמונה שצולמה מתוך האפליקציה לא תמיד נשמרת גם בגלריה של הטלפון. תמונות חשובות עדיף לצלם במצלמה הרגילה ואז להעלות.": {
   "en": "A photo taken inside the app isn't always saved to your phone's gallery as well. It's better to take important photos with the regular camera and then upload them.",
   "es": "Una foto hecha desde la app no siempre se guarda también en la galería del teléfono. Las fotos importantes es mejor hacerlas con la cámara normal y luego subirlas."
+ },
+ "תמונות": {
+  "en": "Photos",
+  "es": "Fotos"
  },
  "תמונות ביומן ·": {
   "en": "photos in the journal ·",
