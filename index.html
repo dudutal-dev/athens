@@ -176,7 +176,9 @@
     <div class="chat-body" id="chatBody">
         <div id="grpChat" class="chat"></div>
         <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
-        <form id="grpForm" class="row"><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm">שליחה</button></form>
+        <div id="emojiPanel" class="emoji-panel" hidden></div>
+        <form id="grpForm" class="chatform"><button type="button" class="cbtn" id="emojiBtn" aria-label="סמיילים">😊</button><label class="cbtn" for="chatFile" aria-label="צירוף תמונה או מסמך">📎</label><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm send" aria-label="שליחה"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12 21 3l-6 18-3-8z"/></svg></button></form>
+        <input type="file" id="chatFile" hidden>
     </div>
   </section>
 
@@ -397,6 +399,16 @@
       <li><b>אנדרואיד:</b> לחיצה על המנעול ליד הכתובת ← הרשאות ← מיקום ← אישור.</li>
     </ol>
     <div class="row end"><button type="button" class="btn ghost" id="locClose">סגירה</button><button type="button" class="btn" id="locReload">רענון</button></div>
+  </div>
+</dialog>
+
+<dialog id="fileDlg" class="sheet">
+  <div class="form">
+    <div class="entry-img"><img id="fileImg" alt=""></div>
+    <div class="row end">
+      <button type="button" class="btn ghost sm" id="fileShare">שמירה או שיתוף</button>
+      <button type="button" class="btn" id="fileClose">סגירה</button>
+    </div>
   </div>
 </dialog>
 

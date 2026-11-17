@@ -116,6 +116,30 @@
     try { const small = await J.shrink(e.blob, 1280); await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) }); } catch {}
   }
 
+  // ───── קבצים בצ׳אט: תמונות ומסמכים עוברים מוצפנים כקובץ מצורף ונשמרים בטלפון ─────
+  const fdb = new Promise((res, rej) => { const q = indexedDB.open('athina-chat', 1); q.onupgradeneeded = () => q.result.createObjectStore('files'); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+  const fOp = async (mode, fn) => { const db = await fdb; return new Promise((res, rej) => { const t = db.transaction('files', mode), rq = fn(t.objectStore('files')); t.oncomplete = () => res(rq && rq.result); t.onerror = () => rej(t.error); }); };
+  const fGet = id => fOp('readonly', s => s.get(id)).catch(() => null), fPut = (id, v) => fOp('readwrite', s => s.put(v, id));
+  const fUrl = {}, fState = {};   // fState: loading | missing
+  const kb = n => n > 1e6 ? (n / 1e6).toFixed(1) + ' מ״ב' : Math.max(1, Math.round(n / 1e3)) + ' ק״ב';
+  const okF = f => f && /^[a-z0-9]{6,12}$/.test(f.id || '') ? { id: f.id, name: String(f.name || 'קובץ').slice(0, 80), type: String(f.type || '').slice(0, 60), size: +f.size || 0, img: !!f.img } : null;
+  async function postFile(obj, bytes) { try { return (await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(await enc({ ...obj, n: G.name, d: G.id, ts: Date.now() })), { method: 'POST', body: await encBytes(bytes) })).ok; } catch { return false; } }
+  async function fetchFile(f, url) {   // מורידה, מפענחת ושומרת. אם הקובץ כבר נמחק מהשרת – מסמנת שחסר
+    fState[f.id] = 'loading';
+    try { const blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: f.img ? 'image/jpeg' : f.type || 'application/octet-stream' });
+      await fPut(f.id, { blob, name: f.name, type: blob.type }); fUrl[f.id] = URL.createObjectURL(blob); delete fState[f.id]; }
+    catch { fState[f.id] = 'missing'; }
+    render();
+  }
+  function fileView(m) {
+    const f = m.f; if (!f) return ''; const u = fUrl[f.id], ic = f.img ? '🖼️' : '📄';
+    if (u) return f.img ? `<img class="cimg" src="${u}" alt="" data-file="${f.id}">` : `<button type="button" class="cdoc" data-file="${f.id}">${ic} <span>${esc(f.name)}</span><small>${kb(f.size)}</small></button>`;
+    if (fState[f.id] === 'missing') return `<button type="button" class="cdoc" data-freq="${f.id}">${ic} <span>${esc(f.name)}</span><small>כבר לא בשרת · לחצי לבקש שוב</small></button>`;
+    if (!fState[f.id]) { fState[f.id] = 'loading'; fGet(f.id).then(v => { if (v) { fUrl[f.id] = URL.createObjectURL(v.blob); delete fState[f.id]; } else fState[f.id] = 'missing'; render(); }); }
+    return `<span class="cdoc wait">${ic} טוען…</span>`;
+  }
+  const findF = id => { const m = G.msgs.find(x => x.f && x.f.id === id); return m && m.f; };
+
   function handle(p, mid, att) {
     if (!p || !p.d) return;
     const mine = p.d === G.id, mem = G.members[p.d] ||= {};
@@ -126,14 +150,23 @@
       if (G.msgs.some(x => x.id === mid)) return;
       const pend = p.c && G.msgs.find(x => x.id === 'c' + p.c);
       if (pend) { pend.id = mid; delete pend.pending; save(); render(); return; }
-      G.msgs.push({ id: mid, d: p.d, n: p.n, x: p.t === 'hi' ? null : String(p.x || '').slice(0, 1200), ts: p.ts, lat: p.lat, lng: p.lng });
+      const f = okF(p.f);
+      G.msgs.push({ id: mid, d: p.d, n: p.n, x: p.t === 'hi' ? null : String(p.x || '').slice(0, 1200), ts: p.ts, lat: p.lat, lng: p.lng, ...(f ? { f } : {}) });
+      if (f && !mine) { if (att) fetchFile(f, att); else fState[f.id] = 'missing'; }
       G.msgs.sort((a, b) => a.ts - b.ts); if (G.msgs.length > 250) G.msgs.splice(0, G.msgs.length - 250);
-      if (!mine && Date.now() - p.ts < 5 * 60e3) { if (p.t === 'chat') beep(); if ($('#v-chat').hidden) { unread++; if (p.t === 'chat') A.toast(`${p.n}: ${String(p.x).slice(0, 60)}`, 4000); } }
+      if (!mine && Date.now() - p.ts < 5 * 60e3) { if (p.t === 'chat') beep(); if ($('#v-chat').hidden) { unread++; if (p.t === 'chat') A.toast(`${p.n}: ${p.f ? (p.f.img ? '📷 תמונה' : '📎 ' + String(p.f.name || '')) + ' ' : ''}${String(p.x || '').slice(0, 60)}`, 4000); } }
       else if (!mine && $('#v-chat').hidden) unread++;
     }
     if (p.lat && p.lng) { mem.lat = p.lat; mem.lng = p.lng; mem.lt = p.ts; }
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
     if (p.t === 'bye') delete G.members[p.d];
+    if (p.t === 'freq' && !mine && p.fid) fGet(p.fid).then(async v => {   // מישהי מבקשת קובץ שפג תוקפו: מי שמחזיקה אותו מעלה שוב (השולחת קודם)
+      const f = findF(p.fid); if (!v || !f) return; const own = G.msgs.some(x => x.f && x.f.id === p.fid && x.d === G.id), t0 = Date.now();
+      await new Promise(q => setTimeout(q, own ? 300 + Math.random() * 1200 : 2500 + Math.random() * 3000));
+      if ((served['f' + p.fid] || 0) >= t0) return; served['f' + p.fid] = Date.now();
+      postFile({ t: 'fdata', fid: p.fid }, await v.blob.arrayBuffer());
+    });
+    if (p.t === 'fdata' && p.fid) { served['f' + p.fid] = Date.now(); const f = findF(p.fid); if (!mine && f && att && !fUrl[p.fid]) fetchFile(f, att); }
     if (p.t === 'j') { if (att && p.e) served[p.e.id] = Date.now(); journalIn(p, att); }
     if (p.t === 'jreq') journalReq(p);
     if (p.t === 'jdel' && p.d !== G.id) A.journal?.get(p.id).then(e => { if (e && e.byId === p.d) A.journal.del(p.id).then(() => A.journal.render()); }).catch(() => {});
@@ -201,7 +234,7 @@
     }).join('');
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     box.innerHTML = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרפה לקבוצה</p>` :
-      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}<span>${esc(m.x)}</span>
+      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span>${esc(m.x)}</span>` : ''}
         ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. כתבי משהו לבנות.</p>';
     if (atEnd) box.scrollTop = box.scrollHeight;
@@ -240,7 +273,49 @@
     if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${x.slice(0, 140)}`, site: location.origin + location.pathname }) }).catch(() => {});
     return true;
   }
-  $('#grpForm').onsubmit = async e => { e.preventDefault(); const i = $('#grpText'), x = i.value.trim(); if (!x) return; i.value = ''; if (!await say(x)) i.value = x; };
+  // שליחת תמונה או מסמך. תמונות מוקטנות לפני השליחה
+  async function sayFile(file) {
+    const img = /^image\//.test(file.type) || /\.(heic|heif|jpe?g|png|webp)$/i.test(file.name || '');
+    let blob = file, name = file.name || (img ? 'photo.jpg' : 'file'), type = file.type || 'application/octet-stream';
+    if (img) try { blob = await A.journal.shrink(file, 1280); type = 'image/jpeg'; name = name.replace(/\.\w+$/, '') + '.jpg'; } catch { return A.toast('לא הצלחנו לקרוא את התמונה'); }
+    if (blob.size > 8e6) return A.toast('הקובץ גדול מדי. אפשר לשלוח עד 8 מ״ב');
+    const rnd = () => Math.random().toString(36).slice(2, 10), fid = rnd(), c = rnd(), f = { id: fid, name: name.slice(0, 80), type, size: blob.size, img };
+    await fPut(fid, { blob, name, type }).catch(() => {}); fUrl[fid] = URL.createObjectURL(blob);
+    const inp = $('#grpText'), x = inp.value.trim(); inp.value = '';
+    const m = { id: 'c' + c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, f };
+    G.msgs.push(m); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight;
+    if (!await postFile({ t: 'chat', x, c, f }, await blob.arrayBuffer())) { G.msgs = G.msgs.filter(y => y !== m); render(); inp.value = x; return A.toast('אין חיבור – הקובץ לא נשלח'); }
+    if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${img ? '📷 תמונה' : '📎 ' + name} ${x.slice(0, 100)}`, site: location.origin + location.pathname }) }).catch(() => {});
+  }
+  $('#chatFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) sayFile(f); };
+  let openF = null;
+  async function shareF(fid) {
+    const v = await fGet(fid), f = findF(fid); if (!v || !f) return;
+    const file = new File([v.blob], f.name, { type: v.blob.type });
+    if (navigator.canShare?.({ files: [file] })) { try { await navigator.share({ files: [file] }); return; } catch (err) { if (err?.name === 'AbortError') return; } }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(v.blob); a.download = f.name; document.body.append(a); a.click(); a.remove();
+  }
+  $('#grpChat').addEventListener('click', e => {
+    const q = e.target.closest('[data-freq]'); if (q) { const fid = q.dataset.freq; fState[fid] = 'loading'; render(); send({ t: 'freq', fid });
+      setTimeout(() => { if (fState[fid] === 'loading') { fState[fid] = 'missing'; render(); A.toast('אף אחת מהבנות שיש לה את הקובץ לא מחוברת כרגע'); } }, 25000); return; }
+    const el = e.target.closest('[data-file]'); if (!el) return; const fid = el.dataset.file, f = findF(fid);
+    if (f && f.img) { openF = fid; $('#fileImg').src = fUrl[fid]; $('#fileDlg').showModal(); } else shareF(fid);
+  });
+  $('#fileShare').onclick = () => openF && shareF(openF);
+  $('#fileClose').onclick = () => $('#fileDlg').close();
+
+  // סמיילים
+  const EMOJI = ['😀', '😂', '🤣', '🥰', '😍', '😘', '😎', '🤩', '🥳', '😅', '😉', '😇', '🙈', '😴', '🤤', '😭', '😡', '🤯', '👍', '👏', '🙏', '💪', '🙌', '👌', '❤️', '💕', '🔥', '✨', '🎉', '🎂', '🥂', '🍸', '🍷', '☕', '🍕', '🥙', '🛍️', '👗', '👠', '💄', '📸', '🏛️', '☀️', '🌙', '✈️', '🚕', '📍', '⏰'];
+  $('#emojiPanel').innerHTML = EMOJI.map(x => `<button type="button">${x}</button>`).join('');
+  $('#emojiBtn').onclick = () => { const p = $('#emojiPanel'); p.hidden = !p.hidden; };
+  $('#emojiPanel').onclick = e => { const b = e.target.closest('button'); if (!b) return; const i = $('#grpText'), at = i.selectionStart ?? i.value.length; i.value = i.value.slice(0, at) + b.textContent + i.value.slice(i.selectionEnd ?? at); const pos = at + b.textContent.length; try { i.setSelectionRange(pos, pos); } catch {} };
+
+  // כשהמקלדת פתוחה הסרגל התחתון מוסתר, כדי שלא יעלה מעליה ויתפוס מקום
+  const typing = el => el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && !/^(checkbox|radio|file|button|submit|range)$/.test(el.type)));
+  document.addEventListener('focusin', e => { if (typing(e.target)) document.body.classList.add('kb'); });
+  document.addEventListener('focusout', () => setTimeout(() => { if (!typing(document.activeElement)) document.body.classList.remove('kb'); }, 120));
+
+  $('#grpForm').onsubmit = async e => { e.preventDefault(); const i = $('#grpText'), x = i.value.trim(); if (!x) return; i.value = ''; $('#emojiPanel').hidden = true; if (!await say(x)) i.value = x; };
   $('#grpQuick').onclick = async e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.here != null) { const me = A.me; if (!me) { A.startGPS(true); return A.toast('מאתרת מיקום… לחצי שוב בעוד רגע'); }
