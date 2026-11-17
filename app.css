@@ -523,3 +523,21 @@ body.kb .view { padding-bottom: 12px; }
 .trip-types .opt { text-align: center; padding: 12px 6px; } .trip-types .opt b { font-size: 15px; }
 .trip-hotel { display: flex; flex-direction: column; gap: 2px; background: var(--surface2); border-radius: 12px; padding: 10px 12px; }
 #tripCard h2 { font-size: 20px; }
+
+/* ───── איך מתחילים ───── */
+.starthome { border: 2px solid color-mix(in srgb, var(--sea) 35%, var(--line)); }
+.start-dots { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 6px 8px; align-items: center; margin: 10px 0 12px; }
+.start-dots span { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12.5px; font-weight: 700; background: var(--surface2); color: var(--muted); }
+.start-dots span.on { background: #0ca678; color: #fff; }
+.start-dots small { font-size: 13.5px; font-weight: 600; }
+.start-steps { display: flex; flex-direction: column; gap: 18px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; }
+.step-n { width: 34px; height: 34px; border-radius: 50%; background: var(--btn); color: #fff; font-weight: 800; display: grid; place-items: center; }
+.step.done .step-n { background: #0ca678; }
+.step-b { min-width: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.step-b h3 { font: 700 18px/1.2 var(--display); } .step-b p { font-size: 15px; line-height: 1.55; }
+.step-shot { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); max-width: 190px; cursor: zoom-in; }
+.step-shot img { display: block; width: 100%; height: auto; }
+.shot { background: #05080f; padding: 12px 12px calc(14px + var(--sab)); text-align: center; }
+.shot img { max-width: 100%; max-height: 74dvh; border-radius: 12px; display: block; margin: 0 auto 12px; }
+.about h2 { margin-bottom: 6px; } .about p { font-size: 15px; }

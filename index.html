@@ -47,6 +47,12 @@
       </section>
       <section class="card" id="hotelCard"></section>
       <section class="card" id="flightsCard"></section>
+      <section class="card starthome" id="startHome" hidden>
+        <div class="card-head"><h2>איך מתחילים</h2><span class="pill" id="startCount"></span></div>
+        <p class="muted small">שישה צעדים קצרים, עם צילומי מסך. אפשר לעשות אותם בכל סדר.</p>
+        <div class="start-dots" id="startDots"></div>
+        <div class="row"><button class="btn" data-jump="startCard" type="button">למדריך ההתחלה</button><button class="link" id="startHide" type="button">הבנתי, להסתיר</button></div>
+      </section>
       <section class="card setup" id="setupCard" hidden>
         <h2>איזו נסיעה זו?</h2>
         <p class="muted small">בנות, בנים, משפחה או חברים, ואולי יום הולדת? לפי זה יותאמו ההמלצות, המסלול והיומן.</p>
@@ -188,6 +194,12 @@
   <section class="view" id="v-more" data-view="more" hidden>
     <header class="page-head"><h1>ארגז כלים</h1></header>
     <div class="stack">
+      <details class="card acc" id="startCard">
+        <summary><i class="ic" data-ic="compass" style="--c:#e8590c;--c2:#ffa94d"></i>איך מתחילים</summary>
+        <p class="muted small">שישה צעדים, כל אחד עם צילום מסך וכפתור שמוביל ישר למקום. צעד שהושלם מסומן ב־✓.</p>
+        <div id="startSteps" class="start-steps"></div>
+      </details>
+
       <details class="card acc" id="guideCard">
         <summary><i class="ic" data-ic="bulb" style="--c:#0d5eaf;--c2:#3b9bff"></i>מדריך לאפליקציה</summary>
         <p class="muted small">כל מה שחשוב לדעת, בשפה פשוטה. לוחצים על נושא כדי לפתוח.</p>
@@ -307,6 +319,12 @@
         <p class="muted small">לחיצה על מספר מחייגת. כדאי לשמור גם את מספר הביטוח.</p>
       </details>
 
+      <section class="card about">
+        <h2>אודות</h2>
+        <p><b>אתונה שלנו</b> · מדריך ומלווה לטיול באתונה</p>
+        <p>פיתוח: דודו טל</p>
+        <p class="muted small">© 2026 כל הזכויות שמורות.</p>
+      </section>
       <div class="center"><button class="btn ghost sm" id="updBtn" type="button">בדיקת עדכון</button> <span class="muted small" id="verTxt"></span></div>
       <p class="muted small center">שעות ומחירים משתנים – כדאי לוודא בגוגל מפות לפני שיוצאים.<br>כל מה שהזנת נשמר רק בטלפון הזה.</p>
     </div>
@@ -393,6 +411,8 @@
     <div class="row end"><button type="button" class="btn ghost" id="locClose">סגירה</button><button type="button" class="btn" id="locReload">רענון</button></div>
   </div>
 </dialog>
+
+<dialog id="shotDlg" class="sheet shot"><img id="shotImg" alt=""><button type="button" class="btn" id="shotClose">סגירה</button></dialog>
 
 <dialog id="tripDlg" class="sheet">
   <form id="tripForm" method="dialog" class="form">
@@ -489,5 +509,6 @@
 <script src="group.js"></script>
 <script src="show.js"></script>
 <script src="backup.js"></script>
+<script src="start.js"></script>
 </body>
 </html>
