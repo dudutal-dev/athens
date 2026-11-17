@@ -114,8 +114,8 @@
     wrap.hidden = !media(e) || !e.blob;
     const vid = $('#entryVid'), isV = e.type === 'video'; vid.pause(); vid.hidden = !isV; $('#entryImg').hidden = isV;
     if (media(e) && e.blob) { editUrl = URL.createObjectURL(e.blob); if (isV) vid.src = editUrl; else $('#entryImg').src = editUrl; }
-    const tooBig = isV && (e.size || e.blob?.size || 0) > V_SHARE;
-    $('#entryVidNote').hidden = !tooBig; $('#entryVidNote').textContent = tooBig ? 'סרטון ארוך נשמר רק ביומן האישי. לקבוצה אפשר לשתף סרטון של עד 14 מ״ב, בערך 10–20 שניות.' : '';
+    const vMax = Math.max(V_SHARE, A.hooks.shareMax?.() || 0), tooBig = isV && (e.size || e.blob?.size || 0) > vMax;
+    $('#entryVidNote').hidden = !tooBig; $('#entryVidNote').textContent = tooBig ? `סרטון ארוך מאוד נשמר רק ביומן האישי. לקבוצה אפשר לשתף סרטון של עד ${Math.round(vMax / 1e6)} מ״ב, בערך דקה.` : '';
     $('#entryText').value = e.text || '';
     const ref = e.lat ? e : me;
     const list = [...PLACES].sort((a, b) => ref ? A.km(ref, a) - A.km(ref, b) : a.he.localeCompare(b.he, 'he'));
@@ -183,7 +183,7 @@
     for (const f of files) try {
       if (/^video\//.test(f.type) || /\.(mp4|mov|m4v|webm)$/i.test(f.name || '')) {
         last = await addVideo(f, f.lastModified || Date.now()); if (!last) continue;
-        if (jtab === 'us' && inGroup() && f.size <= V_SHARE) { last.shared = true; last.personal = false; } else { last.shared = false; last.personal = true; }
+        if (jtab === 'us' && inGroup() && f.size <= Math.max(V_SHARE, A.hooks.shareMax?.() || 0)) { last.shared = true; last.personal = false; } else { last.shared = false; last.personal = true; }
         await put(last); ok++; if (last.shared) await A.hooks.shareEntry?.(last, true); continue;
       }
       const blob = await shrink(f), bmp = await createImageBitmap(blob).catch(() => null);

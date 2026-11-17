@@ -79,13 +79,21 @@
     const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return out; }
   async function decBytes(buf) { const raw = new Uint8Array(buf); return crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, key, raw.slice(12)); }
   const served = {}, asked = {};
+  // קבצים גדולים (מעל 14 מ״ב ועד 95 מ״ב) עולים מוצפנים לאחסון שלנו ונשמרים שם 30 יום, במקום לשרת ההודעות שמקבל רק קבצים קטנים
+  const SMALL = 14e6, BIG = PUSH_URL ? 95e6 : SMALL;
+  const bigUrl = id => PUSH_URL + '/f/' + ntopic + '/' + String(id).toLowerCase().replace(/[^a-z0-9]/g, '');
+  async function bigUp(id, blob) { try { return (await fetch(bigUrl(id), { method: 'PUT', body: await encBytes(await blob.arrayBuffer()) })).ok; } catch { return false; } }
+  A.hooks.shareMax = () => (key ? BIG : 0);
   async function shareEntry(e, withImage) {
     if (!key) return false;
     try {
       const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) };
+      const big = e.type === 'video' && e.blob && e.blob.size > SMALL;
+      if (big && withImage) { if (e.blob.size > BIG) return false; A.toast('מעלה את הסרטון לקבוצה… לא לסגור את האפליקציה', 60000); if (!await bigUp(e.id, e.blob)) { A.toast('העלאת הסרטון נכשלה. לנסות שוב כשיש קליטה טובה', 5000); return false; } A.toast('הסרטון עלה לקבוצה'); }
+      if (big) meta.r = 1;
       const payload = await enc({ t: 'j', e: meta, n: G.name, d: G.id, ts: Date.now() });
       let r;
-      if ((e.type === 'photo' || e.type === 'video') && e.blob && withImage) {
+      if (!big && (e.type === 'photo' || e.type === 'video') && e.blob && withImage) {
         const small = e.type === 'video' ? e.blob : await A.journal.shrink(e.blob, 1280), body = await encBytes(await small.arrayBuffer());   // סרטון נשלח כמו שהוא
         r = await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body });
       } else r = await fetch(BASE + topic, { method: 'POST', body: payload });
@@ -102,10 +110,11 @@
     if (e && !e.byId) return;                                    // רשומה שלי – לא דורסים
     e = e ? { ...e, text: p.e.text, place: p.e.place, tags: p.e.tags || [] } : { ...p.e, tags: p.e.tags || [], shared: true, by: p.n, byId: p.d };
     const isMedia = e.type === 'photo' || e.type === 'video';
+    if (isMedia && !e.blob && !url && e.r && PUSH_URL) url = bigUrl(e.id);
     if (isMedia && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: e.type === 'video' ? e.mime || 'video/mp4' : 'image/jpeg' }); served[e.id] = Date.now();
       if (e.type === 'video') { const p = await J.poster(e.blob); if (p) { e.poster = p.blob; e.w = p.w; e.h = p.h; e.dur = e.dur || p.dur; } } } catch {}
     await J.put(e).catch(() => {}); J.render();
-    if (isMedia && !e.blob && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
+    if (isMedia && !e.blob && !e.r && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
     if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${e.type === 'photo' ? 'תמונה חדשה' : e.type === 'video' ? 'סרטון חדש' : 'רשומה חדשה'} ביומן מאת ${p.n}`, 4000);
   }
   async function journalReq(p) {   // מישהי חסרה תמונה: מי שמחזיקה אותה מעלה שוב, אחרי השהיה אקראית כדי שרק אחת תענה
@@ -114,7 +123,9 @@
     const t0 = Date.now(); await new Promise(r => setTimeout(r, (e.byId ? 2500 : 300) + Math.random() * 3000));
     if ((served[e.id] || 0) >= t0) return;
     served[e.id] = Date.now();
-    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) }, n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
+    const big = e.type === 'video' && e.blob.size > SMALL;
+    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}), ...(big ? { r: 1 } : {}) }, n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
+    if (big) { fetch(BASE + topic, { method: 'POST', body: payload }).catch(() => {}); return; }   // הסרטון הגדול כבר באחסון: שולחים רק את הפרטים
     try { const small = e.type === 'video' ? e.blob : await J.shrink(e.blob, 1280); await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) }); } catch {}
   }
 
@@ -124,7 +135,7 @@
   const fGet = id => fOp('readonly', s => s.get(id)).catch(() => null), fPut = (id, v) => fOp('readwrite', s => s.put(v, id));
   const fUrl = {}, fState = {};   // fState: loading | missing
   const kb = n => n > 1e6 ? (n / 1e6).toFixed(1) + ' מ״ב' : Math.max(1, Math.round(n / 1e3)) + ' ק״ב';
-  const okF = f => f && /^[a-z0-9]{6,12}$/.test(f.id || '') ? { id: f.id, name: String(f.name || 'קובץ').slice(0, 80), type: String(f.type || '').slice(0, 60), size: +f.size || 0, img: !!f.img, vid: !!f.vid } : null;
+  const okF = f => f && /^[a-z0-9]{6,12}$/.test(f.id || '') ? { id: f.id, name: String(f.name || 'קובץ').slice(0, 80), type: String(f.type || '').slice(0, 60), size: +f.size || 0, img: !!f.img, vid: !!f.vid, ...(f.r ? { r: 1 } : {}) } : null;
   async function postFile(obj, bytes) { try { return (await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(await enc({ ...obj, n: G.name, d: G.id, ts: Date.now() })), { method: 'POST', body: await encBytes(bytes) })).ok; } catch { return false; } }
   async function fetchFile(f, url) {   // מורידה, מפענחת ושומרת. אם הקובץ כבר נמחק מהשרת – מסמנת שחסר
     fState[f.id] = 'loading';
@@ -177,7 +188,7 @@
       const f = okF(p.f);
       G.msgs.push({ id: mid, d: p.d, n: p.n, x: p.t === 'hi' ? null : String(p.x || '').slice(0, 1200), ts: p.ts, lat: p.lat, lng: p.lng, ...(f ? { f } : {}), ...(p.c ? { c: p.c } : {}), ...(!mine && p.c && p.t === 'chat' && !chatOpen() ? { ur: 1 } : {}) });
       if (!mine && p.c && p.t === 'chat' && Date.now() - p.ts < 12 * 3600e3) queueAck(p.c, chatOpen());
-      if (f && !mine) { if (att) fetchFile(f, att); else fState[f.id] = 'missing'; }
+      if (f && !mine) { if (att) fetchFile(f, att); else if (f.r && PUSH_URL) fetchFile(f, bigUrl('c' + f.id)); else fState[f.id] = 'missing'; }
       G.msgs.sort((a, b) => a.ts - b.ts); if (G.msgs.length > 250) G.msgs.splice(0, G.msgs.length - 250);
       if (!mine && Date.now() - p.ts < 5 * 60e3) { if (p.t === 'chat') beep(); if ($('#v-chat').hidden) { unread++; if (p.t === 'chat') A.toast(`${p.n}: ${p.f ? (p.f.img ? '📷 תמונה' : p.f.vid ? '🎬 סרטון' : '📎 ' + String(p.f.name || '')) + ' ' : ''}${String(p.x || '').slice(0, 60)}`, 4000); } }
       else if (!mine && $('#v-chat').hidden) unread++;
@@ -193,7 +204,7 @@
     if (p.t === 'ack' && !mine) { const mark = (list, k) => { for (const c of Array.isArray(list) ? list.slice(0, 80) : []) { const m = G.msgs.find(x => x.c === c && x.d === G.id); if (m && !(m[k] ||= {})[p.d]) m[k][p.d] = p.ts || 1; } };
       mark(p.dl, 'dv'); mark(p.rd, 'dv'); mark(p.rd, 'rd'); }
     if (p.t === 'freq' && !mine && p.fid) fGet(p.fid).then(async v => {   // מישהי מבקשת קובץ שפג תוקפו: מי שמחזיקה אותו מעלה שוב (השולחת קודם)
-      const f = findF(p.fid); if (!v || !f) return; const own = G.msgs.some(x => x.f && x.f.id === p.fid && x.d === G.id), t0 = Date.now();
+      const f = findF(p.fid); if (!v || !f || f.r) return; const own = G.msgs.some(x => x.f && x.f.id === p.fid && x.d === G.id), t0 = Date.now();
       await new Promise(q => setTimeout(q, own ? 300 + Math.random() * 1200 : 2500 + Math.random() * 3000));
       if ((served['f' + p.fid] || 0) >= t0) return; served['f' + p.fid] = Date.now();
       postFile({ t: 'fdata', fid: p.fid }, await v.blob.arrayBuffer());
@@ -339,14 +350,15 @@
     if (img) try { blob = await A.journal.shrink(file, 1280); type = 'image/jpeg'; name = name.replace(/\.\w+$/, '') + '.jpg'; } catch { return A.toast('לא הצלחנו לקרוא את התמונה'); }
     const vid = !img && (/^video\//.test(file.type) || /\.(mp4|mov|m4v|webm)$/i.test(name));
     if (vid && !/^video\//.test(type)) type = /\.mov$/i.test(name) ? 'video/quicktime' : 'video/mp4';
-    if (blob.size > 14e6) return A.toast(vid ? 'הסרטון גדול מדי. אפשר לשלוח עד 14 מ״ב, בערך 10–20 שניות' : 'הקובץ גדול מדי. אפשר לשלוח עד 14 מ״ב');
-    if (blob.size > 3e6) A.toast('מעלה… זה יכול לקחת כמה שניות', 8000);
-    const rnd = () => Math.random().toString(36).slice(2, 10), fid = rnd(), c = rnd(), f = { id: fid, name: name.slice(0, 80), type, size: blob.size, img, vid };
+    const big = blob.size > SMALL;
+    if (blob.size > BIG) return A.toast(vid ? 'הסרטון גדול מדי. אפשר לשלוח עד 95 מ״ב, בערך דקה' : 'הקובץ גדול מדי. אפשר לשלוח עד 95 מ״ב');
+    if (blob.size > 3e6) A.toast(big ? 'מעלה… זה יכול לקחת דקה. לא לסגור את האפליקציה' : 'מעלה… זה יכול לקחת כמה שניות', big ? 60000 : 8000);
+    const rnd = () => Math.random().toString(36).slice(2, 10), fid = rnd(), c = rnd(), f = { id: fid, name: name.slice(0, 80), type, size: blob.size, img, vid, ...(big ? { r: 1 } : {}) };
     await fPut(fid, { blob, name, type }).catch(() => {}); fUrl[fid] = URL.createObjectURL(blob);
     const inp = $('#grpText'), x = inp.value.trim(); inp.value = '';
     const m = { id: 'c' + c, c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, f };
     G.msgs.push(m); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight;
-    if (!await postFile({ t: 'chat', x, c, f }, await blob.arrayBuffer())) { G.msgs = G.msgs.filter(y => y !== m); render(); inp.value = x; return A.toast('אין חיבור – הקובץ לא נשלח'); }
+    if (!(big ? (await bigUp('c' + fid, blob)) && (await send({ t: 'chat', x, c, f })) : await postFile({ t: 'chat', x, c, f }, await blob.arrayBuffer()))) { G.msgs = G.msgs.filter(y => y !== m); render(); inp.value = x; return A.toast('אין חיבור – הקובץ לא נשלח'); }
     if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${img ? '📷 תמונה' : vid ? '🎬 סרטון' : '📎 ' + name} ${x.slice(0, 100)}`, site: location.origin + location.pathname }) }).catch(() => {});
   }
   $('#chatFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) sayFile(f); };
@@ -358,7 +370,8 @@
     const a = document.createElement('a'); a.href = URL.createObjectURL(v.blob); a.download = f.name; document.body.append(a); a.click(); a.remove();
   }
   $('#grpChat').addEventListener('click', e => {
-    const q = e.target.closest('[data-freq]'); if (q) { const fid = q.dataset.freq; fState[fid] = 'loading'; render(); send({ t: 'freq', fid });
+    const q = e.target.closest('[data-freq]'); if (q) { const fid = q.dataset.freq, bf = findF(fid); if (bf && bf.r) return fetchFile(bf, bigUrl('c' + fid));   // קובץ גדול נמצא באחסון: מנסים להוריד שוב
+      fState[fid] = 'loading'; render(); send({ t: 'freq', fid });
       setTimeout(() => { if (fState[fid] === 'loading') { fState[fid] = 'missing'; render(); A.toast('אין כרגע מישהו מחובר שהקובץ שמור אצלו'); } }, 25000); return; }
     const el = e.target.closest('[data-file]'); if (!el) return; const fid = el.dataset.file, f = findF(fid);
     if (f && f.img) { openF = fid; $('#fileImg').src = fUrl[fid]; $('#fileDlg').showModal(); } else shareF(fid);

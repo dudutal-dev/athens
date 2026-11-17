@@ -5,7 +5,7 @@ const te = new TextEncoder();
 const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64u = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
 const cat = (...a) => { const out = new Uint8Array(a.reduce((n, x) => n + x.length, 0)); let o = 0; for (const x of a) { out.set(x, o); o += x.length; } return out; };
-const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET,POST,OPTIONS', 'access-control-allow-headers': 'content-type' };
+const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET,POST,PUT,OPTIONS', 'access-control-allow-headers': 'content-type', 'access-control-max-age': '86400' };
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json', ...CORS } });
 
 async function vapid(env) {
@@ -52,6 +52,22 @@ export default {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
+      // קבצים גדולים של הקבוצה (סרטונים): נשמרים ב-R2 (binding בשם FILES) כשהם כבר מוצפנים בטלפון. נמחקים לבד אחרי 30 יום
+      const fm = url.pathname.match(/^\/f\/([a-z0-9]{10,40})\/([a-z0-9]{4,32})$/);
+      if (fm) {
+        if (!env.FILES) return json({ error: 'no storage' }, 503);
+        const k = fm[1] + '/' + fm[2];
+        if (req.method === 'PUT') {
+          const len = +req.headers.get('content-length') || 0;
+          if (!len || len > 99e6) return json({ error: 'too big' }, 413);
+          await env.FILES.put(k, req.body); return json({ ok: true });
+        }
+        if (req.method === 'GET' || req.method === 'HEAD') {
+          const o = await env.FILES.get(k); if (!o) return json({ error: 'gone' }, 404);
+          return new Response(req.method === 'HEAD' ? null : o.body, { headers: { 'content-type': 'application/octet-stream', 'content-length': String(o.size), 'cache-control': 'private, max-age=86400', ...CORS } });
+        }
+        return json({ error: 'method' }, 405);
+      }
       if (url.pathname === '/key') return json({ key: (await vapid(env)).pub });
       if (req.method !== 'POST') return json({ ok: true, service: 'athens-push' });
       const b = await req.json(), g = String(b.g || '');
