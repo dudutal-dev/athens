@@ -459,11 +459,13 @@
       const alone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
       if (G.name && alone) join(j, G.name, false);   // האפליקציה כבר במסך הבית והשם ידוע: מצטרפים מיד
       else { // חלון אחד: שם, ולחיצה אחת שמצרפת לקבוצה ומתקינה למסך הבית
-        const dlg = $('#inviteDlg'), can = !alone && !!A.install; $('#invName').value = G.name || '';
-        $('#invGo').textContent = can ? 'כן, להצטרף ולהתקין' : 'הצטרפות לקבוצה'; $('#invOnly').hidden = !can; $('#invQ').hidden = !can;
-        const go = install => { const name = $('#invName').value.trim(); if (!name) { A.toast('איך קוראים לך?'); return $('#invName').focus(); }
-          dlg.close(); $('#grpName').value = name; if (install && can) A.install(); join(j, name, false); };
-        $('#invForm').onsubmit = e => { e.preventDefault(); go(true); }; $('#invOnly').onclick = () => go(false);
+        // חובה להתקין במסך הבית. באייפון אי אפשר להתקין מתוך האתר: מראים את הצעדים, וההצטרפות נעשית באפליקציה שבמסך הבית
+        const dlg = $('#inviteDlg'), ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        if (ios && !alone) return void setTimeout(() => A.installSteps(true), 500);
+        $('#invName').value = G.name || ''; $('#invGo').textContent = alone ? 'הצטרפות לקבוצה' : 'להצטרף ולהתקין'; $('#invQ').hidden = alone;
+        $('#invForm').onsubmit = async e => { e.preventDefault(); const name = $('#invName').value.trim(); if (!name) { A.toast('איך קוראים לך?'); return $('#invName').focus(); }
+          if (!alone) { const r = await A.installNow(); if (r === 'no') return A.toast('כדי להצטרף צריך להתקין את האפליקציה במסך הבית', 5000); }
+          dlg.close(); $('#grpName').value = name; join(j, name, false); };
         setTimeout(() => dlg.showModal(), 500); } }
     else if (norm(G.code) !== norm(j)) setTimeout(() => A.toast('הקישור הוא לקבוצה אחרת. כדי להצטרף אליה צריך קודם לצאת מהקבוצה הנוכחית', 7000), 1500);
   }
