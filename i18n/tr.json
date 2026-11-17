@@ -3687,6 +3687,10 @@
   "en": "Detailed",
   "es": "Detallado"
  },
+ "מצב בהיר או כהה": {
+  "en": "Light or dark mode",
+  "es": "Modo claro u oscuro"
+ },
  "מצגת הטיול": {
   "en": "Trip slideshow",
   "es": "Presentación del viaje"
@@ -4106,6 +4110,10 @@
  "סרטונים:": {
   "en": "Videos:",
   "es": "Vídeos:"
+ },
+ "עב": {
+  "en": "עב",
+  "es": "עב"
  },
  "עברית": {
   "en": "עברית",

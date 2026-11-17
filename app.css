@@ -645,3 +645,35 @@ html[dir=ltr] .gcode { font-size: 22px; letter-spacing: 1px; }
 .hero-top .hero-btns { display: flex; flex: none; }
 .hero-top label.hero-lang { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; margin: 0; width: auto; color: #fff; font: 600 13.5px var(--body); }
 .hero-top label.hero-lang, html[dir=ltr] .hero-top label.hero-lang { top: 0; left: 0; right: auto; }
+
+/* ═════ נגיעות צבע עדינות ואייקונים דו־גוניים ═════ */
+.ic, .tic { color: var(--c); }
+.ic svg, .tic svg, .tabbar .tic svg, .tabbar button.on .tic svg { stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+svg .du { fill: currentColor; stroke: none; opacity: .2; }
+.ic { background: color-mix(in srgb, var(--c) 13%, var(--surface)); }
+.qbtn { border-color: color-mix(in srgb, var(--c, var(--line)) 0%, var(--line)); }
+.qbtn.wide .ic { background: linear-gradient(145deg, var(--c), color-mix(in srgb, var(--c) 62%, #fff)); color: #fff; box-shadow: 0 6px 14px color-mix(in srgb, var(--c) 28%, transparent); }
+.qbtn.wide .ic svg .du { opacity: .28; }
+/* סרגל תחתון: לכל לשונית גוון רך משלה; הפעילה מודגשת */
+.tabbar .tic { color: color-mix(in srgb, var(--c) 58%, var(--muted)); }
+.tabbar button { color: var(--muted); }
+.tabbar button.on { color: var(--c); }
+.tabbar button.on .tic { color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent); }
+.tabbar button.on .tic svg .du { opacity: .3; }
+/* כותרת: לחצנים עגולים */
+.hero-set.round { width: 34px; padding: 0; justify-content: center; color: #fff; }
+.hero-set.round svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hero-set.round svg .du { opacity: .35; }
+/* מעט חום לדף עצמו */
+.wx { background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--sea) 5%, var(--surface))); }
+.wx span { color: var(--ink); }
+.sec-head h2 { position: relative; padding-inline-start: 12px; }
+.sec-head h2::before { content: ''; position: absolute; inset-inline-start: 0; top: .2em; bottom: .2em; width: 4px; border-radius: 4px; background: var(--pink); }
+.pill { background: color-mix(in srgb, var(--sea) 10%, var(--surface)); color: var(--sea); }
+@media (prefers-color-scheme: dark) {
+  .ic, .tic { color: color-mix(in srgb, var(--c) 62%, #fff); }
+  .ic { background: color-mix(in srgb, var(--c) 20%, var(--surface)); }
+  .tabbar .tic { color: color-mix(in srgb, var(--c) 45%, var(--muted)); }
+  .tabbar button.on, .tabbar button.on .tic { color: color-mix(in srgb, var(--c) 62%, #fff); }
+  .qbtn.wide .ic { color: #fff; }
+}

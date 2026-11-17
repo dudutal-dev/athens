@@ -276,7 +276,7 @@
   $('#dayTabs').onclick = e => { const b = e.target.closest('button'); if (b) { ui.day = +b.dataset.day; renderDayTabs(); renderPlan(); } };
 
   // ───── map ─────
-  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
   const LAYERS = {
     streets: { he: 'רחובות', sub: 'מומלצת. ברורה לקריאה, וזו המפה שנשמרת לאוף־ליין', url: ESRI + 'World_Street_Map/MapServer/tile/{z}/{y}/{x}', max: 18, attr: 'Tiles © Esri' },
@@ -464,7 +464,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 47;
+  const VERSION = 48;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -524,7 +524,13 @@
   $('#tripBtn').onclick = editTrip; $('#setupBtn').onclick = editTrip;
 
   // ───── boot ─────
-  $$('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[el.dataset.ic] || ''}"/></svg>`);
+  const icon = n => { const [f, l] = (ICONS[n] || '|').split('|'); return `<svg viewBox="0 0 24 24" aria-hidden="true"><path class="du" d="${f}"/><path d="${l}"/></svg>`; };
+  $$('[data-ic]').forEach(el => el.innerHTML = icon(el.dataset.ic));
+  // מצב בהיר / כהה: ברירת המחדל לפי הטלפון, והלחצן בכותרת מחליף וזוכר
+  const isDark = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const themeBtn = () => { $('#themeBtn').innerHTML = icon(isDark() ? 'sun' : 'moon'); };
+  $('#themeBtn').onclick = () => { const t = isDark() ? 'light' : 'dark'; try { localStorage.setItem('athina.theme', t); } catch {} applyTheme(t); themeBtn(); };
+  themeBtn();
   $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
   const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, openTrip, hooks: {}, get install() { return A_install; }, installSteps: i => A_steps(i), installNow: () => A_now(), get imgs() { return Object.values(IMG); }, get map() { return map; },
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
