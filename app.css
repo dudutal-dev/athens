@@ -748,3 +748,10 @@ svg .du { fill: currentColor; stroke: none; opacity: .2; }
   .tabbar .tic svg, .tabbar button.on .tic svg { width: 23px; height: 23px; }
   .tabbar button, .tabbar button.on { font-size: 10.500px; }
 }
+
+/* הלשונית הפעילה: בלי הרמה ובלי טבעת (נחתכו בטלפון). במקומן שם מודגש וקו קטן בצבע הלשונית */
+.tabbar button, .tabbar button.on { overflow: visible; }
+.tabbar button.on .tic { transform: none; box-shadow: 0 3px 8px color-mix(in srgb, var(--c) 30%, transparent); }
+.tabbar button::after { content: ''; width: 16px; height: 3px; border-radius: 3px; background: transparent; }
+.tabbar button.on::after { background: var(--c); }
+.tabbar button, .tabbar button.on { gap: 3px; }
