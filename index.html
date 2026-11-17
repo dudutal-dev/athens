@@ -465,6 +465,15 @@ try { var th = localStorage.getItem('athina.theme'); if (th === 'dark' || th ===
   </form>
 </dialog>
 
+<dialog id="msgDlg" class="sheet">
+  <p class="msg-prev" id="msgPrev" translate="no"></p>
+  <div class="msg-acts">
+    <button class="btn ghost" id="msgCopy" type="button">העתקה</button>
+    <button class="btn danger" id="msgDelAll" type="button">מחיקה אצל כולם</button>
+    <button class="btn ghost" id="msgDelMe" type="button">מחיקה רק אצלי</button>
+    <button class="link" id="msgCancel" type="button">ביטול</button>
+  </div>
+</dialog>
 <dialog id="infoDlg" class="sheet">
   <div class="form">
     <h2>מי קרא</h2>

@@ -677,3 +677,10 @@ svg .du { fill: currentColor; stroke: none; opacity: .2; }
   .tabbar button.on, .tabbar button.on .tic { color: color-mix(in srgb, var(--c) 62%, #fff); }
   .qbtn.wide .ic { color: #fff; }
 }
+
+/* ───── תפריט הודעה בצ׳אט ───── */
+#msgDlg { padding: 18px 18px calc(16px + env(safe-area-inset-bottom)); }
+.msg-prev { background: var(--surface2); border-radius: 14px; padding: 10px 12px; margin: 0 0 12px; font-size: 14.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msg-acts { display: grid; gap: 8px; } .msg-acts .link { justify-self: center; padding: 8px; }
+.btn.danger { background: #d6336c; box-shadow: none; }
+#grpChat .msg { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }

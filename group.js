@@ -211,6 +211,12 @@
     mem.n = p.n; mem.seen = Math.max(mem.seen || 0, p.ts);
     if (p.t === 'av') { if (okAv(p.av)) mem.av = p.av; else delete mem.av; }
     if (p.t === 'hi' && !mine && G.av && Date.now() - p.ts < 5 * 60e3) setTimeout(() => send({ t: 'av', av: G.av }), 1000 + Math.random() * 3000);   // חברה חדשה: שולחות לה את התמונה שלנו
+    if (p.t === 'del' && p.c) {
+      const m = G.msgs.find(x => x.c === p.c); (G.dels ||= []).push(p.c); if (G.dels.length > 300) G.dels.splice(0, 100);
+      if (m && (m.d === p.d || (TRIP.cfg.by && p.d === TRIP.cfg.by))) { G.msgs = G.msgs.filter(x => x !== m); save(); render(); }
+      return;
+    }
+    if (p.t === 'chat' && p.c && G.dels && G.dels.includes(p.c)) return;   // הודעה שכבר נמחקה (הגיעה שוב מהשרת השני או מההיסטוריה)
     if (p.t === 'chat' || p.t === 'hi') {
       if (G.msgs.some(x => x.id === mid)) return;
       const pend = p.c && G.msgs.find(x => x.id === 'c' + p.c);
@@ -309,7 +315,7 @@
     }).join('');
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרף/ה לקבוצה</p>` :
-      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b translate="no">${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span translate="no">${esc(m.x)}</span>` : ''}
+      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" data-mid="${m.id}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b translate="no">${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span translate="no">${esc(m.x)}</span>` : ''}
         ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קרא">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. אפשר לכתוב משהו לקבוצה.</p>';
     if ([...box.querySelectorAll('video')].some(v => !v.paused && !v.ended)) box._dirty = true;   // סרטון מתנגן: מעדכנים כשהוא נעצר
@@ -423,6 +429,28 @@
     $('#infoDlg').showModal();
   });
   $('#infoClose').onclick = () => $('#infoDlg').close();
+  // לחיצה ארוכה על הודעה: העתקה או מחיקה. את ההודעות שלי (ומנהל הקבוצה – כל הודעה) אפשר למחוק אצל כולם
+  let actMsg = null, holdT = null;
+  function msgMenu(el) {
+    const m = G.msgs.find(x => x.id === el.dataset.mid); if (!m || m.x === null) return; actMsg = m;
+    const mine = m.d === G.id, admin = TRIP.cfg.by && TRIP.cfg.by === G.id;
+    $('#msgPrev').textContent = (m.f ? (m.f.img ? '📷 ' : m.f.vid ? '🎬 ' : '📎 ') : '') + (m.x || (m.f ? m.f.name : '')).slice(0, 90);
+    $('#msgCopy').hidden = !m.x; $('#msgDelAll').hidden = !(m.c && !m.pending && (mine || admin));
+    $('#msgDlg').showModal();
+  }
+  const box0 = $('#grpChat');
+  box0.addEventListener('pointerdown', e => { const el = e.target.closest('.msg'); clearTimeout(holdT); if (!el || e.target.closest('a, button, video')) return; const x = e.clientX, y = e.clientY;
+    holdT = setTimeout(() => msgMenu(el), 550);
+    const stop = ev => { if (ev.type === 'pointermove' && Math.hypot(ev.clientX - x, ev.clientY - y) < 10) return; clearTimeout(holdT); box0.removeEventListener('pointermove', stop); };
+    box0.addEventListener('pointermove', stop); ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => box0.addEventListener(t, stop, { once: true })); });
+  box0.addEventListener('contextmenu', e => { const el = e.target.closest('.msg'); if (el && !e.target.closest('a, video')) { e.preventDefault(); clearTimeout(holdT); msgMenu(el); } });
+  const dropMsg = m => { G.msgs = G.msgs.filter(x => x !== m); save(); render(); };
+  $('#msgCopy').onclick = () => { navigator.clipboard?.writeText(actMsg.x).then(() => A.toast('הועתק'), () => {}); $('#msgDlg').close(); };
+  $('#msgDelMe').onclick = () => { dropMsg(actMsg); $('#msgDlg').close(); A.toast('ההודעה נמחקה אצלך'); };
+  $('#msgDelAll').onclick = async () => { const m = actMsg; $('#msgDlg').close();
+    if (!(await send({ t: 'del', c: m.c }))) return A.toast('אין חיבור כרגע. ההודעה לא נמחקה');
+    (G.dels ||= []).push(m.c); dropMsg(m); A.toast('ההודעה נמחקה אצל כולם'); };
+  $('#msgCancel').onclick = () => $('#msgDlg').close();
   $('#fileShare').onclick = () => openF && shareF(openF);
   $('#fileClose').onclick = () => $('#fileDlg').close();
 

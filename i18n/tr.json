@@ -435,6 +435,10 @@
   "en": "No time, or the desk is closed? Drop the stamped form into the refund company's mailbox next to the desk.",
   "es": "¿No hay tiempo o el mostrador está cerrado? Echa el formulario sellado en el buzón de la empresa de devolución que hay junto al mostrador."
  },
+ "אין חיבור כרגע. ההודעה לא נמחקה": {
+  "en": "No connection right now. The message was not deleted",
+  "es": "Sin conexión ahora. El mensaje no se ha eliminado"
+ },
  "אין חיבור כרגע. לנסות שוב": {
   "en": "No connection right now. Try again",
   "es": "Ahora no hay conexión. Inténtalo de nuevo"
@@ -1395,6 +1399,14 @@
   "en": "These settings are passed on to everyone who joins the group.",
   "es": "Estos ajustes llegan a todas las personas que se unen al grupo."
  },
+ "ההודעה נמחקה אצל כולם": {
+  "en": "Message deleted for everyone",
+  "es": "Mensaje eliminado para todos"
+ },
+ "ההודעה נמחקה אצלך": {
+  "en": "Message deleted on your phone",
+  "es": "Mensaje eliminado en tu teléfono"
+ },
  "ההודעה עוד בדרך לשרת.": {
   "en": "The message is still on its way to the server.",
   "es": "El mensaje aún está en camino al servidor."
@@ -1446,6 +1458,10 @@
  "הוסרת מהקבוצה על ידי מנהל הקבוצה": {
   "en": "The group admin removed you from the group",
   "es": "La persona que administra el grupo te ha quitado del grupo"
+ },
+ "הועתק": {
+  "en": "Copied",
+  "es": "Copiado"
  },
  "הוצאה": {
   "en": "Expense",
@@ -1834,6 +1850,10 @@
  "הערות": {
   "en": "Notes",
   "es": "Notas"
+ },
+ "העתקה": {
+  "en": "Copy",
+  "es": "Copiar"
  },
  "הפארק הזואולוגי של אטיקה": {
   "en": "Attica Zoological Park",
@@ -2911,6 +2931,10 @@
   "en": "Cheers!",
   "es": "¡Salud!"
  },
+ "לחיצה ארוכה על הודעה פותחת תפריט. הודעה שלך אפשר למחוק אצל כולם, וכל הודעה אפשר למחוק רק אצלך. מנהל הקבוצה יכול למחוק כל הודעה אצל כולם.": {
+  "en": "Press and hold a message to open a menu. You can delete your own message for everyone, and any message just for you. The group admin can delete any message for everyone.",
+  "es": "Mantén pulsado un mensaje para abrir un menú. Puedes eliminar tu propio mensaje para todos, y cualquier mensaje solo para ti. Quien administra el grupo puede eliminar cualquier mensaje para todos."
+ },
  "לחיצה על הלב שומרת את המקום ברשימה שלך. הכפתור \"♥ שלי\" מציג רק אותם.": {
   "en": "Tapping the heart saves the place to your list. The \"♥ Mine\" button shows only those.",
   "es": "Al tocar el corazón, el lugar se guarda en tu lista. El botón \"♥ Míos\" muestra solo esos."
@@ -3410,6 +3434,18 @@
  "מחיקה": {
   "en": "Delete",
   "es": "Eliminar"
+ },
+ "מחיקה אצל כולם": {
+  "en": "Delete for everyone",
+  "es": "Eliminar para todos"
+ },
+ "מחיקה והעתקה:": {
+  "en": "Delete and copy:",
+  "es": "Eliminar y copiar:"
+ },
+ "מחיקה רק אצלי": {
+  "en": "Delete for me only",
+  "es": "Eliminar solo para mí"
  },
  "מחיקת האפליקציה ממסך הבית מוחקת את כל מה שנשמר בה, כולל היומן. לפני מחיקה, לבנות מצגת ולשמור כ־PDF.": {
   "en": "Removing the app from your home screen deletes everything stored in it, including the journal. Before removing it, build a slideshow and save it as a PDF.",
