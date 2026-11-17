@@ -431,8 +431,12 @@
   }
 
   // ───── התקנה למסך הבית ─────
-  $('#langSel').value = LANG; $('#langNow').textContent = { he: 'עב', en: 'EN', es: 'ES' }[LANG]; $('#langSel').onchange = e => setLang(e.target.value);
-  $$('[data-lang]').forEach(b => { if (b.dataset.lang === LANG) b.classList.remove('ghost'); b.onclick = () => setLang(b.dataset.lang); });
+  // בחירת שפה: חלון עם דגלים במקום רשימה נפתחת
+  const LNG = { he: ['🇮🇱', 'עב', 'עברית'], en: ['🇬🇧', 'EN', 'English'], es: ['🇪🇸', 'ES', 'Español'] };
+  $('#langFlag').textContent = LNG[LANG][0]; $('#langNow').textContent = LNG[LANG][1]; $('#langFlag2').textContent = LNG[LANG][0]; $('#langName2').textContent = LNG[LANG][2];
+  $('#langBtn').onclick = $('#langOpen2').onclick = () => $('#langDlg').showModal();
+  $('#langDlg').onclick = e => { if (e.target.id === 'langDlg') e.target.close(); };
+  $$('.lang-opt').forEach(b => { if (b.dataset.lang === LANG) b.classList.add('on'); b.onclick = () => b.dataset.lang === LANG ? $('#langDlg').close() : setLang(b.dataset.lang); });
   let A_install = null, A_steps = () => {}, A_now = async () => 'manual';
   (() => {
     const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
@@ -470,7 +474,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 55;
+  const VERSION = 56;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
