@@ -1255,6 +1255,10 @@
   "en": "Version {0}",
   "es": "Versión {0}"
  },
+ "גשם": {
+  "en": "Rain",
+  "es": "Lluvia"
+ },
  "ג׳לטו איטלקי בעבודת יד מחומרים יווניים. פיסטוק מאגינה ומסטיקה.": {
   "en": "Handmade Italian gelato using Greek ingredients. Aegina pistachio and mastiha.",
   "es": "Gelato italiano artesanal con ingredientes griegos. Pistacho de Egina y mastiha."
@@ -3763,6 +3767,10 @@
   "en": "is fuller; cash carries an extra fee.",
   "es": "es más completa; en efectivo hay una comisión adicional."
  },
+ "ממטרים": {
+  "en": "Showers",
+  "es": "Chubascos"
+ },
  "ממך: {}{}": {
   "en": "From you: {0}{1}",
   "es": "Desde ti: {0}{1}"
@@ -3850,6 +3858,14 @@
  "מעדנייה־טברנה אהובה: נקניקים, גבינות, מזטים ותבשילים. אווירה חמה ושירות מפנק.": {
   "en": "A much-loved deli-taverna: cured meats, cheeses, mezes and stews. Warm atmosphere and attentive service.",
   "es": "Una charcutería-taberna muy querida: embutidos, quesos, mezes y guisos. Ambiente cálido y un servicio que te mima."
+ },
+ "מעונן": {
+  "en": "Cloudy",
+  "es": "Nublado"
+ },
+ "מעונן חלקית": {
+  "en": "Partly cloudy",
+  "es": "Parcialmente nublado"
  },
  "מעכשיו לפתוח אותה רק מהאייקון הכחול עם המקדש.": {
   "en": "From now on, open it only from the blue icon with the temple.",
@@ -4219,6 +4235,10 @@
   "en": "Small, warm Greek doughnuts with honey and cinnamon, or filled with chocolate and pistachio.",
   "es": "Pequeños buñuelos griegos calientes con miel y canela, o rellenos de chocolate y pistacho."
  },
+ "סופת רעמים": {
+  "en": "Thunderstorm",
+  "es": "Tormenta"
+ },
  "סטטוס טיסה": {
   "en": "Flight status",
   "es": "Estado del vuelo"
@@ -4446,6 +4466,10 @@
  "עריכה": {
   "en": "Edit",
   "es": "Editar"
+ },
+ "ערפל": {
+  "en": "Fog",
+  "es": "Niebla"
  },
  "עתיקות בבוקר, ברים בערב": {
   "en": "Antiquities in the morning, bars in the evening",
@@ -5011,6 +5035,10 @@
   "en": "Belongs to the whole group. What you shoot here shows up for everyone, with your name.",
   "es": "De todo el grupo. Lo que fotografías aquí le aparece a todo el mundo, con tu nombre."
  },
+ "שלג": {
+  "en": "Snow",
+  "es": "Nieve"
+ },
  "שלום / להתראות": {
   "en": "Hello / Goodbye",
   "es": "Hola / Adiós"
@@ -5066,6 +5094,10 @@
  "שמירה ביומן": {
   "en": "Save to journal",
   "es": "Guardar en el diario"
+ },
+ "שמש": {
+  "en": "Sunny",
+  "es": "Soleado"
  },
  "שעה וחצי דרומה": {
   "en": "An hour and a half south",
