@@ -302,7 +302,8 @@
     try { const u = (localStorage.getItem('athina.jused') || '').split(',').filter(Boolean); if (!u.includes(code)) localStorage.setItem('athina.jused', [...u, code].slice(-20).join(',')); } catch {}
     await derive(code); connect(); render();
     setTimeout(() => send({ t: 'hi' }).then(() => { if (G.av) send({ t: 'av', av: G.av }); if (isNew) sendTrip(); }), 800);
-    A.toast(isNew ? 'הקבוצה נוצרה. עכשיו שולחים את הקוד לשאר' : 'הצטרפת לקבוצה');
+    A.toast(isNew ? 'הקבוצה נוצרה. עכשיו שולחים הזמנה לשאר' : 'הצטרפת לקבוצה');
+    if (!isNew && /[?&]j=/.test(location.search) && A.install) setTimeout(() => A.install(), 1800);   // הגיעו מקישור הזמנה בדפדפן: מציעים מיד להתקין למסך הבית
   }
   $('#grpJoinForm').onsubmit = e => { e.preventDefault(); join($('#grpCodeIn').value, $('#grpName').value.trim(), false); };
   // פתיחת קבוצה: קודם מגדירים את הנסיעה, ואז נוצר הקוד

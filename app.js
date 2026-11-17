@@ -425,22 +425,40 @@
   }
 
   // ───── התקנה למסך הבית ─────
+  let A_install = null;
   (() => {
     const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
     let hidden = false; try { hidden = localStorage.getItem('athina.installHide'); } catch {}
     if (standalone || hidden) return;
     const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua), card = $('#installCard');
     $('#installTxt').innerHTML = ios
-      ? (/CriOS/.test(ua) ? 'בכרום: לחיצה על כפתור השיתוף <b>בשורת הכתובת למעלה</b> ← "הוספה למסך הבית".' : 'לחיצה על כפתור השיתוף למטה ← לגלול ← <b>"הוספה למסך הבית"</b>.') + ' האפליקציה תיפתח מהאייקון במסך מלא, גם בלי קליטה.'
-      : 'בתפריט הדפדפן (⋮) ← <b>"הוספה למסך הבית"</b> או "התקנת האפליקציה".';
+      ? 'אייקון במסך הבית, מסך מלא, עובד גם בלי קליטה. לוחצים "התקנה" ורואים איך.'
+      : 'אייקון במסך הבית, מסך מלא, עובד גם בלי קליטה.';
     card.hidden = false;
+    // כפתור ההתקנה: באנדרואיד מתקין מיד כשהדפדפן מאפשר. באייפון אין דרך להתקין מתוך האתר, אז מראים את הצעדים
+    const SHARE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+    const PLUS = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+    let promptEv = null;
+    const steps = () => {
+      $('#installSteps').innerHTML = (ios ? [
+        `ללחוץ על כפתור השיתוף <span class="inst-ic">${SHARE}</span> ${/CriOS/.test(ua) ? 'בשורת הכתובת למעלה' : 'בתחתית המסך'}.`,
+        `לגלול למטה ולבחור <b>"הוספה למסך הבית"</b> <span class="inst-ic">${PLUS}</span>.`,
+        'ללחוץ <b>"הוסף"</b> בפינה למעלה.'] : [
+        'לפתוח את תפריט הדפדפן <span class="inst-ic">⋮</span> בפינה למעלה.',
+        'לבחור <b>"התקנת האפליקציה"</b> או <b>"הוספה למסך הבית"</b>.',
+        'לאשר <b>"התקנה"</b>.']).map(x => `<li>${x}</li>`).join('');
+      $('#installAfter').textContent = 'מעכשיו פותחים את האפליקציה מהאייקון שבמסך הבית. ' + (/[?&]j=/.test(location.search) ? 'בפתיחה הראשונה משם כותבים שם, והחיבור לקבוצה נעשה לבד.' : '');
+      $('#installDlg').showModal();
+    };
+    A_install = async () => { if (promptEv) { promptEv.prompt(); const c = await promptEv.userChoice; promptEv = null; if (c.outcome === 'accepted') card.hidden = true; } else steps(); };
+    $('#installBtn').onclick = () => A_install(); $('#installOk').onclick = () => $('#installDlg').close();
     $('#installHide').onclick = () => { card.hidden = true; try { localStorage.setItem('athina.installHide', '1'); } catch {} };
-    addEventListener('beforeinstallprompt', e => { e.preventDefault(); const b = $('#installBtn'); b.hidden = false; b.onclick = async () => { e.prompt(); await e.userChoice; card.hidden = true; }; });
+    addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptEv = e; });
     addEventListener('appinstalled', () => card.hidden = true);
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 37;
+  const VERSION = 38;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -502,7 +520,7 @@
   // ───── boot ─────
   $$('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[el.dataset.ic] || ''}"/></svg>`);
   $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
-  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, openTrip, hooks: {}, get imgs() { return Object.values(IMG); }, get map() { return map; },
+  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, openTrip, hooks: {}, get install() { return A_install; }, get imgs() { return Object.values(IMG); }, get map() { return map; },
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderTrip(); renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather(); loadImages();

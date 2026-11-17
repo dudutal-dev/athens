@@ -44,8 +44,8 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
       <div id="alertBox"></div>
       <section class="card install" id="installCard" hidden>
         <img src="icon-180.png" alt="" width="56" height="56">
-        <div><h2>להוסיף למסך הבית</h2><p class="muted small" id="installTxt"></p>
-        <div class="row"><button class="btn sm" id="installBtn" hidden>התקנה</button><button class="link" id="installHide">הבנתי, להסתיר</button></div></div>
+        <div><h2>התקנה למסך הבית</h2><p class="muted small" id="installTxt"></p>
+        <div class="row"><button class="btn sm" id="installBtn" type="button">התקנה</button><button class="link" id="installHide" type="button">לא עכשיו</button></div></div>
       </section>
       <section class="card" id="hotelCard"></section>
       <section class="card" id="flightsCard"></section>
@@ -514,6 +514,13 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
 
 <div id="toast" class="toast" hidden></div>
 
+<dialog id="installDlg" class="sheet">
+  <h2>התקנה למסך הבית</h2>
+  <p class="muted small">הטלפון לא מרשה לאפליקציה להתקין את עצמה, אז עושים את זה פעם אחת, בשלושה צעדים:</p>
+  <ol class="inst" id="installSteps"></ol>
+  <p class="muted small" id="installAfter"></p>
+  <div class="row"><button class="btn" id="installOk" type="button">הבנתי</button></div>
+</dialog>
 <dialog id="tripNewDlg" class="sheet">
   <h2>נסיעה חדשה</h2>
   <p><b>מה נשמר בצד:</b> הנסיעה הנוכחית כולה: היומן, הצ'אט, המסלול, המלון, הטיסות והקופה. אפשר לחזור אליה מתי שרוצים.</p>
