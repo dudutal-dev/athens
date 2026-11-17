@@ -110,7 +110,7 @@
       let r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=37.98&longitude=23.73&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FAthens&start_date=${S.start}&end_date=${end}`);
       if (!r.ok) r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=37.98&longitude=23.73&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FAthens&forecast_days=4');
       const d = (await r.json()).daily;
-      box.innerHTML = d.time.slice(0, 4).map((t, i) => `<div class="wx wx-${WXK(d.weather_code[i])}"><b>${fmtDay(new Date(t + 'T12:00'))} ${fmtDate(new Date(t + 'T12:00'))}</b><i>${WX(d.weather_code[i])}</i><u>${WXT[WXK(d.weather_code[i])]}</u><span>${Math.round(d.temperature_2m_max[i])}°</span> <em>${Math.round(d.temperature_2m_min[i])}°</em></div>`).join('');
+      box.innerHTML = d.time.slice(0, 4).map((t, i) => `<div class="wx wx-${WXK(d.weather_code[i])}"><b>${fmtDay(new Date(t + 'T12:00'))}<br>${fmtDate(new Date(t + 'T12:00'))}</b><i>${WX(d.weather_code[i])}</i><u>${WXT[WXK(d.weather_code[i])]}</u><p><span>${Math.round(d.temperature_2m_max[i])}°</span> <em>${Math.round(d.temperature_2m_min[i])}°</em></p></div>`).join('');
     } catch { box.innerHTML = ''; }
   }
   function renderAlert() {
@@ -476,7 +476,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 62;
+  const VERSION = 63;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
