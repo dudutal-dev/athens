@@ -425,6 +425,7 @@
   }
 
   // ───── התקנה למסך הבית ─────
+  $('#langSel').value = LANG; $('#langNow').textContent = { he: 'עב', en: 'EN', es: 'ES' }[LANG]; $('#langSel').onchange = e => setLang(e.target.value);
   $$('[data-lang]').forEach(b => { if (b.dataset.lang === LANG) b.classList.remove('ghost'); b.onclick = () => setLang(b.dataset.lang); });
   let A_install = null, A_steps = () => {}, A_now = async () => 'manual';
   (() => {
@@ -463,7 +464,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 46;
+  const VERSION = 47;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {

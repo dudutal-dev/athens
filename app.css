@@ -639,3 +639,9 @@ html[dir=ltr] .gcode { font-size: 22px; letter-spacing: 1px; }
 .wx { box-shadow: none; border: 1px solid var(--line); }
 .alert { background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-inline-start: 4px solid var(--pink); border-radius: 16px; font-size: 14.5px; }
 .alert b { color: var(--pink); }
+.hero-btns { display: inline-flex; gap: 8px; align-items: center; }
+.hero-lang { position: relative; cursor: pointer; } .hero-lang b { font-weight: 700; }
+.hero-lang select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+.hero-top .hero-btns { display: flex; flex: none; }
+.hero-top label.hero-lang { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; margin: 0; width: auto; color: #fff; font: 600 13.5px var(--body); }
+.hero-top label.hero-lang, html[dir=ltr] .hero-top label.hero-lang { top: 0; left: 0; right: auto; }

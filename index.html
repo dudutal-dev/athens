@@ -29,7 +29,9 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
     <header class="hero">
       <div class="hero-top">
         <p class="eyebrow">יָאסוּ, <span>אתונה</span></p>
-        <button class="hero-set" id="tripBtn" type="button" aria-label="הגדרות הנסיעה"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button>
+        <span class="hero-btns"><label class="hero-set hero-lang" translate="no"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><b id="langNow"></b>
+          <select id="langSel" aria-label="Language"><option value="he">עברית</option><option value="en">English</option><option value="es">Español</option></select></label>
+        <button class="hero-set" id="tripBtn" type="button" aria-label="הגדרות הנסיעה"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button></span>
       </div>
       <h1 id="heroTitle"></h1>
       <p class="hero-sub"><span id="heroDates"></span><b id="heroCount"></b></p>
