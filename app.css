@@ -504,3 +504,7 @@ body.kb .view { padding-bottom: 12px; }
 .tk { font-style: normal; font-weight: 800; letter-spacing: -3px; margin-inline-start: 2px; opacity: .75; }
 .tk.rd { color: #63d8ff; opacity: 1; }
 .msg.pending small::after { content: ''; }
+
+/* סרטונים בצ׳אט */
+.cvid { display: block; width: 100%; max-width: 240px; max-height: 300px; border-radius: 12px; background: #000; margin-bottom: 2px; }
+.clink { display: block; font-size: 12.5px; font-weight: 700; text-decoration: underline; color: inherit; opacity: .85; margin-bottom: 4px; text-align: start; }
