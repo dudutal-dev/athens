@@ -474,7 +474,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 58;
+  const VERSION = 59;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -532,6 +532,12 @@
   };
   const editTrip = () => APP.hooks.editTrip ? APP.hooks.editTrip() : openTrip();
   $('#taxiClose').onclick = () => $('#taxiDlg').close(); $('#taxiDlg').onclick = e => { if (e.target.id === 'taxiDlg') e.target.close(); };
+  // שעון: השעה המקומית ביעד, וההפרש מהשעון של הטלפון אם יש
+  const clock = () => { const now = new Date(), o = { timeZone: CITY_TZ };
+    $('#heroTime').textContent = now.toLocaleTimeString(LOC, { ...o, hour: '2-digit', minute: '2-digit' });
+    const there = new Date(now.toLocaleString('en-US', o)), here = new Date(now.toLocaleString('en-US')), diff = Math.round((there - here) / 36e5);
+    $('#heroDay').textContent = now.toLocaleDateString(LOC, { ...o, weekday: 'long' }) + (diff ? ' · ' + `${diff > 0 ? '+' : '−'}${Math.abs(diff)} שע׳ מהשעון שלך` : ''); };
+  clock(); setInterval(clock, 15000); document.addEventListener('visibilitychange', () => { if (!document.hidden) clock(); });
   $('#tripBtn').onclick = editTrip; $('#setupBtn').onclick = editTrip;
 
   // ───── boot ─────

@@ -139,6 +139,10 @@
   "en": "{0} {1} · {2} moments",
   "es": "{0} {1} · {2} momentos"
  },
+ "{} · {}{} שע׳ מהשעון שלך": {
+  "en": "{0} · {1}{2} h from your clock",
+  "es": "{0} · {1}{2} h respecto a tu reloj"
+ },
  "{} ביומן מאת {}": {
   "en": "{0} in the journal from {1}",
   "es": "{0} en el diario, de {1}"
@@ -227,6 +231,10 @@
   "en": "{0} photos not backed up yet",
   "es": "{0} fotos aún sin copia"
  },
+ "{}{} שע׳ מהשעון שלך": {
+  "en": "{0}{1} h from your clock",
+  "es": "{0}{1} h respecto a tu reloj"
+ },
  "{}ויקיפדיה": {
   "en": "{0}Wikipedia",
   "es": "{0}Wikipedia"
@@ -242,6 +250,10 @@
  "· {} ממך": {
   "en": "· {0} from you",
   "es": "· a {0} de ti"
+ },
+ "· {}{} שע׳ מהשעון שלך": {
+  "en": "· {0}{1} h from your clock",
+  "es": "· {0}{1} h respecto a tu reloj"
  },
  "· גיבוי אחרון {}": {
   "en": "· last backup {0}",
@@ -2118,6 +2130,10 @@
  "השמש שוקעת בסביבות 17:10, אז את האתרים הפתוחים עושים בבוקר.": {
   "en": "The sun sets around 17:10, so do the outdoor sights in the morning.",
   "es": "El sol se pone sobre las 17:10, así que visita los sitios al aire libre por la mañana."
+ },
+ "השעה באתונה": {
+  "en": "Time in Athens",
+  "es": "Hora en Atenas"
  },
  "התוכנית להיום": {
   "en": "Today's plan",
