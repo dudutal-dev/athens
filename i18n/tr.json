@@ -459,6 +459,10 @@
   "en": "No blue dot on the map:",
   "es": "No hay punto azul en el mapa:"
  },
+ "אין עדיין מיקום. לאשר שירותי מיקום ולנסות שוב": {
+  "en": "No location yet. Allow location services and try again",
+  "es": "Aún no hay ubicación. Permite los servicios de ubicación e inténtalo de nuevo"
+ },
  "אין עדיין תמונות ביומן": {
   "en": "No photos in the journal yet",
   "es": "Aún no hay fotos en el diario"
@@ -1630,6 +1634,10 @@
  "המדריך האישי לטיול באתונה: מפה חיה, שופינג, מסעדות, מסלול וכלים": {
   "en": "Your personal guide to Athens: live map, shopping, restaurants, itinerary and tools",
   "es": "Tu guía personal para el viaje a Atenas: mapa en vivo, compras, restaurantes, itinerario y herramientas"
+ },
+ "המיקום הנוכחי נשמר": {
+  "en": "Current location saved",
+  "es": "Ubicación actual guardada"
  },
  "המיקום חסום בהגדרות הטלפון": {
   "en": "Location is blocked in your phone settings",
@@ -3519,6 +3527,10 @@
   "en": "Minimum",
   "es": "Mínimo"
  },
+ "מיקום במפה": {
+  "en": "Point on the map",
+  "es": "Punto en el mapa"
+ },
  "מיקום חי על המפה": {
   "en": "Live location on the map",
   "es": "Ubicación en directo en el mapa"
@@ -4095,6 +4107,10 @@
   "en": "Videos:",
   "es": "Vídeos:"
  },
+ "עברית": {
+  "en": "עברית",
+  "es": "עברית"
+ },
  "עדכונים": {
   "en": "Updates",
   "es": "Actualizaciones"
@@ -4310,6 +4326,10 @@
  "פתוח רק עד שעות הצהריים, ונגמר כשנגמר. מזומן.": {
   "en": "Open only until around lunchtime, and when it's gone, it's gone. Cash only.",
   "es": "Abre solo hasta el mediodía, y cuando se acaba, se acaba. Solo efectivo."
+ },
+ "פתיחה במפה": {
+  "en": "Open in map",
+  "es": "Abrir en el mapa"
  },
  "פתיחת הצ׳אט": {
   "en": "Open the chat",
@@ -4815,6 +4835,10 @@
   "en": "Two hours at the hammam.",
   "es": "Dos horas de hammam."
  },
+ "שפה · Language · Idioma": {
+  "en": "שפה · Language · Idioma",
+  "es": "שפה · Language · Idioma"
+ },
  "שקט וירוק, הרבה פחות עמוס מהאקרופוליס.": {
   "en": "Quiet and green, far less crowded than the Acropolis.",
   "es": "Tranquila y verde, mucho menos concurrida que la Acrópolis."
@@ -4990,6 +5014,10 @@
  "📍 אני כאן, בואו": {
   "en": "📍 I'm here, come over",
   "es": "📍 Estoy aquí, venid"
+ },
+ "📍 המיקום הנוכחי": {
+  "en": "📍 Current location",
+  "es": "📍 Ubicación actual"
  },
  "📍 ניווט לשם": {
   "en": "📍 Directions there",

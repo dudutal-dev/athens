@@ -110,7 +110,7 @@
   async function shareEntry(e, withImage) {
     if (!key) return false;
     try {
-      const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) };
+      const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.place === '@' ? { lat: e.lat, lng: e.lng } : {}), ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) };
       const media = (e.type === 'photo' || e.type === 'video') && e.blob;
       const small = !media ? null : e.type === 'video' ? e.blob : await A.journal.shrink(e.blob, 1280);   // סרטון נשלח כמו שהוא
       const heavy = media && small.size > SMALL;
@@ -136,7 +136,7 @@
     const J = A.journal; if (!J || p.d === G.id || !p.e || !p.e.id) return;
     let e = await J.get(p.e.id).catch(() => null); const isNew = !e;
     if (e && !e.byId) return;                                    // רשומה שלי – לא דורסים
-    e = e ? { ...e, text: p.e.text, place: p.e.place, tags: p.e.tags || [] } : { ...p.e, tags: p.e.tags || [], shared: true, by: p.n, byId: p.d };
+    e = e ? { ...e, text: p.e.text, place: p.e.place, tags: p.e.tags || [], ...(p.e.place === '@' ? { lat: p.e.lat, lng: p.e.lng } : {}) } : { ...p.e, tags: p.e.tags || [], shared: true, by: p.n, byId: p.d };
     const isMedia = e.type === 'photo' || e.type === 'video';
     if (isMedia && !e.blob && !url && e.r && PUSH_URL) url = bigUrl(e.id);
     if (isMedia && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: e.type === 'video' ? e.mime || 'video/mp4' : 'image/jpeg' }); served[e.id] = Date.now();

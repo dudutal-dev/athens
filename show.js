@@ -4,7 +4,7 @@
   const A = window.APP, $ = s => document.querySelector(s);
   const FONT = { d: '"Frank Ruhl Libre", serif', h: LANG === 'he' ? '"Gveret Levin", "Assistant", cursive' : 'Caveat, "Gveret Levin", cursive', b: 'Assistant, system-ui, sans-serif' };
   const BLUE1 = '#0a3d7a', BLUE2 = '#1479de', PINK = '#ff7aa8', GOLD = '#f5b942';
-  const placeName = id => id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
+  const placeName = id => id === '@' ? 'מיקום במפה' : id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
   const hm = ts => new Date(ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' });
   const longDate = d => d.toLocaleDateString(LOC, { weekday: 'long', day: 'numeric', month: 'long' });
 

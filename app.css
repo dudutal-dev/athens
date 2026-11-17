@@ -583,3 +583,5 @@ html[dir=ltr] .hero-set { left: auto; right: 92px; }
 html[dir=ltr] .hero-art { left: auto; right: -30px; }
 .gcode { white-space: nowrap; }
 html[dir=ltr] .gcode { font-size: 22px; letter-spacing: 1px; }
+.entry-img video { width: 100%; object-fit: contain; }
+#entryMapLink { display: inline-block; margin: -6px 0 8px; }

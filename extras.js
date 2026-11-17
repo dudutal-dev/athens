@@ -45,6 +45,7 @@
       const fin = x => { if (done) return; done = true; URL.revokeObjectURL(u); res(x); };
       v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = u;
       v.onloadeddata = () => { try { v.currentTime = Math.min(0.6, (v.duration || 1) / 2); } catch { fin(null); } };
+      v.onloadedmetadata = () => { const pl = v.play(); if (pl && pl.then) pl.then(() => v.pause(), () => {}); };   // באייפון הסרטון לא מפענח תמונה עד שמנגנים אותו לרגע
       v.onseeked = () => { try { const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement('canvas'); c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k);
         c.getContext('2d').drawImage(v, 0, 0, c.width, c.height); c.toBlob(b => fin(b ? { blob: b, w: c.width, h: c.height, dur: v.duration } : null), 'image/jpeg', .8); } catch { fin(null); } };
       v.onerror = () => fin(null); setTimeout(() => fin(null), 9000); v.load(); });
@@ -63,7 +64,7 @@
     const best = PLACES.map(p => [A.km(me, p), p.id]).sort((a, b) => a[0] - b[0])[0];
     return best && best[0] < .3 ? best[1] : '';
   }
-  const placeName = id => id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
+  const placeName = id => id === '@' ? 'מיקום במפה' : id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
   const time = ts => new Date(ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' });
   const dayKey = ts => { const d = new Date(ts); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 
@@ -107,21 +108,32 @@
 
   // ───── עורך ─────
   let editUrl = null;
+  let posterUrl = '';
   function openEditor(e) {
     cur = e;
     const me = A.me, wrap = $('#entryImgWrap');
     if (editUrl) URL.revokeObjectURL(editUrl);
     wrap.hidden = !media(e) || !e.blob;
     const vid = $('#entryVid'), isV = e.type === 'video'; vid.pause(); vid.hidden = !isV; $('#entryImg').hidden = isV;
-    if (media(e) && e.blob) { editUrl = URL.createObjectURL(e.blob); if (isV) vid.src = editUrl; else $('#entryImg').src = editUrl; }
+    if (media(e) && e.blob) { editUrl = URL.createObjectURL(e.blob);
+      if (isV) { if (posterUrl) URL.revokeObjectURL(posterUrl); posterUrl = e.poster ? URL.createObjectURL(e.poster) : ''; vid.poster = posterUrl; vid.style.aspectRatio = e.w && e.h ? `${e.w} / ${e.h}` : '16 / 9'; vid.src = editUrl + '#t=0.1'; }   // #t: באייפון מציג את התמונה הראשונה גם לפני ניגון
+      else $('#entryImg').src = editUrl; }
     const vMax = Math.max(V_SHARE, A.hooks.shareMax?.() || 0), tooBig = isV && (e.size || e.blob?.size || 0) > vMax;
     $('#entryVidNote').hidden = !tooBig; $('#entryVidNote').textContent = tooBig ? `סרטון ארוך מאוד נשמר רק ביומן האישי. לקבוצה אפשר לשתף סרטון של עד ${Math.round(vMax / 1e6)} מ״ב, בערך דקה.` : '';
     $('#entryText').value = e.text || '';
     const ref = e.lat ? e : me;
     const list = [...PLACES].sort((a, b) => ref ? A.km(ref, a) - A.km(ref, b) : a.he.localeCompare(b.he, 'he'));
-    $('#entryPlace').innerHTML = '<option value="">בלי מיקום</option>' + (A.S.hotel ? `<option value="hotel">🏨 ${esc(A.S.hotel.name)}</option>` : '') +
+    $('#entryPlace').innerHTML = '<option value="">בלי מיקום</option><option value="@">📍 המיקום הנוכחי</option>' + (A.S.hotel ? `<option value="hotel">🏨 ${esc(A.S.hotel.name)}</option>` : '') +
       list.map(p => `<option value="${p.id}">${CATS[p.cat].emoji} ${esc(p.he)}${ref ? ' · ' + A.distTxt(A.km(ref, p)) : ''}</option>`).join('');
     $('#entryPlace').value = e.place || '';
+    const mapLink = () => { const a = $('#entryMapLink'), on = $('#entryPlace').value === '@' && cur.place === '@' && cur.lat; a.hidden = !on; if (on) a.href = `https://www.google.com/maps/search/?api=1&query=${cur.lat},${cur.lng}`; };
+    mapLink();
+    $('#entryPlace').onchange = () => {   // "המיקום הנוכחי": שומרים את הנקודה שבה הטלפון נמצא עכשיו
+      if ($('#entryPlace').value === '@') { const me = A.me;
+        if (!me) { $('#entryPlace').value = cur.place === '@' ? '@' : cur.place || ''; A.startGPS(true); A.toast('אין עדיין מיקום. לאשר שירותי מיקום ולנסות שוב', 5000); }
+        else { cur.lat = me.lat; cur.lng = me.lng; cur.place = '@'; A.toast('המיקום הנוכחי נשמר'); } }
+      mapLink();
+    };
     drawTags();
     const canShare = !!A.hooks.inGroup?.() && !e.byId;
     const fresh = e.personal === undefined && e.shared === undefined;   // רשומה חדשה: ברירת המחדל לפי היומן שפתוח עכשיו

@@ -4,7 +4,7 @@
   const EVERY = 3 * 3600e3, LS = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
   const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const autoOn = () => LS.get('athina.bkAuto') !== '0';
-  const placeName = id => id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
+  const placeName = id => id === '@' ? 'מיקום במפה' : id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
   const pad = n => String(n).padStart(2, '0');
   const stamp = ts => { const d = new Date(ts); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}`; };
   const photos = async () => (await A.journal.all().catch(() => [])).filter(e => e.type === 'photo' && e.blob).sort((a, b) => a.ts - b.ts);
