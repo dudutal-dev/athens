@@ -140,7 +140,7 @@
     c.innerHTML = `<div class="card-head"><h2>המלון שלנו</h2>${h ? '<button class="link" id="hotelBack">ביטול</button>' : ''}</div>
       <p class="muted small" style="margin-bottom:10px">כותבים את שם המלון. נמצא אותו, נסמן במפה ונחשב מרחקים ממנו.</p>
       <form id="hotelForm" class="row"><input id="hotelQ" placeholder="למשל Electra Palace" autocomplete="off" enterkeyhint="search"><button class="btn sm">חיפוש</button></form>
-      <div class="results" id="hotelRes">${(results || []).map((r, i) => `<button data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small></button>`).join('')}</div>
+      <div class="results" id="hotelRes">${(results || []).map((r, i) => `<button data-i="${i}"><b>${esc(r.name)}</b><small>${esc(r.addr)}</small>${r.gr ? `<small class="gr" translate="no">${esc(r.gr)}</small>` : ''}</button>`).join('')}</div>
       <button class="link" id="hotelHere" style="margin-top:10px">אני במלון עכשיו – לשמור את המיקום הנוכחי</button>`;
     if (h) $('#hotelBack').onclick = () => renderHotel();
     $('#hotelForm').onsubmit = async e => {
@@ -156,7 +156,20 @@
       if (me) set(); else { toast('מאתרת מיקום…'); startGPS(false, set); }
     };
   }
-  async function geocode(q) {
+  // שמות ביוונית מתועתקים לאותיות לטיניות: בהרבה מלונות ורחובות אין במפה שם באנגלית, והתוצאות חזרו ביוונית
+  const GR2 = { 'ου': 'ou', 'αυ': 'av', 'ευ': 'ev', 'μπ': 'b', 'ντ': 'd', 'γκ': 'g', 'γγ': 'ng', 'τσ': 'ts', 'τζ': 'tz' };
+  const GR1 = { α: 'a', β: 'v', γ: 'g', δ: 'd', ε: 'e', ζ: 'z', η: 'i', θ: 'th', ι: 'i', κ: 'k', λ: 'l', μ: 'm', ν: 'n', ξ: 'x', ο: 'o', π: 'p', ρ: 'r', σ: 's', ς: 's', τ: 't', υ: 'y', φ: 'f', χ: 'ch', ψ: 'ps', ω: 'o' };
+  const isGreek = t => /[\u0370-\u03FF]/.test(t || '');
+  function latin(t) {
+    if (!isGreek(t)) return t || '';
+    return String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u0370-\u03FF]+/g, w => {
+      const up = w === w.toUpperCase(), cap = w[0] !== w[0].toLowerCase(); let x = w.toLowerCase(), o = '';
+      for (let i = 0; i < x.length; i++) { const two = x.slice(i, i + 2); if (GR2[two]) { o += GR2[two]; i++; } else o += GR1[x[i]] ?? x[i]; }
+      return up && w.length > 1 ? o.toUpperCase() : cap ? o[0].toUpperCase() + o.slice(1) : o; });
+  }
+  const readable = r => ({ ...r, gr: isGreek(r.name) ? r.name : '', name: latin(r.name), addr: latin(r.addr) });
+  async function geocode(q) { return (await geocodeRaw(q)).map(readable); }
+  async function geocodeRaw(q) {
     const out = [];
     try {
       const u = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&accept-language=en&viewbox=23.3,38.35,24.2,37.55&bounded=1&q=${encodeURIComponent(q)}`;
@@ -477,7 +490,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 67;
+  const VERSION = 68;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
