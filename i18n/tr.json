@@ -4067,6 +4067,10 @@
   "en": "Directions to the hotel",
   "es": "Cómo llegar al hotel"
  },
+ "ניווט לשם": {
+  "en": "Directions there",
+  "es": "Cómo llegar"
+ },
  "נמל פיראוס – שער E8": {
   "en": "Piraeus port – Gate E8",
   "es": "Puerto de El Pireo – Puerta E8"
@@ -5238,6 +5242,10 @@
  "📍 המיקום הנוכחי": {
   "en": "📍 Current location",
   "es": "📍 Ubicación actual"
+ },
+ "📍 הצגה במפה": {
+  "en": "📍 Show on map",
+  "es": "📍 Ver en el mapa"
  },
  "📍 ניווט לשם": {
   "en": "📍 Directions there",

@@ -807,3 +807,10 @@ html[dir=rtl] .ph-play svg, html:not([dir=ltr]) .ph-play svg { transform: scaleX
 .hero-top button.hero-lang { position: static; display: inline-flex; align-items: center; gap: 6px; color: #fff; font: 600 13.500px var(--body); }
 .hero-lang i { font-style: normal; font-size: 16px; line-height: 1; }
 .langs .card-head { margin: 0; align-items: center; }
+
+/* ───── מיקום שנשלח בצ׳אט ───── */
+.cloc { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 14.500px; color: #0d5eaf; background: color-mix(in srgb, #0d5eaf 12%, transparent); }
+.locpin { display: grid; place-items: center; width: 44px; height: 44px; font-size: 36px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0,0,0,.35)); animation: locdrop .35s ease-out; }
+@keyframes locdrop { from { transform: translateY(-18px); opacity: 0; } }
+.locpop { display: grid; gap: 4px; min-width: 150px; text-align: center; font-family: var(--body); }
+.locpop b { font-size: 16px; } .locpop small { color: #5c6884; font-size: 13px; } .locpop .btn { margin-top: 6px; color: #fff; }

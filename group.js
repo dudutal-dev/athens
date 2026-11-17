@@ -316,7 +316,7 @@
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרף/ה לקבוצה</p>` :
       `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" data-mid="${m.id}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b translate="no">${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span translate="no">${esc(m.x)}</span>` : ''}
-        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קרא">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
+        ${m.lat ? `<button type="button" class="cloc" data-loc="${m.id}">📍 הצגה במפה</button>` : ''}<small>${new Date(m.ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קרא">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. אפשר לכתוב משהו לקבוצה.</p>';
     if ([...box.querySelectorAll('video')].some(v => !v.paused && !v.ended)) box._dirty = true;   // סרטון מתנגן: מעדכנים כשהוא נעצר
     else if (chatHtml !== box._html) { box.innerHTML = chatHtml; box._html = chatHtml; box._dirty = false; }
@@ -429,6 +429,20 @@
     $('#infoDlg').showModal();
   });
   $('#infoClose').onclick = () => $('#infoDlg').close();
+  // מיקום שנשלח בהודעה: נפתח במפה של האפליקציה, עם סיכה בדיוק בנקודה וכפתור ניווט
+  let locPin = null;
+  $('#grpChat').addEventListener('click', e => {
+    const b = e.target.closest('[data-loc]'); if (!b) return; const m = G.msgs.find(x => x.id === b.dataset.loc); if (!m || !m.lat) return;
+    A.go('map');
+    setTimeout(() => { const map = A.map; if (!map || !window.L) return;
+      if (locPin) locPin.remove();
+      const ios = /iPhone|iPad|iPod/.test(navigator.userAgent), nav = ios ? `https://maps.apple.com/?daddr=${m.lat},${m.lng}&dirflg=w` : `https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}&travelmode=walking`;
+      const me = A.me, dist = me ? ' · ' + A.distTxt(A.km(me, m)) + ' ממך' : '';
+      locPin = L.marker([m.lat, m.lng], { icon: L.divIcon({ className: '', html: '<span class="locpin">📍</span>', iconSize: [44, 44], iconAnchor: [22, 42] }), zIndexOffset: 1000 }).addTo(map)
+        .bindPopup(`<div class="locpop"><b translate="no">${esc(m.n)}</b><small>${new Date(m.ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' })}${dist}</small><a class="btn sm" target="_blank" rel="noopener" href="${nav}">ניווט לשם</a></div>`, { offset: [0, -34] });
+      map.invalidateSize(); map.setView([m.lat, m.lng], 17); locPin.openPopup();
+    }, 200);
+  });
   // לחיצה ארוכה על הודעה: העתקה או מחיקה. את ההודעות שלי (ומנהל הקבוצה – כל הודעה) אפשר למחוק אצל כולם
   let actMsg = null, holdT = null;
   function msgMenu(el) {
