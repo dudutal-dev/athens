@@ -4,69 +4,112 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b1730">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ניהול">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="icon" href="admin-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="admin-icon-180.png">
 <title>ניהול רישיונות</title>
 <style>
-  :root { --bg: #f3f5f9; --card: #fff; --ink: #15233b; --muted: #5e6b83; --line: #dde3ee; --pri: #0d5eaf; --bad: #c92a2a; --ok: #2b8a3e; --warn: #d98a1c; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0d1422; --card: #172138; --ink: #edf1f8; --muted: #a3aec6; --line: #2a3654; --pri: #6aa9ff; --bad: #ff8787; --ok: #69db7c; --warn: #f2b450; } }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; padding: 16px 16px 60px; }
-  main { max-width: 760px; margin: 0 auto; display: grid; gap: 14px; }
-  h1 { font-size: 24px; margin: 6px 0 0; } h2 { font-size: 18px; margin: 0 0 10px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
-  label { display: grid; gap: 4px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
-  input, select { font: inherit; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); min-width: 0; width: 100%; }
-  button { font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 999px; border: 0; background: var(--pri); color: #fff; cursor: pointer; }
-  button.ghost { background: transparent; color: var(--pri); border: 1.5px solid var(--line); padding: 7px 12px; font-size: 14px; }
-  button.bad { color: var(--bad); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; align-items: end; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  :root { --bg: #eef2f8; --card: #fff; --ink: #14213d; --muted: #5d6a84; --line: #dfe5f0; --pri: #1f4fb8; --pri2: #3b7bf0; --gold: #e8a830; --bad: #d03a3a; --ok: #1f9d55; --warn: #c9811a; --soft: #f3f6fb;
+    --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0a1120; --card: #141d33; --ink: #edf1f8; --muted: #9fabc4; --line: #26324f; --pri: #6ea0ff; --pri2: #3b7bf0; --bad: #ff8585; --ok: #5fd08a; --warn: #f2b450; --soft: #1b2640; } }
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; padding-bottom: calc(40px + var(--sab)); }
+  button, input, select { font: inherit; color: inherit; }
+  [hidden] { display: none !important; }
+  .top { background: linear-gradient(160deg, #1c2f57, #0b1730); color: #fff; padding: calc(var(--sat) + 18px) 18px 54px; border-radius: 0 0 30px 30px; }
+  .top-in { max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+  .top img { width: 54px; height: 54px; border-radius: 15px; box-shadow: 0 6px 18px rgba(0,0,0,.35); flex: none; }
+  .top h1 { font-size: 23px; line-height: 1.15; } .top p { opacity: .8; font-size: 13.5px; }
+  .top .out { margin-inline-start: auto; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); color: #fff; padding: 7px 13px; font-size: 13.5px; font-weight: 600; border-radius: 999px; cursor: pointer; }
+  main { max-width: 760px; margin: -34px auto 0; padding: 0 14px; display: grid; gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 16px; box-shadow: 0 10px 30px rgba(15, 35, 80, .07); }
+  h2 { font-size: 17px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  h2 i { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--pri) 13%, var(--card)); color: var(--pri); font-style: normal; flex: none; }
+  h2 i svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .muted { color: var(--muted); } .small { font-size: 13.5px; }
-  .sw { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
-  .sw:first-of-type { border-top: 0; }
-  .sw b { font-size: 17px; } .tag { font-size: 12.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; border: 1px solid currentColor; }
-  .on { color: var(--ok); } .off { color: var(--muted); } .warn { color: var(--warn); } .badc { color: var(--bad); }
-  .pass { border-top: 1px solid var(--line); padding: 12px 0; display: grid; gap: 6px; }
-  .pass:first-child { border-top: 0; }
-  .pass h3 { margin: 0; font-size: 17px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .link { direction: ltr; text-align: left; font: 12.5px ui-monospace, Menlo, monospace; background: var(--bg); border-radius: 10px; padding: 8px 10px; overflow-wrap: anywhere; }
-  ul { margin: 0; padding-inline-start: 18px; } [hidden] { display: none !important; }
-  #msg { position: fixed; inset: auto 16px 16px 16px; max-width: 420px; margin: 0 auto; background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 12px; text-align: center; }
+  label { display: grid; gap: 5px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  input, select { padding: 11px 12px; border-radius: 13px; border: 1.5px solid var(--line); background: var(--soft); min-width: 0; width: 100%; font-size: 16px; }
+  input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--pri) 45%, transparent); border-color: var(--pri); }
+  .btn { border: 0; cursor: pointer; font-weight: 700; padding: 12px 18px; border-radius: 999px; color: #fff; background: linear-gradient(145deg, var(--pri2), var(--pri)); box-shadow: 0 6px 16px color-mix(in srgb, var(--pri) 30%, transparent); }
+  .chip { border: 1.5px solid var(--line); background: var(--card); cursor: pointer; font-weight: 600; font-size: 13.5px; padding: 7px 12px; border-radius: 999px; color: var(--pri); display: inline-flex; align-items: center; gap: 6px; }
+  .chip.bad { color: var(--bad); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+  .grid .wide { grid-column: 1 / -1; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 12px 8px; text-align: center; box-shadow: 0 10px 30px rgba(15, 35, 80, .07); }
+  .stat b { display: block; font-size: 26px; line-height: 1.1; font-variant-numeric: tabular-nums; } .stat span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .stat.w b { color: var(--warn); }
+  .sw { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .sw:first-of-type { border-top: 0; padding-top: 2px; }
+  .sw .ico { width: 44px; height: 44px; border-radius: 13px; flex: none; object-fit: cover; box-shadow: 0 3px 8px rgba(0,0,0,.18); }
+  .sw div { flex: 1; min-width: 0; } .sw b { display: block; font-size: 17px; }
+  .tog { flex: none; width: 58px; height: 34px; border-radius: 999px; border: 0; background: var(--line); position: relative; cursor: pointer; transition: background .2s; }
+  .tog::after { content: ''; position: absolute; top: 4px; inset-inline-start: 4px; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.3); transition: transform .2s; }
+  .tog.on { background: var(--ok); } .tog.on::after { transform: translateX(-24px); }
+  .tag { font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; background: color-mix(in srgb, currentColor 12%, transparent); }
+  .on-c { color: var(--ok); } .off-c { color: var(--muted); } .warn-c { color: var(--warn); } .bad-c { color: var(--bad); } .pri-c { color: var(--pri); }
+  .pass { border-top: 1px solid var(--line); padding: 14px 0; display: grid; gap: 8px; }
+  .pass:first-child { border-top: 0; padding-top: 4px; }
+  .pass-h { display: flex; align-items: center; gap: 11px; }
+  .av { width: 44px; height: 44px; border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 800; color: #fff; background: var(--c, var(--pri)); }
+  .pass h3 { font-size: 17px; line-height: 1.2; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .seats { background: var(--soft); border-radius: 14px; padding: 10px 12px; }
+  .bar { height: 7px; border-radius: 7px; background: var(--line); overflow: hidden; margin: 6px 0 2px; } .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--pri2), var(--pri)); border-radius: 7px; }
+  .seat { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; font-size: 13.5px; }
+  .link { direction: ltr; text-align: left; font: 12.5px ui-monospace, Menlo, monospace; background: var(--soft); border: 1px dashed var(--line); border-radius: 12px; padding: 9px 11px; overflow-wrap: anywhere; color: var(--muted); }
+  .row { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+  details.more summary { list-style: none; cursor: pointer; color: var(--muted); font-size: 13.5px; font-weight: 600; padding: 4px 0; } details.more summary::-webkit-details-marker { display: none; }
+  details.more[open] summary { margin-bottom: 8px; }
+  #auth { text-align: center; padding: 26px 18px; } #auth form { display: grid; gap: 12px; max-width: 320px; margin: 14px auto 0; text-align: start; }
+  #msg { position: fixed; inset: auto 16px calc(18px + var(--sab)) 16px; max-width: 420px; margin: 0 auto; background: var(--ink); color: var(--bg); padding: 11px 15px; border-radius: 14px; text-align: center; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.3); z-index: 9; }
+  .empty { text-align: center; color: var(--muted); padding: 18px 0 8px; }
 </style>
 </head>
 <body>
+<header class="top"><div class="top-in">
+  <img src="admin-icon-192.png" alt="">
+  <div><h1>ניהול רישיונות</h1><p>אתונה · ליסבון</p></div>
+  <button class="out" id="logout" type="button" hidden>יציאה</button>
+</div></header>
 <main>
-  <h1>ניהול רישיונות</h1>
-
   <section class="card" id="auth">
-    <h2 id="authTitle">כניסה</h2>
+    <h2 id="authTitle" style="justify-content:center">כניסה</h2>
     <p class="muted small" id="authNote"></p>
-    <form id="authForm" class="grid">
+    <form id="authForm">
       <label>סיסמה<input id="pw" type="password" autocomplete="current-password" minlength="8" required></label>
-      <button id="authGo">כניסה</button>
+      <button class="btn" id="authGo">כניסה</button>
     </form>
   </section>
 
-  <div id="panel" hidden>
+  <div id="panel" hidden style="display:grid;gap:14px">
+    <div class="stats" id="stats"></div>
+
     <section class="card">
-      <h2>האם לדרוש רישיון?</h2>
-      <p class="muted small">כשכבוי, האפליקציה פתוחה לכל מי שיש לו את הקישור, כמו היום. כשפועל, רק טלפון עם רישיון בתוקף נכנס.</p>
+      <h2><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>האם לדרוש רישיון?</h2>
+      <p class="muted small" style="margin-bottom:6px">כשכבוי, האפליקציה פתוחה לכל מי שיש לו את הקישור. כשפועל, רק טלפון עם רישיון בתוקף נכנס.</p>
       <div id="switches"></div>
     </section>
 
     <section class="card">
-      <h2>הנפקת קישור חדש</h2>
+      <h2><i><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></i>הנפקת קישור חדש</h2>
       <form id="newForm" class="grid">
         <label>אפליקציה<select id="nApp"><option value="athens">אתונה</option><option value="lisbon">ליסבון</option></select></label>
         <label>שם<input id="nName" maxlength="40" required placeholder="למי הקישור"></label>
-        <label>תוקף בימים<input id="nDays" type="number" min="1" max="3650" value="14" required></label>
-        <label>מקומות לקבוצה<input id="nSeats" type="number" min="0" max="200" value="0" required></label>
-        <button>הנפקה</button>
+        <label>תוקף בימים<input id="nDays" type="number" inputmode="numeric" min="1" max="3650" value="14" required></label>
+        <label>מקומות לקבוצה<input id="nSeats" type="number" inputmode="numeric" min="0" max="200" value="0" required></label>
+        <button class="btn wide">הנפקה</button>
       </form>
-      <p class="muted small" style="margin:10px 0 0">הקישור מופעל על טלפון אחד. "מקומות לקבוצה" הוא מספר האנשים שבעל הקישור יכול לצרף לקבוצה שלו; 0 אומר שהוא לא יכול לפתוח קבוצה.</p>
+      <p class="muted small" style="margin-top:10px">הקישור מופעל על טלפון אחד. "מקומות לקבוצה" הוא מספר האנשים שבעל הקישור יכול לצרף לקבוצה שלו; 0 אומר שהוא לא יכול לפתוח קבוצה.</p>
     </section>
 
     <section class="card">
-      <div class="row" style="justify-content:space-between"><h2 style="margin:0">הרישיונות</h2><button class="ghost" id="refresh" type="button">רענון</button></div>
+      <div class="row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0"><i><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></i>הרישיונות</h2><button class="chip" id="refresh" type="button">רענון</button></div>
+      <div class="row" id="filter" style="margin-bottom:4px"></div>
       <div id="list"></div>
     </section>
   </div>
@@ -75,17 +118,20 @@
 <script>
 const API = 'https://athens-push.dudu-tal.workers.dev/lic/admin';
 const BASE = { athens: 'https://dudutal-dev.github.io/athens/', lisbon: 'https://dudutal-dev.github.io/lisbon/' }, HE = { athens: 'אתונה', lisbon: 'ליסבון' };
+const ICON = { athens: 'icon-192.png', lisbon: 'https://dudutal-dev.github.io/lisbon/icon-192.png' }, COL = ['#1f4fb8', '#0f9f94', '#e5587f', '#d98a1c', '#7b61f0', '#2b8a3e'];
 const $ = s => document.querySelector(s), esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-let pw = sessionStorage.getItem('licpw') || '';
-const say = t => { const m = $('#msg'); m.textContent = t; m.hidden = false; clearTimeout(say.t); say.t = setTimeout(() => m.hidden = true, 3500); };
+const mem = { get: k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } }, set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} } };
+let pw = mem.get('licpw'), show = 'all', last = null;
+const say = t => { const m = $('#msg'); m.textContent = t; m.hidden = false; clearTimeout(say.t); say.t = setTimeout(() => m.hidden = true, 3200); };
 const call = async (op, o = {}) => { const r = await fetch(API, { method: 'POST', body: JSON.stringify({ pw, op, ...o }) }); return r.json(); };
 const date = t => new Date(t).toLocaleString('he-IL', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
 const day = t => new Date(t).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' });
+const col = s => COL[[...String(s)].reduce((n, c) => n + c.charCodeAt(0), 0) % COL.length];
 
 async function start() {
-  try { const s = await call('state'); const first = !s.claimed;
+  try { const s = await call('state'), first = !s.claimed;
     $('#authTitle').textContent = first ? 'קביעת סיסמת ניהול' : 'כניסה';
-    $('#authNote').textContent = first ? 'זו הכניסה הראשונה. הסיסמה שתיקבע כאן תהיה היחידה שפותחת את המסך הזה, ואין דרך לשחזר אותה. לפחות 8 תווים.' : '';
+    $('#authNote').textContent = first ? 'זו הכניסה הראשונה. הסיסמה שתיקבע כאן תהיה היחידה שפותחת את המסך הזה, ואין דרך לשחזר אותה. לפחות 8 תווים.' : 'הסיסמה נשמרת בטלפון הזה עד שלוחצים "יציאה".';
     $('#authGo').textContent = first ? 'קביעת הסיסמה' : 'כניסה'; $('#authForm').dataset.first = first ? '1' : '';
     if (!first && pw && (await call('login')).ok) return open();
   } catch { $('#authNote').textContent = 'אין חיבור לשרת. לנסות שוב בעוד רגע.'; }
@@ -93,33 +139,43 @@ async function start() {
 $('#authForm').onsubmit = async e => { e.preventDefault(); pw = $('#pw').value;
   const r = await call($('#authForm').dataset.first ? 'claim' : 'login').catch(() => ({}));
   if (!r.ok) return say(r.why === 'claimed' ? 'כבר נקבעה סיסמה. לרענן את העמוד ולהיכנס' : r.why === 'short' ? 'הסיסמה קצרה מדי' : 'הסיסמה לא נכונה');
-  sessionStorage.setItem('licpw', pw); open(); };
-function open() { $('#auth').hidden = true; $('#panel').hidden = false; load(); }
+  mem.set('licpw', pw); open(); };
+function open() { $('#auth').hidden = true; $('#panel').hidden = false; $('#logout').hidden = false; load(); }
+$('#logout').onclick = () => { mem.set('licpw', ''); pw = ''; location.reload(); };
 
-async function load() {
-  const r = await call('list').catch(() => ({})); if (!r.ok) return say('הטעינה נכשלה');
-  $('#switches').innerHTML = Object.keys(BASE).map(a => `<div class="sw"><span><b>${HE[a]}</b> <span class="tag ${r.cfg[a] ? 'on' : 'off'}">${r.cfg[a] ? 'דורשת רישיון' : 'פתוחה לכולם'}</span></span>
-    <button class="ghost" data-cfg="${a}" data-on="${r.cfg[a] ? '' : '1'}" type="button">${r.cfg[a] ? 'לכבות' : 'להפעיל'}</button></div>`).join('');
-  $('#list').innerHTML = r.passes.length ? r.passes.map(p => { const link = BASE[p.app] + '?k=' + p.token, exp = p.exp < r.now, d = p.devs[0];
-    return `<div class="pass"><h3>${esc(p.name || 'בלי שם')} <span class="tag">${HE[p.app]}</span>
-        ${p.revoked ? '<span class="tag badc">בוטל</span>' : exp ? '<span class="tag badc">פג תוקף</span>' : d ? '<span class="tag on">מופעל</span>' : '<span class="tag off">עוד לא הופעל</span>'}
-        ${p.rejects ? `<span class="tag warn">${p.rejects} ניסיונות שנדחו</span>` : ''}</h3>
+async function load() { const r = await call('list').catch(() => ({})); if (!r.ok) return say('הטעינה נכשלה'); last = r; draw(); }
+function draw() {
+  const r = last, P = r.passes, live = P.filter(p => !p.revoked && p.exp > r.now);
+  $('#stats').innerHTML = `<div class="stat"><b>${live.filter(p => p.devs.length).length}</b><span>רישיונות פעילים</span></div>
+    <div class="stat"><b>${P.reduce((n, p) => n + p.used.length, 0)}</b><span>מקומות בקבוצות</span></div>
+    <div class="stat ${P.some(p => p.rejects) ? 'w' : ''}"><b>${P.reduce((n, p) => n + (p.rejects || 0), 0)}</b><span>ניסיונות שנדחו</span></div>`;
+  $('#switches').innerHTML = Object.keys(BASE).map(a => `<div class="sw"><img class="ico" src="${ICON[a]}" alt=""><div><b>${HE[a]}</b><span class="tag ${r.cfg[a] ? 'on-c' : 'off-c'}">${r.cfg[a] ? 'דורשת רישיון' : 'פתוחה לכולם'}</span></div>
+    <button class="tog ${r.cfg[a] ? 'on' : ''}" data-cfg="${a}" data-on="${r.cfg[a] ? '' : '1'}" type="button" role="switch" aria-checked="${!!r.cfg[a]}" aria-label="${r.cfg[a] ? 'לכבות' : 'להפעיל'} דרישת רישיון ב${HE[a]}"></button></div>`).join('');
+  $('#filter').innerHTML = [['all', 'הכול'], ['athens', 'אתונה'], ['lisbon', 'ליסבון']].map(([k, t]) => `<button class="chip" data-show="${k}" type="button" style="${show === k ? 'background:var(--pri);color:#fff;border-color:var(--pri)' : ''}">${t}</button>`).join('');
+  const list = P.filter(p => show === 'all' || p.app === show);
+  $('#list').innerHTML = list.length ? list.map(p => { const link = BASE[p.app] + '?k=' + p.token, exp = p.exp < r.now, d = p.devs[0], pct = p.seats ? Math.min(100, p.used.length / p.seats * 100) : 0;
+    return `<div class="pass"><div class="pass-h"><span class="av" style="--c:${col(p.id)}">${esc((p.name || '?').slice(0, 2))}</span>
+        <h3>${esc(p.name || 'בלי שם')} <span class="tag pri-c">${HE[p.app]}</span>
+        ${p.revoked ? '<span class="tag bad-c">בוטל</span>' : exp ? '<span class="tag bad-c">פג תוקף</span>' : d ? '<span class="tag on-c">מופעל</span>' : '<span class="tag off-c">עוד לא הופעל</span>'}
+        ${p.rejects ? `<span class="tag warn-c">${p.rejects} ניסיונות שנדחו</span>` : ''}</h3></div>
       <div class="small muted">בתוקף עד ${day(p.exp)}${d ? ` · הופעל ${date(d.t)} · נפתח לאחרונה ${date(d.seen)}` : ''}${p.lastReject ? ` · ניסיון אחרון שנדחה ${date(p.lastReject)}` : ''}</div>
-      ${p.seats ? `<div class="small"><b>${p.used.length} מתוך ${p.seats}</b> מקומות בקבוצה בשימוש${p.used.length ? ':' : ''}</div>
-        ${p.used.length ? `<ul class="small">${p.used.map(u => `<li>${esc(u.n || 'בלי שם')} · הצטרף ${date(u.t)} · נפתח לאחרונה ${date(u.seen)} <button class="ghost bad" data-op="unseat" data-id="${p.id}" data-dev="${u.dev}" type="button">פינוי</button></li>`).join('')}</ul>` : ''}` : '<div class="small muted">בלי מקומות לקבוצה</div>'}
+      ${p.seats ? `<div class="seats"><div class="small"><b>${p.used.length} מתוך ${p.seats}</b> מקומות בקבוצה בשימוש</div><div class="bar"><i style="width:${pct}%"></i></div>
+        ${p.used.map(u => `<div class="seat"><span><b>${esc(u.n || 'בלי שם')}</b> <span class="muted">· הצטרף ${date(u.t)} · נפתח ${date(u.seen)}</span></span><button class="chip bad" data-op="unseat" data-id="${p.id}" data-dev="${u.dev}" type="button">פינוי</button></div>`).join('')}</div>` : '<div class="small muted">בלי מקומות לקבוצה</div>'}
       <div class="link">${esc(link)}</div>
-      <div class="row"><button class="ghost" data-copy="${esc(link)}" type="button">העתקת הקישור</button><button class="ghost" data-share="${esc(link)}" data-name="${esc(p.name)}" type="button">שליחה</button>
-        <button class="ghost" data-op="extend" data-id="${p.id}" type="button">הארכה ב־14 יום</button><button class="ghost" data-op="seats" data-id="${p.id}" data-seats="${p.seats}" type="button">שינוי מקומות</button>
-        <button class="ghost" data-op="reset" data-id="${p.id}" type="button">איפוס טלפון</button>
-        <button class="ghost bad" data-op="revoke" data-id="${p.id}" data-on="${p.revoked ? '' : '1'}" type="button">${p.revoked ? 'החזרה לתוקף' : 'ביטול'}</button>
-        <button class="ghost bad" data-op="delete" data-id="${p.id}" type="button">מחיקה</button></div></div>`; }).join('') : '<p class="muted">עוד לא הונפקו קישורים.</p>';
+      <div class="row"><button class="chip" data-share="${esc(link)}" data-name="${esc(p.name)}" type="button">שליחה</button><button class="chip" data-copy="${esc(link)}" type="button">העתקת הקישור</button></div>
+      <details class="more"><summary>עוד פעולות ▾</summary><div class="row">
+        <button class="chip" data-op="extend" data-id="${p.id}" type="button">הארכה ב־14 יום</button><button class="chip" data-op="seats" data-id="${p.id}" data-seats="${p.seats}" type="button">שינוי מקומות</button>
+        <button class="chip" data-op="reset" data-id="${p.id}" type="button">איפוס טלפון</button>
+        <button class="chip bad" data-op="revoke" data-id="${p.id}" data-on="${p.revoked ? '' : '1'}" type="button">${p.revoked ? 'החזרה לתוקף' : 'ביטול'}</button>
+        <button class="chip bad" data-op="delete" data-id="${p.id}" type="button">מחיקה</button></div></details></div>`; }).join('') : '<p class="empty">עוד לא הונפקו קישורים.</p>';
 }
 $('#newForm').onsubmit = async e => { e.preventDefault();
   const r = await call('create', { app: $('#nApp').value, name: $('#nName').value.trim(), days: +$('#nDays').value, seats: +$('#nSeats').value }).catch(() => ({}));
   if (!r.ok) return say('ההנפקה נכשלה'); $('#nName').value = ''; say('הקישור הונפק'); load(); };
 $('#refresh').onclick = load;
 document.addEventListener('click', async e => {
-  const c = e.target.closest('[data-cfg]'), o = e.target.closest('[data-op]'), cp = e.target.closest('[data-copy]'), sh = e.target.closest('[data-share]');
+  const c = e.target.closest('[data-cfg]'), o = e.target.closest('[data-op]'), cp = e.target.closest('[data-copy]'), sh = e.target.closest('[data-share]'), f = e.target.closest('[data-show]');
+  if (f) { show = f.dataset.show; return draw(); }
   if (cp) return navigator.clipboard.writeText(cp.dataset.copy).then(() => say('הקישור הועתק'), () => say('ההעתקה נכשלה'));
   if (sh) { const text = `קישור אישי לאפליקציה${sh.dataset.name ? ' עבור ' + sh.dataset.name : ''}. הוא מופעל על טלפון אחד בלבד:\n${sh.dataset.share}`;
     return navigator.share ? navigator.share({ text }).catch(() => {}) : navigator.clipboard.writeText(text).then(() => say('הועתק')); }
