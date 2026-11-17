@@ -32,7 +32,36 @@ async function pwHash(pw, salt) {
   const km = await crypto.subtle.importKey('raw', te.encode(pw), 'PBKDF2', false, ['deriveBits']);
   return b64u(await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: te.encode(salt), iterations: 60000, hash: 'SHA-256' }, km, 256));
 }
-async function admin(env, pw) { const a = await env.SUBS.get('lic:admin', 'json'); return !!a && typeof pw === 'string' && pw.length >= 6 && (await pwHash(pw, a.salt)) === a.hash; }
+async function admin(env, pw, sess) {   // סיסמה, או כניסה שאושרה בזיהוי פנים (מפתח גישה) בחצי השעה האחרונה
+  if (typeof sess === 'string' && /^[A-Za-z0-9_-]{30,60}$/.test(sess) && await env.SUBS.get('lic:sess:' + sess)) return true;
+  const a = await env.SUBS.get('lic:admin', 'json'); return !!a && typeof pw === 'string' && pw.length >= 6 && (await pwHash(pw, a.salt)) === a.hash;
+}
+
+// ───── זיהוי פנים / טביעת אצבע למסך הניהול (WebAuthn, מפתח גישה שנשמר בטלפון) ─────
+const unb64u = s => Uint8Array.from(atob(String(s).replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+const ORIGINS = ['https://dudutal-dev.github.io'];
+const okOrigin = o => ORIGINS.includes(o) || /^http:\/\/localhost(:\d+)?$/.test(o);
+async function challenge(env, kind) { const c = b64u(crypto.getRandomValues(new Uint8Array(32))); await env.SUBS.put('lic:ch:' + c, kind, { expirationTtl: 180 }); return c; }
+async function clientOk(env, clientData, type, kind) {   // האתגר שלנו, מהאתר שלנו, ופעם אחת בלבד
+  let c; try { c = JSON.parse(new TextDecoder().decode(unb64u(clientData))); } catch { return null; }
+  if (c.type !== type || !okOrigin(c.origin)) return null;
+  if ((await env.SUBS.get('lic:ch:' + c.challenge)) !== kind) return null;
+  await env.SUBS.delete('lic:ch:' + c.challenge); return c;
+}
+function derToRaw(der) {   // חתימת ECDSA מגיעה בפורמט DER; לבדיקה צריך r ו-s ברצף, 32 בתים כל אחד
+  let i = 2; if (der[1] & 0x80) i += der[1] & 0x7f;
+  const int = () => { i++; const len = der[i++]; let v = der.slice(i, i + len); i += len; while (v.length > 32 && v[0] === 0) v = v.slice(1); const o = new Uint8Array(32); o.set(v, 32 - v.length); return o; };
+  const r = int(), s2 = int(), out = new Uint8Array(64); out.set(r); out.set(s2, 32); return out;
+}
+async function waVerify(env, b) {
+  const creds = (await env.SUBS.get('lic:wa', 'json')) || [], cred = creds.find(x => x.id === b.id); if (!cred) return false;
+  const c = await clientOk(env, b.clientData, 'webauthn.get', 'get'); if (!c) return false;
+  const authData = unb64u(b.authData), rp = new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(new URL(c.origin).hostname)));
+  if (authData.length < 37 || rp.some((x, i) => x !== authData[i]) || !(authData[32] & 0x04)) return false;   // האתר הנכון, והמשתמש אומת (פנים / אצבע / קוד)
+  const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', unb64u(b.clientData))), signed = new Uint8Array(authData.length + 32); signed.set(authData); signed.set(hash, authData.length);
+  const key = await crypto.subtle.importKey('spki', unb64u(cred.spki), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
+  return crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key, derToRaw(unb64u(b.sig)), signed);
+}
 
 async function view(env, p, kind, now) {   // מה שהאפליקציה מקבלת על הרישיון שלה
   const used = live(p.used, now).length, owner = kind === 'P';
@@ -86,7 +115,23 @@ export async function lic(req, env, url, json) {
       const salt = b64u(crypto.getRandomValues(new Uint8Array(12))); await env.SUBS.put('lic:admin', JSON.stringify({ salt, hash: await pwHash(b.pw, salt) }));
       return json({ ok: true });
     }
-    if (!(await admin(env, b.pw))) return json({ ok: false, why: 'auth' }, 401);
+    if (b.op === 'wa-start') { const creds = (await env.SUBS.get('lic:wa', 'json')) || []; return json({ ok: true, challenge: await challenge(env, 'get'), ids: creds.map(x => x.id) }); }
+    if (b.op === 'wa-finish') {   // כניסה בזיהוי פנים: מחזירה אישור כניסה לחצי שעה
+      let good = false; try { good = await waVerify(env, b); } catch {}
+      if (!good) return json({ ok: false, why: 'auth' }, 401);
+      const sess = b64u(crypto.getRandomValues(new Uint8Array(32))); await env.SUBS.put('lic:sess:' + sess, '1', { expirationTtl: 1800 });
+      return json({ ok: true, sess });
+    }
+    if (!(await admin(env, b.pw, b.sess))) return json({ ok: false, why: 'auth' }, 401);
+    if (b.op === 'wa-reg-start') return json({ ok: true, challenge: await challenge(env, 'reg') });
+    if (b.op === 'wa-reg-finish') {   // רישום הטלפון: שומרים את המפתח הציבורי שלו
+      const c = await clientOk(env, b.clientData, 'webauthn.create', 'reg');
+      if (!c || !/^[A-Za-z0-9_-]{10,400}$/.test(String(b.id || '')) || !/^[A-Za-z0-9_-]{80,200}$/.test(String(b.spki || ''))) return json({ ok: false, why: 'bad' });
+      try { await crypto.subtle.importKey('spki', unb64u(b.spki), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']); } catch { return json({ ok: false, why: 'bad' }); }
+      const creds = ((await env.SUBS.get('lic:wa', 'json')) || []).filter(x => x.id !== b.id); creds.push({ id: b.id, spki: b.spki, t: now, n: String(b.n || '').slice(0, 40) });
+      await env.SUBS.put('lic:wa', JSON.stringify(creds.slice(-5))); return json({ ok: true });
+    }
+    if (b.op === 'wa-clear') { await env.SUBS.delete('lic:wa'); return json({ ok: true }); }
     if (b.op === 'login') return json({ ok: true });
     if (b.op === 'cfg') { if (!APPS.includes(b.app)) return json({ ok: false, why: 'bad' }); await env.SUBS.put('lic:cfg:' + b.app, JSON.stringify({ enforce: !!b.enforce })); return json({ ok: true, enforce: !!b.enforce }); }
     if (b.op === 'create') {

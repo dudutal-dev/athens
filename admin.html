@@ -66,6 +66,7 @@
   details.more summary { list-style: none; cursor: pointer; color: var(--muted); font-size: 13.5px; font-weight: 600; padding: 4px 0; } details.more summary::-webkit-details-marker { display: none; }
   details.more[open] summary { margin-bottom: 8px; }
   #auth { text-align: center; padding: 26px 18px; } #auth form { display: grid; gap: 12px; max-width: 320px; margin: 14px auto 0; text-align: start; }
+  .btn.face { display: inline-flex; align-items: center; gap: 9px; margin-top: 14px; padding: 14px 22px; font-size: 17px; }
   #msg { position: fixed; inset: auto 16px calc(18px + var(--sab)) 16px; max-width: 420px; margin: 0 auto; background: var(--ink); color: var(--bg); padding: 11px 15px; border-radius: 14px; text-align: center; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.3); z-index: 9; }
   .empty { text-align: center; color: var(--muted); padding: 18px 0 8px; }
 </style>
@@ -80,6 +81,8 @@
   <section class="card" id="auth">
     <h2 id="authTitle" style="justify-content:center">כניסה</h2>
     <p class="muted small" id="authNote"></p>
+    <button class="btn face" id="faceGo" type="button" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 10v1M15 10v1M12 10v3h-1M9 15.500c1.800 1.300 4.200 1.300 6 0"/></svg>כניסה בזיהוי פנים</button>
+    <button class="chip" id="usePw" type="button" hidden style="margin-top:12px">כניסה עם סיסמה</button>
     <form id="authForm">
       <label>סיסמה<input id="pw" type="password" autocomplete="current-password" minlength="8" required></label>
       <button class="btn" id="authGo">כניסה</button>
@@ -93,6 +96,12 @@
       <h2><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>האם לדרוש רישיון?</h2>
       <p class="muted small" style="margin-bottom:6px">כשכבוי, האפליקציה פתוחה לכל מי שיש לו את הקישור. כשפועל, רק טלפון עם רישיון בתוקף נכנס.</p>
       <div id="switches"></div>
+    </section>
+
+    <section class="card" id="faceCard" hidden>
+      <h2><i><svg viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 10v1M15 10v1M9 15.500c1.800 1.300 4.200 1.300 6 0"/></svg></i>כניסה בזיהוי פנים</h2>
+      <p class="muted small" id="faceNote" style="margin-bottom:10px"></p>
+      <div class="row"><button class="btn" id="faceOn" type="button">הפעלה בטלפון הזה</button><button class="chip bad" id="faceOff" type="button" hidden>כיבוי</button></div>
     </section>
 
     <section class="card">
@@ -121,9 +130,11 @@ const BASE = { athens: 'https://dudutal-dev.github.io/athens/', lisbon: 'https:/
 const ICON = { athens: 'icon-192.png', lisbon: 'https://dudutal-dev.github.io/lisbon/icon-192.png' }, COL = ['#1f4fb8', '#0f9f94', '#e5587f', '#d98a1c', '#7b61f0', '#2b8a3e'];
 const $ = s => document.querySelector(s), esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const mem = { get: k => { try { return localStorage.getItem(k) || ''; } catch { return ''; } }, set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} } };
-let pw = mem.get('licpw'), show = 'all', last = null;
+let pw = mem.get('licpw'), sess = '', show = 'all', last = null;
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''), unb64u = t => Uint8Array.from(atob(t.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+const canFace = !!(window.PublicKeyCredential && navigator.credentials), faceOn = () => mem.get('licwa') === '1';
 const say = t => { const m = $('#msg'); m.textContent = t; m.hidden = false; clearTimeout(say.t); say.t = setTimeout(() => m.hidden = true, 3200); };
-const call = async (op, o = {}) => { const r = await fetch(API, { method: 'POST', body: JSON.stringify({ pw, op, ...o }) }); return r.json(); };
+const call = async (op, o = {}) => { const r = await fetch(API, { method: 'POST', body: JSON.stringify({ pw, sess, op, ...o }) }); return r.json(); };
 const date = t => new Date(t).toLocaleString('he-IL', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
 const day = t => new Date(t).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' });
 const col = s => COL[[...String(s)].reduce((n, c) => n + c.charCodeAt(0), 0) % COL.length];
@@ -134,14 +145,37 @@ async function start() {
     $('#authNote').textContent = first ? 'זו הכניסה הראשונה. הסיסמה שתיקבע כאן תהיה היחידה שפותחת את המסך הזה, ואין דרך לשחזר אותה. לפחות 8 תווים.' : 'הסיסמה נשמרת בטלפון הזה עד שלוחצים "יציאה".';
     $('#authGo').textContent = first ? 'קביעת הסיסמה' : 'כניסה'; $('#authForm').dataset.first = first ? '1' : '';
     if (!first && pw && (await call('login')).ok) return open();
+    if (!first && canFace && faceOn()) { $('#faceGo').hidden = false; $('#usePw').hidden = false; $('#authForm').hidden = true; $('#authNote').textContent = 'הטלפון הזה מוגדר לכניסה בזיהוי פנים.'; }
   } catch { $('#authNote').textContent = 'אין חיבור לשרת. לנסות שוב בעוד רגע.'; }
 }
 $('#authForm').onsubmit = async e => { e.preventDefault(); pw = $('#pw').value;
   const r = await call($('#authForm').dataset.first ? 'claim' : 'login').catch(() => ({}));
   if (!r.ok) return say(r.why === 'claimed' ? 'כבר נקבעה סיסמה. לרענן את העמוד ולהיכנס' : r.why === 'short' ? 'הסיסמה קצרה מדי' : 'הסיסמה לא נכונה');
-  mem.set('licpw', pw); open(); };
-function open() { $('#auth').hidden = true; $('#panel').hidden = false; $('#logout').hidden = false; load(); }
-$('#logout').onclick = () => { mem.set('licpw', ''); pw = ''; location.reload(); };
+  if (!faceOn()) mem.set('licpw', pw); open(); };
+function open() { $('#auth').hidden = true; $('#panel').hidden = false; $('#logout').hidden = false; faceUI(); load(); }
+// ───── זיהוי פנים (מפתח גישה): הטלפון מאמת את הפנים, והשרת מאמת את החתימה של הטלפון ─────
+function faceUI() { $('#faceCard').hidden = !canFace; const on = faceOn();
+  $('#faceNote').textContent = on ? 'פעיל בטלפון הזה. בכל פתיחה של המסך תתבקש לאמת את הפנים, והסיסמה לא נשמרת בטלפון.' : 'במקום להקליד סיסמה: הטלפון יאמת את הפנים שלך (או טביעת אצבע) בכל פתיחה. הסיסמה נשארת כגיבוי.';
+  $('#faceOn').hidden = on; $('#faceOff').hidden = !on; }
+$('#faceOn').onclick = async () => {
+  try { const st = await call('wa-reg-start'); if (!st.ok) return say('ההפעלה נכשלה');
+    const cred = await navigator.credentials.create({ publicKey: { challenge: unb64u(st.challenge), rp: { name: 'ניהול רישיונות', id: location.hostname }, user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'admin', displayName: 'מנהל' },
+      pubKeyCredParams: [{ type: 'public-key', alg: -7 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' }, timeout: 60000 } });
+    const spki = cred.response.getPublicKey && cred.response.getPublicKey(); if (!spki) return say('הדפדפן הזה לא תומך בזה');
+    const r = await call('wa-reg-finish', { id: cred.id, spki: b64u(spki), clientData: b64u(cred.response.clientDataJSON), n: navigator.platform || '' });
+    if (!r.ok) return say('ההפעלה נכשלה');
+    mem.set('licwa', '1'); mem.set('licpw', ''); say('זיהוי הפנים הופעל'); faceUI();
+  } catch { say('ההפעלה בוטלה'); } };
+$('#faceOff').onclick = async () => { if (!confirm('לכבות את הכניסה בזיהוי פנים? הכניסה תחזור להיות עם סיסמה.')) return; await call('wa-clear').catch(() => {}); mem.set('licwa', ''); say('זיהוי הפנים כובה'); faceUI(); };
+async function faceLogin() {
+  try { const st = await call('wa-start'); if (!st.ok || !st.ids.length) { mem.set('licwa', ''); return say('זיהוי הפנים לא מוגדר. להיכנס עם סיסמה'); }
+    const a = await navigator.credentials.get({ publicKey: { challenge: unb64u(st.challenge), rpId: location.hostname, allowCredentials: st.ids.map(id => ({ type: 'public-key', id: unb64u(id) })), userVerification: 'required', timeout: 60000 } });
+    const r = await call('wa-finish', { id: a.id, authData: b64u(a.response.authenticatorData), clientData: b64u(a.response.clientDataJSON), sig: b64u(a.response.signature) });
+    if (!r.ok) return say('הזיהוי נכשל'); sess = r.sess; open();
+  } catch { say('הזיהוי בוטל'); } }
+$('#faceGo').onclick = faceLogin;
+$('#usePw').onclick = () => { $('#authForm').hidden = false; $('#usePw').hidden = true; $('#pw').focus(); };
+$('#logout').onclick = () => { mem.set('licpw', ''); pw = ''; sess = ''; location.reload(); };
 
 async function load() { const r = await call('list').catch(() => ({})); if (!r.ok) return say('הטעינה נכשלה'); last = r; draw(); }
 function draw() {
