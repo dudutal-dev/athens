@@ -189,7 +189,7 @@ try { var th = localStorage.getItem('athina.theme'); if (th === 'dark' || th ===
 
   <!-- צ׳אט -->
   <section class="view chatview" id="v-chat" data-view="chat" hidden>
-    <header class="chat-head"><div><h1>צ׳אט <span class="grpname">הקבוצה</span></h1><p class="muted small" id="chatStatus"></p></div><button class="btn ghost sm" data-go="group" type="button">הקבוצה</button></header>
+    <header class="chat-head"><div><p class="jr-kicker" id="chatStatus"></p><h1 class="hand">הצ׳אט שלנו</h1></div><button class="btn ghost sm" data-go="group" type="button">הקבוצה</button></header>
     <div class="chat-empty" id="chatEmpty" hidden><p>עוד אין קבוצה. פותחים קבוצה או מצטרפות עם קוד, ואז הצ׳אט נפתח כאן.</p><button class="btn" data-go="group" type="button">לקבוצה</button></div>
     <div class="chat-body" id="chatBody">
         <div id="grpChat" class="chat"></div>

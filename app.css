@@ -755,3 +755,30 @@ svg .du { fill: currentColor; stroke: none; opacity: .2; }
 .tabbar button::after { content: ''; width: 16px; height: 3px; border-radius: 3px; background: transparent; }
 .tabbar button.on::after { background: var(--c); }
 .tabbar button, .tabbar button.on { gap: 3px; }
+
+/* ═════ מסך הצ׳אט בסגנון היומן: נייר עם שורות, כותרת בכתב יד, והודעות כפתקים ═════ */
+#v-chat { background: var(--paper) repeating-linear-gradient(var(--paper) 0 31px, var(--paper-line) 31px 32px); }
+.chat-head { background: transparent; border-bottom: 0; align-items: flex-end; padding-bottom: 6px; }
+.chat-head h1.hand { font: 400 40px/1.1 var(--hand); color: var(--sea); position: relative; padding-bottom: 12px; }
+.chat-head h1.hand::after { content: ''; position: absolute; inset-inline-start: 0; bottom: 0; width: 96px; height: 10px; background: var(--sea); -webkit-mask: var(--meander) repeat-x; mask: var(--meander) repeat-x; opacity: .8; }
+.chat-head .jr-kicker { margin: 0 0 2px; }
+.chat-head .btn.ghost { background: var(--photo); color: var(--photo-ink); border: 1px solid var(--paper-line); }
+#grpChat { gap: 12px; padding: 14px 4px; }
+#grpChat .msg { background: var(--photo); color: var(--photo-ink); border-radius: 4px 14px 14px 14px; box-shadow: 0 3px 10px rgba(0, 0, 0, .13); padding: 9px 12px 7px; position: relative; }
+#grpChat .mrow:nth-child(odd) .msg { transform: rotate(-.5deg); } #grpChat .mrow:nth-child(even) .msg { transform: rotate(.4deg); }
+#grpChat .msg.mine { background: color-mix(in srgb, var(--btn) 15%, var(--photo)); color: var(--photo-ink); border-radius: 14px 4px 14px 14px; }
+#grpChat .msg.mine::before { content: ''; position: absolute; top: -7px; inset-inline-end: 16px; width: 42px; height: 14px; background: var(--tape); transform: rotate(-3deg); }
+#grpChat .msg small, #grpChat .msg.mine small { color: color-mix(in srgb, var(--photo-ink) 55%, transparent); }
+#grpChat .msg a, #grpChat .msg.mine a { color: #0d5eaf; }
+#grpChat .msg.mine .cdoc { background: color-mix(in srgb, var(--photo-ink) 8%, transparent); } #grpChat .msg.mine .cdoc small { color: inherit; }
+#grpChat .tk { color: color-mix(in srgb, var(--photo-ink) 55%, transparent); opacity: 1; } #grpChat .tk.rd { color: #1c7ed6; }
+#grpChat .sys { font: 400 19px/1.2 var(--hand); color: var(--muted); }
+#v-chat #grpQuick .tag { background: var(--photo); color: var(--photo-ink); border-color: var(--paper-line); }
+#v-chat .chatform { background: var(--photo); border: 1px solid var(--paper-line); border-radius: 22px; padding: 5px; box-shadow: 0 3px 12px rgba(0, 0, 0, .08); margin-bottom: 6px; }
+#v-chat .chatform input { background: transparent; border: 0; box-shadow: none; color: var(--photo-ink); padding-inline: 6px; }
+#v-chat .chatform input::placeholder { color: color-mix(in srgb, var(--photo-ink) 50%, transparent); }
+#v-chat .cbtn { background: transparent; width: 36px; }
+#v-chat .chatform .send { border-radius: 50%; width: 44px; height: 44px; min-height: 44px; }
+#v-chat .emoji-panel { background: var(--photo); border-color: var(--paper-line); }
+.chat-empty { font: 400 22px/1.3 var(--hand); }
+.chat-empty .btn { font: 700 16px var(--body); }
