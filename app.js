@@ -100,6 +100,7 @@
     ui.day = d; $('#todayPlan').textContent = TRIP.plan[d].title;
     $('#cols').innerHTML = Array.from({ length: 8 }, (_, k) => `<rect x="${54 + k * 28.5}" y="68" width="13" height="38"/>`).join('');
   }
+  const WXK = c => c === 0 ? 'sun' : c <= 2 ? 'part' : c === 3 ? 'cloud' : c <= 48 ? 'fog' : c <= 67 ? 'rain' : c <= 77 ? 'snow' : c <= 82 ? 'shower' : 'storm';   // סוג מזג האוויר, לצבע הכרטיס
   const WX = c => c === 0 ? '☀️' : c <= 2 ? '🌤️' : c === 3 ? '☁️' : c <= 48 ? '🌫️' : c <= 67 ? '🌧️' : c <= 77 ? '🌨️' : c <= 82 ? '🌦️' : '⛈️';
   async function renderWeather() {
     const box = $('#weather');
@@ -108,7 +109,7 @@
       let r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=37.98&longitude=23.73&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FAthens&start_date=${S.start}&end_date=${end}`);
       if (!r.ok) r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=37.98&longitude=23.73&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FAthens&forecast_days=4');
       const d = (await r.json()).daily;
-      box.innerHTML = d.time.slice(0, 4).map((t, i) => `<div class="wx"><b>${fmtDay(new Date(t + 'T12:00'))} ${fmtDate(new Date(t + 'T12:00'))}</b><i>${WX(d.weather_code[i])}</i><span>${Math.round(d.temperature_2m_max[i])}°</span> <em>${Math.round(d.temperature_2m_min[i])}°</em></div>`).join('');
+      box.innerHTML = d.time.slice(0, 4).map((t, i) => `<div class="wx wx-${WXK(d.weather_code[i])}"><b>${fmtDay(new Date(t + 'T12:00'))} ${fmtDate(new Date(t + 'T12:00'))}</b><i>${WX(d.weather_code[i])}</i><span>${Math.round(d.temperature_2m_max[i])}°</span> <em>${Math.round(d.temperature_2m_min[i])}°</em></div>`).join('');
     } catch { box.innerHTML = ''; }
   }
   function renderAlert() {
@@ -474,7 +475,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 60;
+  const VERSION = 61;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
