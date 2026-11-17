@@ -1,9 +1,13 @@
-/* איך מתחילים: שישה צעדים עם צילומי מסך. הכרטיס בעמוד הבית נעלם כשהכול הושלם או כשמסתירים אותו */
+/* איך מתחילים: צעדים עם צילומי מסך. הכרטיס בעמוד הבית נעלם כשהכול הושלם או כשמסתירים אותו */
 (() => {
   const A = window.APP, $ = s => document.querySelector(s);
   const ls = k => { try { return localStorage.getItem(k); } catch { return null; } };
   const grp = () => { try { return JSON.parse(ls('athina.group') || '{}'); } catch { return {}; } };
+  const alone = matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
   const STEPS = [
+    ...(alone ? [] : [{ id: 'install', h: 'להתקין במסך הבית', btn: 'התקנה', act: () => A.install?.(),
+      p: 'כדי שהאפליקציה תעבוד במסך מלא, עם התראות וגם בלי קליטה, מתקינים אותה במסך הבית ופותחים אותה רק מהאייקון. מי שמקבל קישור הזמנה לקבוצה מתקין ישר ממנו.',
+      done: () => false }]),
     { id: 'map', h: 'להוריד את המפה', img: 'help/map.jpg', btn: 'למפה בלי אינטרנט', jump: 'offlineCard',
       p: 'עושים את זה ב־Wi‑Fi, עוד לפני הטיסה. אחרי ההורדה המפה של אתונה עובדת גם בלי חבילת גלישה, והנקודה הכחולה ממשיכה להראות את המיקום.',
       done: () => !!ls('athina.offline2') },
@@ -14,13 +18,13 @@
       p: 'בוחרים סוג נסיעה (בנות, בנים, משפחה או חברים), שם ואירוע אם יש. לפי זה האפליקציה מסדרת את ההמלצות, המסלול והיומן.',
       done: () => TRIP.cfg.set },
     { id: 'group', h: 'להקים קבוצה', img: 'help/group.jpg', btn: 'לקבוצה', go: 'group',
-      p: 'מי שמארגן לוחץ "פתיחת קבוצה חדשה" ומקבל קוד. "הזמנה לקבוצה" שולח אותו בוואטסאפ, והשאר מצטרפים עם שם וקוד. הנסיעה והמלון עוברים לכולם לבד.',
+      p: 'מי שמארגן לוחץ "פתיחת קבוצה חדשה" והופך למנהל הקבוצה. "הזמנה לקבוצה" שולח בוואטסאפ קישור: מי שלוחץ עליו מתקין את האפליקציה במסך הבית ומצטרף, בלי להזין קוד. הנסיעה והמלון עוברים לכולם לבד.',
       done: () => !!grp().code },
     { id: 'chat', h: 'לכתוב בצ׳אט', img: 'help/chat.jpg', btn: 'לצ׳אט', go: 'chat',
       p: 'הלשונית "צ׳אט" היא שיחה של הקבוצה בלבד: הודעות, סמיילים, תמונות, סרטונים קצרים ומיקום. ✓✓ כחול אומר שכולם קראו. כדאי להפעיל התראות בעמוד הקבוצה.',
       done: () => { const g = grp(); return (g.msgs || []).some(m => m.d === g.id && m.x !== null); } },
     { id: 'journal', h: 'לצלם ליומן', img: 'help/journal.jpg', btn: 'ליומן', go: 'journal',
-      p: 'בלשונית "יומן" יש יומן אישי ויומן משותף. מצלמים, מוסיפים כמה מילים ושומרים. בסוף הטיול הכפתור "מצגת הטיול" הופך את הכול למצגת.',
+      p: 'בלשונית "יומן" יש יומן אישי ויומן משותף. מצלמים תמונה או סרטון, מוסיפים כמה מילים ושומרים. בסוף הטיול הכפתור "מצגת הטיול" הופך את הכול למצגת.',
       done: async () => (await A.journal.all().catch(() => [])).length > 0 },
   ];
   async function render() {
@@ -28,7 +32,7 @@
     $('#startSteps').innerHTML = STEPS.map((s, i) => `<div class="step ${done[i] ? 'done' : ''}">
       <div class="step-n">${done[i] ? '✓' : i + 1}</div>
       <div class="step-b"><h3>${s.h}</h3><p>${s.p}</p>
-        <button type="button" class="step-shot" data-shot="${s.img}" aria-label="הגדלת צילום המסך"><img src="${s.img}" alt="צילום מסך: ${s.h}" loading="lazy"></button>
+        ${s.img ? `<button type="button" class="step-shot" data-shot="${s.img}" aria-label="הגדלת צילום המסך"><img src="${s.img}" alt="צילום מסך: ${s.h}" loading="lazy"></button>` : ''}
         <button type="button" class="btn sm ${done[i] ? 'ghost' : ''}" data-step="${i}">${s.btn}</button></div></div>`).join('');
     $('#startCount').textContent = `${n} מתוך ${STEPS.length}`;
     $('#startDots').innerHTML = STEPS.map((s, i) => `<span class="${done[i] ? 'on' : ''}">${done[i] ? '✓' : i + 1}</span><small>${s.h}</small>`).join('');

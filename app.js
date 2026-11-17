@@ -434,7 +434,7 @@
     $('#installTxt').innerHTML = ios
       ? 'אייקון במסך הבית, מסך מלא, עובד גם בלי קליטה. לוחצים "התקנה" ורואים איך.'
       : 'אייקון במסך הבית, מסך מלא, עובד גם בלי קליטה.';
-    card.hidden = !!hidden;   // מי שהסתיר את הכרטיס עדיין יקבל את חלון ההתקנה כשהוא מגיע מקישור הזמנה
+    card.hidden = true;   // אין יותר כרטיס התקנה בעמוד הבית: ההתקנה נעשית מקישור ההזמנה או מהצעד הראשון ב"איך מתחילים"
     // כפתור ההתקנה: באנדרואיד מתקין מיד כשהדפדפן מאפשר. באייפון אין דרך להתקין מתוך האתר, אז מראים את הצעדים
     const SHARE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
     const PLUS = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
@@ -462,7 +462,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 40;
+  const VERSION = 41;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
