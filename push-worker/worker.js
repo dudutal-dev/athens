@@ -92,7 +92,8 @@ export default {
         if (req.method !== 'POST') return json({ error: 'method' }, 405);
         const hb = await req.json(), app = String(hb.app || '');
         if (!/^[a-z]{3,12}$/.test(app)) return json({ error: 'bad app' }, 400);
-        const who = (req.headers.get('cf-connecting-ip') || 'local') + '|' + ((/\(([^)]*)\)/.exec(req.headers.get('user-agent') || '') || [])[1] || '') + '|' + app;   // סוג המכשיר וגרסת המערכת בלבד: זהים בספארי, בכרום ובאפליקציה שבמסך הבית
+        // ההתאמה לפי תיאור המכשיר שהאפליקציה שולחת (מסך, שפה, אזור זמן): הוא זהה בדפדפן ובאפליקציה שבמסך הבית, גם כשכתובת הרשת שונה
+        const fp = String(hb.fp || '').slice(0, 160), who = app + '|' + (fp || (req.headers.get('cf-connecting-ip') || 'local'));
         const hk = 'h:' + btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(who))))).replace(/[^A-Za-z0-9]/g, '').slice(0, 32);
         if (url.pathname === '/h/put') {
           if (!/^[A-Za-z0-9-]{6,20}$/.test(String(hb.j || ''))) return json({ error: 'bad code' }, 400);

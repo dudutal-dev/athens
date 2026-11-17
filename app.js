@@ -453,7 +453,7 @@
     const SHARE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
     const PLUS = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
     let promptEv = null;
-    const steps = invited => {
+    const steps = (invited, code) => {
       $('#installTitle').textContent = invited ? 'הוזמנת לקבוצה 🎉' : 'התקנה למסך הבית'; $('#installOk').textContent = invited ? 'סגירה' : 'הבנתי';
       $('#installSteps').innerHTML = (ios ? [
         `ללחוץ על כפתור השיתוף <span class="inst-ic">${SHARE}</span> ${/CriOS|FxiOS|EdgiOS/.test(ua) ? 'שליד שורת הכתובת' : 'בתחתית המסך'}.`,
@@ -463,6 +463,7 @@
         'לבחור <b>"התקנת האפליקציה"</b> או <b>"הוספה למסך הבית"</b>.',
         'לאשר <b>"התקנה"</b>.']).map(x => `<li>${x}</li>`).join('');
       $('#installAfter').textContent = invited ? 'אחר כך פותחים את האפליקציה מהאייקון שבמסך הבית, כותבים שם, והחיבור לקבוצה נעשה לבד.' : 'מעכשיו פותחים את האפליקציה מהאייקון שבמסך הבית.';
+      $('#installCode').hidden = !code; if (code) $('#installCodeV').textContent = code;
       $('#installDlg').showModal();
     };
     A_steps = steps;
@@ -476,7 +477,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 66;
+  const VERSION = 67;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -551,7 +552,7 @@
   $('#themeBtn').onclick = () => { const t = isDark() ? 'light' : 'dark'; try { localStorage.setItem('athina.theme', t); } catch {} applyTheme(t); themeBtn(); };
   themeBtn();
   $('#taxAmt').oninput = e => { const v = +e.target.value; $('#taxOut').textContent = v >= 50 ? `\u2066€${Math.round(v * .12)}–€${Math.round(v * .15)}\u2069 · כ־₪${Math.round(v * .135 * S.rate)}` : v > 0 ? 'מתחת למינימום של €50' : '—'; };
-  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, openTrip, hooks: {}, get install() { return A_install; }, installSteps: i => A_steps(i), installNow: () => A_now(), get imgs() { return Object.values(IMG); }, get map() { return map; },
+  const APP = window.APP = { S, save, go, get me() { return me; }, km, toast, esc, dayDate, fmtDay, fmtDate, byId, startGPS, distTxt, openTrip, hooks: {}, get install() { return A_install; }, installSteps: (i, c) => A_steps(i, c), installNow: () => A_now(), get imgs() { return Object.values(IMG); }, get map() { return map; },
     tileUrl: (z, x, y) => `${ESRI}World_Street_Map/MapServer/tile/${z}/${y}/${x}` };
   renderTrip(); renderHero(); renderAlert(); renderHotel(); renderFlights(); renderFavCount(); renderRail();
   renderDayTabs(); renderPlan(); renderStatic(); renderPack(); renderKupa(); initConv(); renderWeather(); loadImages();
