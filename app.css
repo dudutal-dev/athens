@@ -541,3 +541,11 @@ body.kb .view { padding-bottom: 12px; }
 .shot { background: #05080f; padding: 12px 12px calc(14px + var(--sab)); text-align: center; }
 .shot img { max-width: 100%; max-height: 74dvh; border-radius: 12px; display: block; margin: 0 auto 12px; }
 .about h2 { margin-bottom: 6px; } .about p { font-size: 15px; }
+
+/* ───── סרטונים ביומן ───── */
+.jr-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.jr-actions .btn { flex-direction: column; gap: 2px; padding: 8px 4px; font-size: 13.5px; min-height: 58px; }
+.vwrap { position: relative; display: block; }
+.vblank { display: grid; place-items: center; aspect-ratio: 4 / 3; background: #1b2540; font-size: 40px; border-radius: 2px; }
+.vplay { position: absolute; inset-inline-start: 6px; bottom: 6px; background: rgba(0,0,0,.62); color: #fff; font: 700 12px var(--body); padding: 3px 8px; border-radius: 999px; direction: ltr; }
+.entry-img video { max-width: 100%; max-height: 46dvh; display: block; background: #000; }

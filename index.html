@@ -119,11 +119,13 @@
     </header>
     <div class="jr-actions">
       <label class="btn" for="camIn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>צילום</label>
-      <label class="btn ghost" for="upIn">העלאת תמונות</label>
+      <label class="btn ghost" for="vidIn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>סרטון</label>
+      <label class="btn ghost" for="upIn">העלאה</label>
       <button class="btn ghost" id="jrNote">כתיבה</button>
     </div>
     <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
-    <input type="file" id="upIn" accept="image/*" multiple hidden>
+    <input type="file" id="vidIn" accept="video/*" capture="environment" hidden>
+    <input type="file" id="upIn" accept="image/*,video/*" multiple hidden>
     <div class="jr-show"><button class="btn sea" id="jrShow" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span id="jrShowTxt">מצגת הטיול</span></button><button class="btn ghost" id="bkOpen" type="button">גיבוי תמונות<em class="nbadge" id="bkCount" hidden></em></button></div>
     <div class="bk-banner" id="bkBanner" hidden><span id="bkBannerTxt"></span><button class="btn sm" id="bkBannerBtn" type="button">גיבוי עכשיו</button><button class="link" id="bkBannerX" type="button">אחר כך</button></div>
     <div id="jrBody"></div>
@@ -370,7 +372,8 @@
 <!-- רשומת יומן -->
 <dialog id="entryDlg" class="sheet">
   <form id="entryForm" method="dialog" class="form">
-    <div class="entry-img" id="entryImgWrap" hidden><img id="entryImg" alt=""></div>
+    <div class="entry-img" id="entryImgWrap" hidden><img id="entryImg" alt=""><video id="entryVid" controls playsinline preload="metadata" hidden></video></div>
+    <p class="muted small" id="entryVidNote" hidden></p>
     <label class="hand-label">מה היה כאן?
       <textarea id="entryText" rows="3" placeholder="כמה מילים לזיכרון…"></textarea>
     </label>
@@ -472,7 +475,7 @@
     <p class="muted small" id="bkMsg" hidden></p>
     <label class="switch"><input type="checkbox" id="bkAuto"><span id="bkAutoTxt"></span></label>
     <p class="muted small" id="bkNote"></p>
-    <p class="muted small">הגיבוי כולל את כל התמונות שביומן, גם המשותפות, ובקובץ ה־ZIP גם רשימה עם הכיתובים. באייפון: בחלון השיתוף לבחור "שמירת תמונות" לגלריה, או "שמירה לקבצים" ← הורדות.</p>
+    <p class="muted small">הגיבוי כולל את כל התמונות שביומן, גם המשותפות (סרטונים שומרים אחד־אחד: פותחים את הסרטון ולוחצים "שיתוף"), ובקובץ ה־ZIP גם רשימה עם הכיתובים. באייפון: בחלון השיתוף לבחור "שמירת תמונות" לגלריה, או "שמירה לקבצים" ← הורדות.</p>
     <div class="row end"><button type="button" class="btn ghost" id="bkClose">סגירה</button></div>
   </div>
 </dialog>

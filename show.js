@@ -64,7 +64,7 @@
       for (const [t, w] of row) { c.fillStyle = 'rgba(255,255,255,.18)'; rr(c, px - w, y + ri * (h + gap), w, h, h / 2); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(t, px - w / 2, y + ri * (h + gap) + h * .68); px -= w + gap; } });
     c.restore(); return y + rows.length * (h + gap);
   }
-  const meta = e => [e.place ? '📍 ' + placeName(e.place) : '', hm(e.ts), e.by ? 'צילמה ' + e.by : ''];
+  const meta = e => [e.type === 'video' ? '🎬 סרטון' : '', e.place ? '📍 ' + placeName(e.place) : '', hm(e.ts), e.by ? 'מאת ' + e.by : ''];
   const shadow = (c, on, u) => { c.shadowColor = on ? 'rgba(0,0,0,.55)' : 'transparent'; c.shadowBlur = on ? 14 * u : 0; c.shadowOffsetY = on ? 2 * u : 0; };
   const mk = (W, H) => { const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d'); c.direction = 'rtl'; c.textBaseline = 'alphabetic'; return [cv, c]; };
   const dims = (W, H) => { const P = H > W; return [P, P ? W / 1080 : H / 900]; };
@@ -179,7 +179,7 @@
   async function build() {
     if (building) return; building = true; const my = ++runId; pdfFile = null; play(false);
     const J = A.journal, pick = scope === 'me' ? J.inMe : scope === 'us' ? J.inUs : () => true;
-    const all = (await J.all().catch(() => [])).filter(e => pick(e) && ((e.type === 'photo' && e.blob) || (e.type === 'note' && e.text))).sort((a, b) => a.ts - b.ts);
+    const all = (await J.all().catch(() => [])).filter(e => pick(e) && ((e.type === 'photo' && e.blob) || (e.type === 'video' && e.poster) || (e.type === 'note' && e.text))).sort((a, b) => a.ts - b.ts);
     open(); scopeUI();
     if (!all.length) { building = false; slides.forEach(s => URL.revokeObjectURL(s.url)); slides = []; bars(); layers.forEach(l => l.removeAttribute('src')); return status(scope === 'us' ? 'היומן המשותף עוד ריק' : 'היומן עוד ריק. אחרי כמה תמונות תהיה כאן מצגת'); }
     const [W, H] = fmt === 'p' ? [1080, 1920] : [1600, 900];
@@ -188,7 +188,7 @@
     const t0 = A.dayDate(0); t0.setHours(0, 0, 0, 0);
     const dayOf = ts => { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d; };
     const groups = []; for (const e of all) { const d = dayOf(e.ts), g = groups[groups.length - 1]; if (g && +g.date === +d) g.items.push(e); else groups.push({ date: d, items: [e] }); }
-    for (const e of all) if (e.type === 'photo') try { e._img = await loadImg(e.blob); } catch {}
+    for (const e of all) if (e.type !== 'note') try { e._img = await loadImg(e.type === 'video' ? e.poster : e.blob); } catch {}   // סרטון מיוצג בתמונת הפתיחה שלו
     const ph = all.filter(e => e._img), names = (() => { try { const G = JSON.parse(localStorage.getItem('athina.group') || '{}'); return [...new Set([G.name, ...Object.values(G.members || {}).map(m => m.n)].filter(Boolean))]; } catch { return []; } })();
     const st = { from: groups[0].date, to: groups[groups.length - 1].date, names: scope === 'me' ? [] : names, kind: SCOPES[scope], photos: ph.length, places: new Set(all.map(e => e.place).filter(Boolean)).size, days: groups.length,
       pick: ph.length ? [ph[0], ph[Math.floor(ph.length / 2)], ph[ph.length - 1]].filter((x, i, a) => a.indexOf(x) === i).map(e => e._img) : [] };

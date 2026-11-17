@@ -33,6 +33,26 @@
     return new Promise(res => c.toBlob(b => res(b || file), 'image/jpeg', .85));
   }
 
+  // סרטונים: נשמרים בטלפון כמו שצולמו. ליומן המשותף עוברים רק קצרים, כי השרת מקבל קובץ עד 15 מ״ב
+  const V_SHARE = 14e6, V_LOCAL = 300e6;
+  const media = x => x.type === 'photo' || x.type === 'video';
+  const mmss = s => isFinite(s) && s > 0 ? `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}` : '';
+  function poster(blob) {   // תמונת פתיחה מהסרטון. מחזירה null אם הדפדפן לא יודע לפענח אותו
+    return new Promise(res => { const v = document.createElement('video'), u = URL.createObjectURL(blob); let done = false;
+      const fin = x => { if (done) return; done = true; URL.revokeObjectURL(u); res(x); };
+      v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = u;
+      v.onloadeddata = () => { try { v.currentTime = Math.min(0.6, (v.duration || 1) / 2); } catch { fin(null); } };
+      v.onseeked = () => { try { const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement('canvas'); c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k);
+        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height); c.toBlob(b => fin(b ? { blob: b, w: c.width, h: c.height, dur: v.duration } : null), 'image/jpeg', .8); } catch { fin(null); } };
+      v.onerror = () => fin(null); setTimeout(() => fin(null), 9000); v.load(); });
+  }
+  async function addVideo(f, ts) {
+    if (f.size > V_LOCAL) { A.toast('הסרטון גדול מדי לשמירה באפליקציה (עד 300 מ״ב). עדיף להשאיר אותו בגלריה', 5000); return null; }
+    const p = await poster(f);
+    const e = newEntry('video', { blob: f, mime: f.type || 'video/mp4', size: f.size, poster: p?.blob, w: p?.w, h: p?.h, dur: p?.dur, ...(ts ? { ts, place: '', lat: undefined, lng: undefined } : {}) });
+    await put(e); return e;
+  }
+
   // תיוג מיידי: המקום הקרוב ביותר למיקום הנוכחי
   function nearest() {
     const me = A.me; if (!me) return '';
@@ -71,14 +91,16 @@
       return `<h2 class="jr-day">${title}<small>${A.fmtDay(d)} ${A.fmtDate(d)} · ${g.length} רגעים</small></h2><div class="jr-grid">` + g.map(e => {
         const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}${e.by ? ' · ' + esc(e.by) : ''}${!us && inUs(e) ? ' · גם במשותף' : us && inMe(e) ? ' · גם באישי' : ''}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
         if (e.type === 'note') return `<button class="note" data-id="${e.id}">${esc(e.text)}${meta}</button>`;
-        if (!e.blob) return `<button class="pol" data-id="${e.id}"><span class="tape"></span><span class="ph-wait">התמונה של ${esc(e.by || '')} בדרך…</span>${meta}</button>`;
+        if (!e.blob) return `<button class="pol" data-id="${e.id}"><span class="tape"></span><span class="ph-wait">${e.type === 'video' ? 'הסרטון' : 'התמונה'} של ${esc(e.by || '')} בדרך…</span>${meta}</button>`;
+        if (e.type === 'video') { const pu = e.poster ? URL.createObjectURL(e.poster) : ''; if (pu) urls.push(pu);
+          return `<button class="pol vid" data-id="${e.id}"><span class="tape"></span><span class="vwrap">${pu ? `<img src="${pu}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">` : '<span class="vblank">🎬</span>'}<span class="vplay">▶ ${mmss(e.dur)}</span></span>${e.text ? `<span class="cap">${esc(e.text)}</span>` : ''}${meta}</button>`; }
         const u = URL.createObjectURL(e.blob); urls.push(u);
         return `<button class="pol" data-id="${e.id}"><span class="tape"></span><img src="${u}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">${e.text ? `<span class="cap">${esc(e.text)}</span>` : ''}${meta}</button>`;
       }).join('') + '</div>';
     }).join('');
   }
   A.hooks.journal = render;
-  A.journal = { get, put, del, all, render, shrink };
+  A.journal = { get, put, del, all, render, shrink, poster: b => poster(b) };
 
   // ───── עורך ─────
   let editUrl = null;
@@ -86,8 +108,11 @@
     cur = e;
     const me = A.me, wrap = $('#entryImgWrap');
     if (editUrl) URL.revokeObjectURL(editUrl);
-    wrap.hidden = e.type !== 'photo';
-    if (e.type === 'photo') $('#entryImg').src = editUrl = URL.createObjectURL(e.blob);
+    wrap.hidden = !media(e) || !e.blob;
+    const vid = $('#entryVid'), isV = e.type === 'video'; vid.pause(); vid.hidden = !isV; $('#entryImg').hidden = isV;
+    if (media(e) && e.blob) { editUrl = URL.createObjectURL(e.blob); if (isV) vid.src = editUrl; else $('#entryImg').src = editUrl; }
+    const tooBig = isV && (e.size || e.blob?.size || 0) > V_SHARE;
+    $('#entryVidNote').hidden = !tooBig; $('#entryVidNote').textContent = tooBig ? 'סרטון ארוך נשמר רק ביומן האישי. לקבוצה אפשר לשתף סרטון של עד 14 מ״ב, בערך 10–20 שניות.' : '';
     $('#entryText').value = e.text || '';
     const ref = e.lat ? e : me;
     const list = [...PLACES].sort((a, b) => ref ? A.km(ref, a) - A.km(ref, b) : a.he.localeCompare(b.he, 'he'));
@@ -97,11 +122,11 @@
     drawTags();
     const canShare = !!A.hooks.inGroup?.() && !e.byId;
     const fresh = e.personal === undefined && e.shared === undefined;   // רשומה חדשה: ברירת המחדל לפי היומן שפתוח עכשיו
-    $('#entryShareRow').hidden = !canShare; $('#entryShared').checked = canShare && (fresh ? jtab === 'us' : !!e.shared);
+    $('#entryShareRow').hidden = !canShare || tooBig; $('#entryShared').checked = canShare && (fresh ? jtab === 'us' : !!e.shared);
     $('#entryPersonal').checked = fresh ? !(jtab === 'us' && canShare) : inMe(e);
     $('#entryPersonalTxt').textContent = e.byId ? 'לשמור גם ביומן האישי שלי' : 'ביומן האישי שלי';
     $('#entryDel').textContent = 'מחיקה'; $('#entryDel').dataset.sure = '';
-    $('#entryShare').hidden = e.type !== 'photo' || !navigator.share;
+    $('#entryShare').hidden = !media(e) || !e.blob || !navigator.share;
     $('#entryDlg').showModal(); $('#entryText').blur();   // בלי מקלדת עד שנוגעים בשדה הכתיבה
   }
   function drawTags() { $('#entryTags').innerHTML = QUICK_TAGS.map(t => `<button type="button" class="tag ${cur.tags.includes(t) ? 'on' : ''}" data-t="${t}">#${t}</button>`).join(''); }
@@ -109,7 +134,7 @@
   $('#entryForm').onsubmit = async () => {
     cur.text = $('#entryText').value.trim(); cur.place = $('#entryPlace').value;
     if (cur.type === 'note' && !cur.text) return;
-    const own = !cur.byId, was = !!cur.shared; let per = $('#entryPersonal').checked, share = own && inGroup() && $('#entryShared').checked;
+    const own = !cur.byId, was = !!cur.shared; let per = $('#entryPersonal').checked, share = own && inGroup() && $('#entryShared').checked && !$('#entryShareRow').hidden;
     if (own && !per && !share) { if (jtab === 'us' && inGroup()) share = true; else per = true; }   // רשומה חייבת להיות לפחות ביומן אחד
     cur.personal = per; if (own) cur.shared = share;
     try { await put(cur); A.toast(share ? 'נשמר ונשלח לקבוצה…' : own ? 'נשמר ביומן האישי' : 'נשמר'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
@@ -123,7 +148,8 @@
     await del(cur.id).catch(() => {}); if (cur.shared && !cur.byId) A.hooks.unshareEntry?.(cur.id); $('#entryDlg').close(); render();
   };
   $('#entryShare').onclick = () => {
-    const f = new File([cur.blob], `athens-${cur.id}.jpg`, { type: 'image/jpeg' }), text = $('#entryText').value.trim();
+    const isV = cur.type === 'video', mime = isV ? cur.mime || cur.blob.type || 'video/mp4' : 'image/jpeg', ext = isV ? (/quicktime/.test(mime) ? 'mov' : /webm/.test(mime) ? 'webm' : 'mp4') : 'jpg';
+    const f = new File([cur.blob], `athens-${cur.id}.${ext}`, { type: mime }), text = $('#entryText').value.trim();
     const data = navigator.canShare?.({ files: [f] }) ? { files: [f], text } : { text };
     navigator.share(data).catch(() => {});
   };
@@ -140,18 +166,30 @@
       await put(e); await render(); openEditor(e);
     } catch { A.toast('לא הצלחנו לשמור את התמונה'); }
   };
+  // צילום סרטון: נשמר ביומן האישי, ואפשר לשתף אותו אם הוא קצר
+  $('#vidIn').onchange = async ev => {
+    const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+    A.toast('שומרת את הסרטון…', 20000);
+    try { const e = await addVideo(f); if (!e) return; await render(); A.toast('הסרטון נשמר'); openEditor(e); } catch { A.toast('לא הצלחנו לשמור את הסרטון. ייתכן שאין מקום פנוי בטלפון'); }
+  };
+  $('#entryDlg').addEventListener('close', () => $('#entryVid').pause());
   // העלאה מהגלריה: כמה תמונות בבת אחת, לפי תאריך הצילום
   $('#upIn').onchange = async ev => {
     const files = [...ev.target.files]; ev.target.value = ''; if (!files.length) return;
-    A.toast(`מוסיפה ${files.length} תמונות…`, 60000); let ok = 0, last;
+    A.toast(`מוסיפה ${files.length} קבצים…`, 60000); let ok = 0, last;
     for (const f of files) try {
+      if (/^video\//.test(f.type) || /\.(mp4|mov|m4v|webm)$/i.test(f.name || '')) {
+        last = await addVideo(f, f.lastModified || Date.now()); if (!last) continue;
+        if (jtab === 'us' && inGroup() && f.size <= V_SHARE) { last.shared = true; last.personal = false; } else { last.shared = false; last.personal = true; }
+        await put(last); ok++; if (last.shared) await A.hooks.shareEntry?.(last, true); continue;
+      }
       const blob = await shrink(f), bmp = await createImageBitmap(blob).catch(() => null);
       last = newEntry('photo', { blob, w: bmp?.width, h: bmp?.height, ts: f.lastModified || Date.now(), place: '', lat: undefined, lng: undefined });
       if (jtab === 'us' && inGroup()) { last.shared = true; last.personal = false; } else { last.shared = false; last.personal = true; }
       await put(last); ok++; if (last.shared) await A.hooks.shareEntry?.(last, true);
     } catch {}
     await render();
-    A.toast(ok ? `נוספו ${ok} תמונות. לחיצה על תמונה מוסיפה מילים ומיקום` : 'לא הצלחנו להוסיף את התמונות');
+    A.toast(ok ? `נוספו ${ok} קבצים. לחיצה על תמונה או סרטון מוסיפה מילים ומיקום` : 'לא הצלחנו להוסיף את הקבצים');
     if (ok === 1) openEditor(last);
   };
   const setTab = t => { jtab = t; try { localStorage.setItem('athina.jtab', t); } catch {} render(); };

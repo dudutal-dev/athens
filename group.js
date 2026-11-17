@@ -82,11 +82,11 @@
   async function shareEntry(e, withImage) {
     if (!key) return false;
     try {
-      const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h };
+      const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) };
       const payload = await enc({ t: 'j', e: meta, n: G.name, d: G.id, ts: Date.now() });
       let r;
-      if (e.type === 'photo' && e.blob && withImage) {
-        const small = await A.journal.shrink(e.blob, 1280), body = await encBytes(await small.arrayBuffer());
+      if ((e.type === 'photo' || e.type === 'video') && e.blob && withImage) {
+        const small = e.type === 'video' ? e.blob : await A.journal.shrink(e.blob, 1280), body = await encBytes(await small.arrayBuffer());   // סרטון נשלח כמו שהוא
         r = await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body });
       } else r = await fetch(BASE + topic, { method: 'POST', body: payload });
       if (r.ok) served[e.id] = Date.now();
@@ -101,10 +101,12 @@
     let e = await J.get(p.e.id).catch(() => null); const isNew = !e;
     if (e && !e.byId) return;                                    // רשומה שלי – לא דורסים
     e = e ? { ...e, text: p.e.text, place: p.e.place, tags: p.e.tags || [] } : { ...p.e, tags: p.e.tags || [], shared: true, by: p.n, byId: p.d };
-    if (e.type === 'photo' && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: 'image/jpeg' }); served[e.id] = Date.now(); } catch {}
+    const isMedia = e.type === 'photo' || e.type === 'video';
+    if (isMedia && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: e.type === 'video' ? e.mime || 'video/mp4' : 'image/jpeg' }); served[e.id] = Date.now();
+      if (e.type === 'video') { const p = await J.poster(e.blob); if (p) { e.poster = p.blob; e.w = p.w; e.h = p.h; e.dur = e.dur || p.dur; } } } catch {}
     await J.put(e).catch(() => {}); J.render();
-    if (e.type === 'photo' && !e.blob && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
-    if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${e.type === 'photo' ? 'תמונה חדשה' : 'רשומה חדשה'} ביומן מאת ${p.n}`, 4000);
+    if (isMedia && !e.blob && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
+    if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${e.type === 'photo' ? 'תמונה חדשה' : e.type === 'video' ? 'סרטון חדש' : 'רשומה חדשה'} ביומן מאת ${p.n}`, 4000);
   }
   async function journalReq(p) {   // מישהי חסרה תמונה: מי שמחזיקה אותה מעלה שוב, אחרי השהיה אקראית כדי שרק אחת תענה
     const J = A.journal; if (!J || p.d === G.id) return;
@@ -112,8 +114,8 @@
     const t0 = Date.now(); await new Promise(r => setTimeout(r, (e.byId ? 2500 : 300) + Math.random() * 3000));
     if ((served[e.id] || 0) >= t0) return;
     served[e.id] = Date.now();
-    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h }, n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
-    try { const small = await J.shrink(e.blob, 1280); await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) }); } catch {}
+    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) }, n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
+    try { const small = e.type === 'video' ? e.blob : await J.shrink(e.blob, 1280); await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) }); } catch {}
   }
 
   // ───── קבצים בצ׳אט: תמונות ומסמכים עוברים מוצפנים כקובץ מצורף ונשמרים בטלפון ─────
