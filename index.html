@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>אתונה שלנו</title>
-<meta name="description" content="המדריך האישי לנסיעת הבנות לאתונה: מפה חיה, שופינג, מסעדות, מסלול וכלים">
+<meta name="description" content="המדריך האישי לטיול באתונה: מפה חיה, שופינג, מסעדות, מסלול וכלים">
 <meta name="theme-color" content="#f5f7fb" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1524" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,6 +25,7 @@
   <section class="view" id="v-home" data-view="home">
     <header class="hero">
       <p class="eyebrow" id="heroDates"></p>
+      <button class="hero-set" id="tripBtn" type="button" aria-label="הגדרות הנסיעה"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></button>
       <h1>יָאסוּ, <span>אתונה</span></h1>
       <p class="hero-sub" id="heroCount"></p>
       <svg class="hero-art" viewBox="0 0 320 120" aria-hidden="true">
@@ -46,24 +47,14 @@
       </section>
       <section class="card" id="hotelCard"></section>
       <section class="card" id="flightsCard"></section>
-      <details class="card bday" id="bdayCard">
-        <summary><span><h2>דפנה חוגגת <span>50</span></h2><small>רעיונות לחגיגה</small></span></summary>
-        <p class="bday-k">Χρόνια πολλά · חְרוֹנְיָה פּוֹלָה</p>
-        <p class="bday-m">"שנים רבות" – כך מברכים ביוון ליום הולדת</p>
-        <p>ארבעה ימים באתונה לכבודה. כמה רעיונות לחגיגה:</p>
-        <ul class="bday-list">
-          <li><b>ארוחת יום ההולדת</b> מול האקרופוליס. להזמין מראש ולהגיד שזה יום הולדת, ברוב המקומות יביאו קינוח עם נר.
-            <span class="tags"><button class="tag" data-open="gbroof">GB Roof Garden</button><button class="tag" data-open="strofi">סטרופי</button><button class="tag" data-open="varoulko">וארולקו</button></span></li>
-          <li><b>הרמת כוסית בשקיעה</b> על גג, עם תמונה קבוצתית.
-            <span class="tags"><button class="tag" data-open="aforathens">A for Athens</button><button class="tag" data-open="areopagus">גבעת אראופגוס</button></span></li>
-          <li><b>פינוק לכולן</b>: שעתיים של חמאם.
-            <span class="tags"><button class="tag" data-open="hammam">חמאם באת׳ס</button></span></li>
-          <li><b>מזכרת תואמת</b>: צמיד עין או תכשיט יווני זהה לכל אחת.
-            <span class="tags"><button class="tag" data-open="monastiraki-market">שוק הפשפשים</button><button class="tag" data-open="kolonaki">קולונאקי</button></span></li>
-        </ul>
-      </details>
+      <section class="card setup" id="setupCard" hidden>
+        <h2>איזו נסיעה זו?</h2>
+        <p class="muted small">בנות, בנים, משפחה או חברים, ואולי יום הולדת? לפי זה יותאמו ההמלצות, המסלול והיומן.</p>
+        <div class="row"><button class="btn" id="setupBtn" type="button">הגדרת הנסיעה</button><button class="btn ghost" data-go="group" type="button">יש לי קוד קבוצה</button></div>
+      </section>
+      <details class="card bday" id="occCard" hidden></details>
       <div class="quick">
-        <button class="qbtn wide" data-go="group"><i class="ic" data-ic="chat" style="--c:#e03177;--c2:#ff8fb3"></i><span><b>הבנות</b><small id="grpHint">צ׳אט ומיקום חי</small></span><span class="faces" id="grpFaces"></span><em class="nbadge" id="grpBadge" hidden></em></button>
+        <button class="qbtn wide" data-go="group"><i class="ic" data-ic="chat" style="--c:#e03177;--c2:#ff8fb3"></i><span><b class="grpname">הקבוצה</b><small id="grpHint">צ׳אט ומיקום חי</small></span><span class="faces" id="grpFaces"></span><em class="nbadge" id="grpBadge" hidden></em></button>
         <button class="qbtn" data-act="near"><i class="ic" data-ic="compass" style="--c:#0d5eaf;--c2:#3b9bff"></i><span><b>מה קרוב אליי</b><small>מקומות לפי מרחק</small></span></button>
         <button class="qbtn" data-act="share"><i class="ic" data-ic="send" style="--c:#0ca678;--c2:#51cf66"></i><span><b>שיתוף מיקום</b><small>שליחה בוואטסאפ</small></span></button>
         <button class="qbtn" data-go="plan"><i class="ic" data-ic="cal" style="--c:#7048e8;--c2:#b197fc"></i><span><b>התוכנית להיום</b><small id="todayPlan"></small></span></button>
@@ -134,27 +125,28 @@
 
   <!-- הבנות -->
   <section class="view" id="v-group" data-view="group" hidden>
-    <header class="page-head"><h1>הבנות</h1><p class="muted" id="grpStatus"></p></header>
+    <header class="page-head"><h1 class="grpname">הקבוצה</h1><p class="muted" id="grpStatus"></p></header>
     <div class="stack" id="grpJoin">
       <section class="card">
         <h2>להצטרף לקבוצה</h2>
         <form id="grpJoinForm" class="form-in">
-          <label>השם שלך<input id="grpName" autocomplete="off" maxlength="16" placeholder="למשל דפנה"></label>
+          <label>השם שלך<input id="grpName" autocomplete="off" maxlength="16" placeholder="השם שלך"></label>
           <label>קוד הקבוצה<input id="grpCodeIn" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX" dir="ltr"></label>
           <button class="btn">הצטרפות עם הקוד</button>
         </form>
-        <p class="muted small" style="margin:14px 0 8px">הראשונה פותחת קבוצה ושולחת את הקוד לכולן:</p>
+        <p class="muted small" style="margin:14px 0 8px">מי שמארגן פותח קבוצה, מגדיר את הנסיעה ושולח את הקוד לכולם:</p>
         <button class="btn ghost" id="grpNew" type="button">פתיחת קבוצה חדשה</button>
       </section>
       <p class="muted small center">ההודעות והמיקומים מוצפנים בטלפון עם הקוד. רק מי שיש לה את הקוד יכולה לקרוא.</p>
     </div>
     <div class="stack" id="grpMain" hidden>
+      <section class="card" id="tripCard"></section>
       <section class="card">
-        <div class="card-head"><div><small class="muted">קוד הקבוצה</small><div class="gcode" id="grpCode" dir="ltr"></div></div><button class="btn sm" id="grpInvite">הזמנת חברות</button></div>
-        <div class="myav"><span id="myFace"></span><div><b>התמונה שלי</b><small class="muted">הבנות יראו אותה בצ׳אט, במפה ובעמוד הבית</small>
+        <div class="card-head"><div><small class="muted">קוד הקבוצה</small><div class="gcode" id="grpCode" dir="ltr"></div></div><button class="btn sm" id="grpInvite">הזמנה לקבוצה</button></div>
+        <div class="myav"><span id="myFace"></span><div><b>התמונה שלי</b><small class="muted">הקבוצה תראה אותה בצ׳אט, במפה ובעמוד הבית</small>
           <div class="row"><label class="btn sm" for="avIn">בחירת תמונה</label><button class="link" id="avClear" type="button" hidden>הסרה</button></div></div></div>
         <input type="file" id="avIn" accept="image/*" hidden>
-        <label class="switch"><input type="checkbox" id="grpShare"><span>לשתף את המיקום שלי עם הבנות</span></label>
+        <label class="switch"><input type="checkbox" id="grpShare"><span>לשתף את המיקום שלי עם הקבוצה</span></label>
         <div id="grpMembers" class="mems"></div>
       </section>
       <button class="btn" data-go="chat" type="button">פתיחת הצ׳אט</button>
@@ -171,13 +163,13 @@
 
   <!-- צ׳אט -->
   <section class="view chatview" id="v-chat" data-view="chat" hidden>
-    <header class="chat-head"><div><h1>צ׳אט הבנות</h1><p class="muted small" id="chatStatus"></p></div><button class="btn ghost sm" data-go="group" type="button">הקבוצה</button></header>
+    <header class="chat-head"><div><h1>צ׳אט <span class="grpname">הקבוצה</span></h1><p class="muted small" id="chatStatus"></p></div><button class="btn ghost sm" data-go="group" type="button">הקבוצה</button></header>
     <div class="chat-empty" id="chatEmpty" hidden><p>עוד אין קבוצה. פותחים קבוצה או מצטרפות עם קוד, ואז הצ׳אט נפתח כאן.</p><button class="btn" data-go="group" type="button">לקבוצה</button></div>
     <div class="chat-body" id="chatBody">
         <div id="grpChat" class="chat"></div>
-        <div id="grpQuick" class="tags"><button class="tag" type="button">איפה אתן?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשות במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
+        <div id="grpQuick" class="tags"><button class="tag" type="button">איפה כולם?</button><button class="tag" type="button">אני בדרך</button><button class="tag" type="button">נפגשים במלון</button><button class="tag" type="button" data-here>📍 אני כאן, בואו</button></div>
         <div id="emojiPanel" class="emoji-panel" hidden></div>
-        <form id="grpForm" class="chatform"><button type="button" class="cbtn" id="emojiBtn" aria-label="סמיילים">😊</button><label class="cbtn" for="chatFile" aria-label="צירוף תמונה או מסמך">📎</label><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לבנות…" enterkeyhint="send"><button class="btn sm send" aria-label="שליחה"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12 21 3l-6 18-3-8z"/></svg></button></form>
+        <form id="grpForm" class="chatform"><button type="button" class="cbtn" id="emojiBtn" aria-label="סמיילים">😊</button><label class="cbtn" for="chatFile" aria-label="צירוף תמונה או מסמך">📎</label><input id="grpText" autocomplete="off" maxlength="500" placeholder="הודעה לקבוצה…" enterkeyhint="send"><button class="btn sm send" aria-label="שליחה"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12 21 3l-6 18-3-8z"/></svg></button></form>
         <input type="file" id="chatFile" hidden>
     </div>
   </section>
@@ -274,16 +266,16 @@
 
       <details class="card acc">
         <summary><i class="ic" data-ic="wallet" style="--c:#0ca678;--c2:#51cf66"></i>קופה משותפת</summary>
-        <p class="muted small">מי שילמה על מה, ומי חייבת למי בסוף.</p>
+        <p class="muted small">מי שילם על מה, ומי מעביר למי בסוף.</p>
         <form id="kupaPeople" class="row">
-          <input id="personName" placeholder="שם של חברה" autocomplete="off">
+          <input id="personName" placeholder="שם של משתתף" autocomplete="off">
           <button class="btn sm">הוספה</button>
         </form>
         <div class="tags" id="peopleTags"></div>
         <form id="kupaExp" class="grid2">
           <input id="expDesc" placeholder="על מה? (מונית, ארוחה…)" autocomplete="off">
           <input id="expAmt" type="number" step="0.01" inputmode="decimal" placeholder="סכום ב־€">
-          <select id="expPayer" aria-label="מי שילמה"></select>
+          <select id="expPayer" aria-label="מי שילם"></select>
           <button class="btn sm">רישום</button>
         </form>
         <div id="kupaList"></div>
@@ -368,7 +360,7 @@
     <div class="tags" id="entryTags"></div>
     <div class="jr-where"><small>איפה לשמור</small>
     <label class="switch"><input type="checkbox" id="entryPersonal"><span id="entryPersonalTxt">ביומן האישי שלי</span></label>
-    <label class="switch" id="entryShareRow" hidden><input type="checkbox" id="entryShared"><span>ביומן המשותף של הבנות</span></label></div>
+    <label class="switch" id="entryShareRow" hidden><input type="checkbox" id="entryShared"><span>ביומן המשותף של הקבוצה</span></label></div>
     <div class="row end">
       <button type="button" class="btn ghost sm" id="entryDel">מחיקה</button>
       <button type="button" class="btn ghost sm" id="entryShare">שיתוף</button>
@@ -385,7 +377,7 @@
 <dialog id="locDlg" class="sheet">
   <div class="form" id="locAsk">
     <h2>להציג אותך על המפה?</h2>
-    <p>כדי לסמן איפה את נמצאת, לחשב מרחקים ולתייג תמונות ביומן, האפליקציה צריכה גישה למיקום. אחרי הלחיצה הטלפון ישאל, ויש לבחור <b>"אפשר"</b>.</p>
+    <p>כדי לסמן את המיקום שלך על המפה, לחשב מרחקים ולתייג תמונות ביומן, האפליקציה צריכה גישה למיקום. אחרי הלחיצה הטלפון ישאל, ויש לבחור <b>"אפשר"</b>.</p>
     <p class="muted small">המיקום נשאר בטלפון ולא נשלח לאף אחד.</p>
     <div class="row end"><button type="button" class="btn ghost" id="locLater">לא עכשיו</button><button type="button" class="btn" id="locOk">אישור מיקום</button></div>
   </div>
@@ -402,9 +394,27 @@
   </div>
 </dialog>
 
+<dialog id="tripDlg" class="sheet">
+  <form id="tripForm" method="dialog" class="form">
+    <h2 id="tripDlgTitle">הגדרת הנסיעה</h2>
+    <p class="muted small" id="tripDlgNote"></p>
+    <div class="opts trip-types" id="tripTypes"></div>
+    <label>שם הנסיעה<input id="tripName" maxlength="40" autocomplete="off"></label>
+    <div class="grid2">
+      <label>אירוע<select id="tripOcc"></select></label>
+      <label>תאריך ההגעה<input id="tripStart" type="date"></label>
+    </div>
+    <div class="trip-hotel"><small class="muted">המלון</small><b id="tripHotel"></b><small class="muted" id="tripHotelNote"></small></div>
+    <div class="row end">
+      <button type="button" class="btn ghost" id="tripCancel">ביטול</button>
+      <button class="btn" value="save" autofocus id="tripSave">שמירה</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="infoDlg" class="sheet">
   <div class="form">
-    <h2>מי קראה</h2>
+    <h2>מי קרא</h2>
     <p class="info-quote" id="infoQuote"></p>
     <div id="infoBody"></div>
     <div class="row end"><button type="button" class="btn" id="infoClose">סגירה</button></div>
@@ -473,6 +483,7 @@
 
 <script src="vendor/leaflet.js"></script>
 <script src="data.js"></script>
+<script src="trip.js"></script>
 <script src="app.js"></script>
 <script src="extras.js"></script>
 <script src="group.js"></script>

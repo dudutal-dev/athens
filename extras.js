@@ -1,7 +1,7 @@
 /* יומן תמונות + מפה לאוף־ליין */
 (() => {
   const A = window.APP, $ = s => document.querySelector(s), esc = A.esc;
-  const QUICK_TAGS = ['דפנה50', 'בנות', 'שופינג', 'אוכל', 'נוף', 'לילה', 'מצחיק', 'שלל'];
+  const QUICK_TAGS = TRIP.tags;   // לפי סוג הקבוצה ושם הנסיעה
 
   // ───── אחסון: IndexedDB (התמונות נשמרות בטלפון) ─────
   const dbp = new Promise((res, rej) => {
@@ -52,14 +52,14 @@
     $('#jrTabMe').classList.toggle('on', !us); $('#jrTabUs').classList.toggle('on', us);
     $('#jrNMe').textContent = everything.filter(inMe).length || ''; $('#jrNUs').textContent = everything.filter(inUs).length || '';
     $('#jrTitle').textContent = us ? 'היומן שלנו' : 'היומן שלי';
-    $('#jrKicker').textContent = us ? 'משותף לכל הבנות בקבוצה' : 'אישי · רק בטלפון שלך';
+    $('#jrKicker').textContent = us ? 'משותף לכל הקבוצה' : 'אישי · רק בטלפון שלך';
     $('#jrShowTxt').textContent = us ? 'מצגת משותפת' : 'מצגת הטיול';
     document.querySelector('#v-journal').classList.toggle('us', us);
     entries = everything.filter(us ? inUs : inMe);
-    if (us && !inGroup()) { body.innerHTML = `<div class="jr-empty"><p>היומן המשותף נפתח כשמצטרפים לקבוצה.<br>כל תמונה שאחת מוסיפה כאן מופיעה אצל כולן.</p><button class="btn" data-go="group" type="button">לקבוצה</button></div>`; return; }
+    if (us && !inGroup()) { body.innerHTML = `<div class="jr-empty"><p>היומן המשותף נפתח כשמצטרפים לקבוצה.<br>כל תמונה שנוספת כאן מופיעה אצל כל הקבוצה.</p><button class="btn" data-go="group" type="button">לקבוצה</button></div>`; return; }
     if (!entries.length) {
-      body.innerHTML = `<div class="jr-empty"><div class="pol"><span class="tape"></span><div class="ph-img">🏛️</div><span class="cap">${us ? 'התמונה הראשונה שלכן' : 'התמונה הראשונה שלך'}</span></div>
-        <p>${us ? 'כאן נאסף הטיול של כולן.<br>מה שמצלמים כאן מופיע אצל כל הבנות.' : 'כאן נכתב הטיול שלך.<br>מה שמצלמים כאן נשאר רק אצלך, אלא אם תסמני אחרת.'}</p></div>`;
+      body.innerHTML = `<div class="jr-empty"><div class="pol"><span class="tape"></span><div class="ph-img">🏛️</div><span class="cap">${us ? 'התמונה הראשונה של הקבוצה' : 'התמונה הראשונה שלך'}</span></div>
+        <p>${us ? 'כאן נאסף הטיול של כל הקבוצה.<br>מה שמצלמים כאן מופיע אצל כולם.' : 'כאן נכתב הטיול שלך.<br>מה שמצלמים כאן נשאר רק אצלך, אלא אם מסמנים אחרת.'}</p></div>`;
       return;
     }
     const groups = {};
@@ -112,14 +112,14 @@
     const own = !cur.byId, was = !!cur.shared; let per = $('#entryPersonal').checked, share = own && inGroup() && $('#entryShared').checked;
     if (own && !per && !share) { if (jtab === 'us' && inGroup()) share = true; else per = true; }   // רשומה חייבת להיות לפחות ביומן אחד
     cur.personal = per; if (own) cur.shared = share;
-    try { await put(cur); A.toast(share ? 'נשמר ונשלח לבנות…' : own ? 'נשמר ביומן האישי' : 'נשמר'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
-    if (share) A.hooks.shareEntry?.(cur, !was).then(ok => A.toast(ok ? (per ? 'מופיע בשני היומנים' : 'מופיע ביומן המשותף') : 'נשמר אצלך, אבל השיתוף נכשל. נסי לשמור שוב כשיש קליטה'));
+    try { await put(cur); A.toast(share ? 'נשמר ונשלח לקבוצה…' : own ? 'נשמר ביומן האישי' : 'נשמר'); } catch { A.toast('השמירה נכשלה – ייתכן שאין מקום פנוי בטלפון'); }
+    if (share) A.hooks.shareEntry?.(cur, !was).then(ok => A.toast(ok ? (per ? 'מופיע בשני היומנים' : 'מופיע ביומן המשותף') : 'נשמר אצלך, אבל השיתוף נכשל. כדאי לשמור שוב כשיש קליטה'));
     else if (own && was) A.hooks.unshareEntry?.(cur.id);
     render();
   };
   $('#entryDel').onclick = async ev => {
     const b = ev.currentTarget;
-    if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב'; return; }
+    if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'למחוק? ללחוץ שוב לאישור'; return; }
     await del(cur.id).catch(() => {}); if (cur.shared && !cur.byId) A.hooks.unshareEntry?.(cur.id); $('#entryDlg').close(); render();
   };
   $('#entryShare').onclick = () => {
@@ -194,7 +194,7 @@
     await Promise.all(Array.from({ length: 6 }, work));
     bar.hidden = true; busy = false;
     if (ok > total * .9) { try { localStorage.setItem(OFF_KEY, JSON.stringify({ n: ok, t: Date.now() })); } catch {} offUI(); A.toast('המפה שמורה בטלפון ותעבוד גם בלי אינטרנט'); }
-    else offUI(`ירדו רק ${ok} מתוך ${total}. נסי שוב בחיבור יציב`);
+    else offUI(`ירדו רק ${ok} מתוך ${total}. אפשר לנסות שוב בחיבור יציב`);
   };
   offUI();
 
@@ -206,7 +206,7 @@
     if (M.passExp) {
       const end = A.dayDate(A.S.days - 1), exp = new Date(M.passExp + 'T12:00'), months = (exp - end) / (864e5 * 30.4);
       if (months < 3) out.push(`<div class="alert"><b>תוקף הדרכון קצר מדי</b>לכניסה ליוון הדרכון צריך להיות בתוקף לפחות שלושה חודשים אחרי מועד היציאה. כדאי לברר מיד.</div>`);
-      else if (months < 6) out.push(`<div class="alert"><b>שימי לב לתוקף הדרכון</b>נשארו פחות משישה חודשים. ליוון זה מספיק, אבל חברת התעופה עשויה לשאול.</div>`);
+      else if (months < 6) out.push(`<div class="alert"><b>לתשומת לב: תוקף הדרכון</b>נשארו פחות משישה חודשים. ליוון זה מספיק, אבל חברת התעופה עשויה לשאול.</div>`);
     }
     const calls = tel(M.insTel, 'חיוג למוקד הביטוח') + tel(M.iceTel, `חיוג ל${esc(M.ice || 'איש הקשר')}`);
     if (calls) out.push(`<div class="row">${calls}</div>`);
@@ -232,7 +232,7 @@
     if (docUrl) URL.revokeObjectURL(docUrl); $('#docImg').src = docUrl = URL.createObjectURL(curDoc.blob); $('#docTitle').textContent = curDoc.label;
     $('#docDel').textContent = 'מחיקה'; $('#docDel').dataset.sure = ''; $('#docShare').hidden = !navigator.share; $('#docDlg').showModal(); };
   $('#docClose').onclick = () => $('#docDlg').close();
-  $('#docDel').onclick = async ev => { const b = ev.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב'; return; }
+  $('#docDel').onclick = async ev => { const b = ev.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'למחוק? ללחוץ שוב לאישור'; return; }
     await dDel(curDoc.id).catch(() => {}); $('#docDlg').close(); renderDocs(); };
   $('#docShare').onclick = () => { const f = new File([curDoc.blob], 'document.jpg', { type: 'image/jpeg' }); if (navigator.canShare?.({ files: [f] })) navigator.share({ files: [f] }).catch(() => {}); };
   renderDocs();

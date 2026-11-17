@@ -46,7 +46,7 @@
   async function deliver(files) {
     if (navigator.canShare?.({ files })) { try { await navigator.share({ files }); return true; }
       catch (e) { if (e?.name === 'AbortError') return false;
-        if (e?.name === 'NotAllowedError') { ready = files; A.toast('הגיבוי מוכן. לחצי שוב כדי לשמור'); return false; }   // עבר זמן מהלחיצה: שומרים את הקבצים, והלחיצה הבאה משתפת מיד
+        if (e?.name === 'NotAllowedError') { ready = files; A.toast('הגיבוי מוכן. ללחוץ שוב כדי לשמור'); return false; }   // עבר זמן מהלחיצה: שומרים את הקבצים, והלחיצה הבאה משתפת מיד
         files.forEach(download); return true; } }
     files.forEach(download); return true;
   }
@@ -68,14 +68,14 @@
       say('');
       if (viaGesture) { readyList = todo; if (await deliver(files)) { await mark(todo); A.toast(`גובו ${todo.length} תמונות`); } }
       else { files.forEach(download); await mark(todo); A.toast(`גיבוי אוטומטי: ${todo.length} תמונות נשמרו בתיקיית ההורדות`, 5000); }
-    } catch { say(''); A.toast('הגיבוי נכשל. נסי שוב'); } finally { busy = false; }
+    } catch { say(''); A.toast('הגיבוי נכשל. אפשר לנסות שוב'); } finally { busy = false; }
   }
   async function downloadAll() {
     if (busy) return; busy = true;
     try { const all = await photos(); if (!all.length) return A.toast('אין עדיין תמונות ביומן');
       say(`מכינה ${all.length} תמונות…`); const files = await makeZips(all, 'all'); say('');
       if (await deliver(files)) { await mark(all); A.toast(`${all.length} תמונות בקובץ אחד`); }
-    } catch { say(''); A.toast('ההורדה נכשלה. נסי שוב'); } finally { busy = false; }
+    } catch { say(''); A.toast('ההורדה נכשלה. אפשר לנסות שוב'); } finally { busy = false; }
   }
   const say = t => { const el = $('#bkMsg'); el.textContent = t; el.hidden = !t; };
 

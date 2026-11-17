@@ -514,3 +514,12 @@ body.kb .view { padding-bottom: 12px; }
 .info-quote { background: var(--surface2); border-radius: 12px; padding: 8px 12px; font-size: 14.5px; overflow-wrap: anywhere; max-height: 4.5em; overflow: hidden; }
 #infoBody .tk { letter-spacing: -3px; margin-inline-end: 8px; opacity: 1; } #infoBody .tk.rd { color: var(--sea); } #infoBody .sub-h { font-size: 15px; font-family: var(--body); margin-top: 12px; }
 #infoBody .mem small { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+
+/* ───── הגדרת הנסיעה ───── */
+.hero-set { position: absolute; top: calc(var(--sat) + 22px); left: 92px; z-index: 2; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; display: grid; place-items: center; }
+.setup { border: 2px dashed color-mix(in srgb, var(--sea) 45%, var(--line)); }
+.setup h2 { margin-bottom: 4px; } .setup .row { margin-top: 12px; }
+.trip-types { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.trip-types .opt { text-align: center; padding: 12px 6px; } .trip-types .opt b { font-size: 15px; }
+.trip-hotel { display: flex; flex-direction: column; gap: 2px; background: var(--surface2); border-radius: 12px; padding: 10px 12px; }
+#tripCard h2 { font-size: 20px; }

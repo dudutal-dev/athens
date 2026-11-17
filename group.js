@@ -35,7 +35,7 @@
     if (!key) return false;
     try {
       const r = await fetch(BASE + topic, { method: 'POST', body: await enc({ ...obj, n: G.name, d: G.id, ts: Date.now() }) });
-      if (r.status === 429) { A.toast('הגענו למגבלת ההודעות של השירות. נסי שוב בעוד כמה דקות'); return false; }
+      if (r.status === 429) { A.toast('הגענו למגבלת ההודעות של השירות. אפשר לנסות שוב בעוד כמה דקות'); return false; }
       return r.ok;
     } catch { if (obj.t === 'chat') A.toast('אין חיבור – ההודעה לא נשלחה'); return false; }
   }
@@ -104,7 +104,7 @@
     if (e.type === 'photo' && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: 'image/jpeg' }); served[e.id] = Date.now(); } catch {}
     await J.put(e).catch(() => {}); J.render();
     if (e.type === 'photo' && !e.blob && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
-    if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${p.n} הוסיפה ${e.type === 'photo' ? 'תמונה' : 'רשומה'} ליומן`, 4000);
+    if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${e.type === 'photo' ? 'תמונה חדשה' : 'רשומה חדשה'} ביומן מאת ${p.n}`, 4000);
   }
   async function journalReq(p) {   // מישהי חסרה תמונה: מי שמחזיקה אותה מעלה שוב, אחרי השהיה אקראית כדי שרק אחת תענה
     const J = A.journal; if (!J || p.d === G.id) return;
@@ -135,7 +135,7 @@
     const f = m.f; if (!f) return ''; const u = fUrl[f.id], ic = f.img ? '🖼️' : f.vid ? '🎬' : '📄';
     if (u && f.vid) return `<video class="cvid" src="${u}" controls playsinline preload="metadata"></video><button type="button" class="clink" data-file="${f.id}">שמירה או שיתוף · ${kb(f.size)}</button>`;
     if (u) return f.img ? `<img class="cimg" src="${u}" alt="" data-file="${f.id}">` : `<button type="button" class="cdoc" data-file="${f.id}">${ic} <span>${esc(f.name)}</span><small>${kb(f.size)}</small></button>`;
-    if (fState[f.id] === 'missing') return `<button type="button" class="cdoc" data-freq="${f.id}">${ic} <span>${esc(f.name)}</span><small>כבר לא בשרת · לחצי לבקש שוב</small></button>`;
+    if (fState[f.id] === 'missing') return `<button type="button" class="cdoc" data-freq="${f.id}">${ic} <span>${esc(f.name)}</span><small>כבר לא בשרת · ללחוץ כדי לבקש שוב</small></button>`;
     if (!fState[f.id]) { fState[f.id] = 'loading'; fGet(f.id).then(v => { if (v) { fUrl[f.id] = URL.createObjectURL(v.blob); delete fState[f.id]; } else fState[f.id] = 'missing'; render(); }); }
     return `<span class="cdoc wait">${ic} טוען…</span>`;
   }
@@ -177,6 +177,10 @@
     if (p.lat && p.lng) { mem.lat = p.lat; mem.lng = p.lng; mem.lt = p.ts; }
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
     if (p.t === 'bye') delete G.members[p.d];
+    // הגדרת הנסיעה: נשלחת על ידי מי שהקים את הקבוצה, ומי שכבר מחזיק בה מעביר אותה למצטרפים חדשים
+    if (p.t === 'trip' && p.cfg && !mine) { const n = TRIP.norm(p.cfg); if (n.set && (!G.trip || n.u > (G.trip.u || 0))) { G.trip = p.cfg; save(); if (TRIP.apply(p.cfg)) TRIP.refresh('הגדרות הנסיעה התקבלו מהקבוצה'); } }
+    if (p.t === 'hi' && !mine && Date.now() - p.ts < 5 * 60e3 && TRIP.cfg.set) setTimeout(() => { if (!tripSent[p.d]) sendTrip(); }, (TRIP.cfg.by === G.id ? 400 : 1500) + Math.random() * 2500);
+    if (p.t === 'trip') tripSent[p.d === G.id ? '*' : p.d] = Date.now();
     if (p.t === 'ack' && !mine) { const mark = (list, k) => { for (const c of Array.isArray(list) ? list.slice(0, 80) : []) { const m = G.msgs.find(x => x.c === c && x.d === G.id); if (m && !(m[k] ||= {})[p.d]) m[k][p.d] = p.ts || 1; } };
       mark(p.dl, 'dv'); mark(p.rd, 'dv'); mark(p.rd, 'rd'); }
     if (p.t === 'freq' && !mine && p.fid) fGet(p.fid).then(async v => {   // מישהי מבקשת קובץ שפג תוקפו: מי שמחזיקה אותו מעלה שוב (השולחת קודם)
@@ -230,13 +234,13 @@
   A.hooks.favNames = pid => { const f = G.favs[pid]; return f ? Object.entries(f).filter(e => e[0] !== G.id).map(e => e[1]).join(', ') : ''; };
 
   // ───── ממשק ─────
-  function status() { $('#grpStatus').textContent = !G.code ? 'צ׳אט, מיקום חי ומקומות משותפים, רק לבנות שיש להן את הקוד.' : online ? 'מחוברת · ההודעות מוצפנות' : 'מתחברת…'; }
+  function status() { $('#grpStatus').textContent = !G.code ? 'צ׳אט, מיקום חי ומקומות משותפים, רק למי שיש את הקוד.' : online ? 'מחוברים · ההודעות מוצפנות' : 'מתחברים…'; }
   function render() {
     const joined = !!G.code;
     $('#grpJoin').hidden = joined; $('#grpMain').hidden = !joined; status();
     const badge = $('#grpBadge'); if (!$('#v-chat').hidden) unread = 0;
     const tb = $('#chatBadge'); tb.hidden = !unread; tb.textContent = unread;
-    $('#chatEmpty').hidden = joined; $('#chatBody').hidden = !joined; $('#chatStatus').textContent = !joined ? '' : `${Object.keys({ [G.id]: 1, ...G.members }).length} בנות · ${online ? 'מחוברת' : 'מתחברת…'}`;
+    $('#chatEmpty').hidden = joined; $('#chatBody').hidden = !joined; $('#chatStatus').textContent = !joined ? '' : `${Object.keys({ [G.id]: 1, ...G.members }).length} בקבוצה · ${online ? 'מחוברים' : 'מתחברים…'}`;
     badge.hidden = !unread; badge.textContent = unread;
     const ids = joined ? [G.id, ...Object.keys(G.members).filter(i => i !== G.id)] : [];
     $('#grpHint').textContent = joined ? `${ids.length} בקבוצה` : 'צ׳אט ומיקום חי';
@@ -252,16 +256,32 @@
         ${!mine && fresh ? `<button class="btn ghost sm" data-see="${id}">במפה</button>` : ''}</div>`;
     }).join('');
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
-    const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרפה לקבוצה</p>` :
+    const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרף/ה לקבוצה</p>` :
       `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span>${esc(m.x)}</span>` : ''}
-        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קראה">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
-      : '<p class="sys">עוד אין הודעות. כתבי משהו לבנות.</p>';
+        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קרא">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
+      : '<p class="sys">עוד אין הודעות. אפשר לכתוב משהו לקבוצה.</p>';
     if ([...box.querySelectorAll('video')].some(v => !v.paused && !v.ended)) box._dirty = true;   // סרטון מתנגן: מעדכנים כשהוא נעצר
     else if (chatHtml !== box._html) { box.innerHTML = chatHtml; box._html = chatHtml; box._dirty = false; }
     if (atEnd) box.scrollTop = box.scrollHeight;
     const favs = Object.entries(G.favs).filter(e => A.byId[e[0]]);
-    $('#grpFavs').innerHTML = favs.length ? favs.map(([pid, f]) => `<button class="tag" data-open="${pid}">${esc(A.byId[pid].he)} · ♥ ${esc(Object.values(f).join(', '))}</button>`).join('') : '<p class="muted small">כשמישהי מסמנת ♥ על מקום, הוא מופיע כאן אצל כולן.</p>';
+    $('#grpFavs').innerHTML = favs.length ? favs.map(([pid, f]) => `<button class="tag" data-open="${pid}">${esc(A.byId[pid].he)} · ♥ ${esc(Object.values(f).join(', '))}</button>`).join('') : '<p class="muted small">מקום שמישהו בקבוצה מסמן ב־♥ מופיע כאן אצל כולם.</p>';
   }
+
+  const tripSent = {};
+  const tripOut = () => { const c = TRIP.cfg; return { type: c.type, name: c.name, occ: c.occ, start: A.S.start, hotel: A.S.hotel, by: c.by, u: c.u || 1, legacy: c.legacy }; };
+  function sendTrip() { if (!key || !TRIP.cfg.set) return; for (const k in tripSent) delete tripSent[k]; G.trip = tripOut(); save(); return send({ t: 'trip', cfg: G.trip }); }
+  const canEditTrip = () => !G.code || !TRIP.cfg.by || TRIP.cfg.by === G.id;
+  function renderTripCard() {
+    const c = TRIP.cfg, t = TRIP.TYPES[c.type];
+    $('#tripCard').innerHTML = `<div class="card-head"><h2>${t.ico} ${esc(TRIP.title)}</h2><button class="link" id="tripEdit">${canEditTrip() ? 'עריכה' : 'פרטים'}</button></div>
+      <p class="muted small">${t.he}${c.occ !== 'none' ? ' · ' + TRIP.OCCS[c.occ] : ''}${A.S.hotel ? ' · ' + esc(A.S.hotel.name) : ''}</p>
+      <p class="muted small">${canEditTrip() ? 'ההגדרות האלה עוברות לכל מי שמצטרף לקבוצה.' : 'את הנסיעה מגדיר מי שהקים את הקבוצה.'}</p>`;
+    $('#tripEdit').onclick = A.hooks.editTrip;
+  }
+  // עריכת הנסיעה: בקבוצה היא נשלחת לכולם; רק מי שהקים את הקבוצה יכול לשנות
+  A.hooks.editTrip = () => A.openTrip({ canEdit: canEditTrip(), note: G.code ? (canEditTrip() ? 'השינוי יעבור לכל הקבוצה.' : 'את הנסיעה מגדיר מי שהקים את הקבוצה.') : '',
+    onSave: cfg => { if (G.code) cfg.by = TRIP.cfg.by || G.id; const ch = TRIP.apply(cfg); if (G.code) sendTrip(); if (ch) TRIP.refresh(G.code ? 'הנסיעה עודכנה ונשלחה לקבוצה' : 'הנסיעה עודכנה'); else A.toast('נשמר'); } });
+  A.hooks.hotel = () => { if (G.code && TRIP.cfg.set && canEditTrip()) { TRIP.apply({ ...tripOut(), u: Date.now() }); sendTrip(); A.toast('המלון נשלח לקבוצה'); } };
 
   async function join(code, name, isNew) {
     if (!window.crypto?.subtle) return A.toast('הדפדפן הזה לא תומך בהצפנה הדרושה');
@@ -269,21 +289,27 @@
     if (!name) return A.toast('איך קוראים לך?');
     G = { ...blank(), id: G.id, av: G.av, name, code: code.replace(/(.{4})(?=.)/g, '$1-') }; save();
     await derive(code); connect(); render();
-    setTimeout(() => send({ t: 'hi' }).then(() => G.av && send({ t: 'av', av: G.av })), 800);
-    A.toast(isNew ? 'הקבוצה נוצרה. שלחי את הקוד לבנות' : 'הצטרפת לקבוצה');
+    setTimeout(() => send({ t: 'hi' }).then(() => { if (G.av) send({ t: 'av', av: G.av }); if (isNew) sendTrip(); }), 800);
+    A.toast(isNew ? 'הקבוצה נוצרה. עכשיו שולחים את הקוד לשאר' : 'הצטרפת לקבוצה');
   }
   $('#grpJoinForm').onsubmit = e => { e.preventDefault(); join($('#grpCodeIn').value, $('#grpName').value.trim(), false); };
+  // פתיחת קבוצה: קודם מגדירים את הנסיעה, ואז נוצר הקוד
   $('#grpNew').onclick = () => {
-    const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', r = crypto.getRandomValues(new Uint8Array(8));
-    join([...r].map(b => abc[b % abc.length]).join(''), $('#grpName').value.trim(), true);
+    const name = $('#grpName').value.trim(); if (!name) return A.toast('קודם לכתוב שם');
+    A.openTrip({ title: 'הנסיעה של הקבוצה', note: 'מה שמוגדר כאן יעבור לכל מי שמצטרף עם הקוד.', onSave: async cfg => {
+      cfg.by = G.id; TRIP.apply(cfg);
+      const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', r = crypto.getRandomValues(new Uint8Array(8));
+      await join([...r].map(b => abc[b % abc.length]).join(''), name, true);
+      G.trip = tripOut(); save(); TRIP.refresh();
+    } });
   };
   $('#grpInvite').onclick = () => {
     const url = location.origin + location.pathname;
-    const text = `הצטרפי לקבוצה שלנו באפליקציית אתונה 🇬🇷\n1. לפתוח: ${url}\n2. להוסיף למסך הבית\n3. ללחוץ "הבנות" ולהזין את הקוד: ${G.code}`;
+    const text = `הצטרפי לקבוצה שלנו באפליקציית אתונה 🇬🇷\n1. לפתוח: ${url}\n2. להוסיף למסך הבית\n3. ללחוץ על כפתור הקבוצה בעמוד הבית ולהזין את הקוד: ${G.code}`;
     if (navigator.share) navigator.share({ text }).catch(() => {});
     else navigator.clipboard?.writeText(text).then(() => A.toast('ההזמנה הועתקה'), () => A.toast('הקוד: ' + G.code));
   };
-  $('#grpShare').onchange = e => { G.share = e.target.checked; save(); lastLoc = null; if (G.share) A.startGPS(true); render(); A.toast(G.share ? 'הבנות רואות אותך על המפה' : 'שיתוף המיקום הופסק'); };
+  $('#grpShare').onchange = e => { G.share = e.target.checked; save(); lastLoc = null; if (G.share) A.startGPS(true); render(); A.toast(G.share ? 'הקבוצה רואה אותך על המפה' : 'שיתוף המיקום הופסק'); };
   // הודעה מופיעה מיד אצל השולחת, ומסומנת כנשלחה כשהשרת מאשר
   let lastPing = 0;
   async function say(x, loc) {
@@ -321,7 +347,7 @@
   }
   $('#grpChat').addEventListener('click', e => {
     const q = e.target.closest('[data-freq]'); if (q) { const fid = q.dataset.freq; fState[fid] = 'loading'; render(); send({ t: 'freq', fid });
-      setTimeout(() => { if (fState[fid] === 'loading') { fState[fid] = 'missing'; render(); A.toast('אף אחת מהבנות שיש לה את הקובץ לא מחוברת כרגע'); } }, 25000); return; }
+      setTimeout(() => { if (fState[fid] === 'loading') { fState[fid] = 'missing'; render(); A.toast('אין כרגע מישהו מחובר שהקובץ שמור אצלו'); } }, 25000); return; }
     const el = e.target.closest('[data-file]'); if (!el) return; const fid = el.dataset.file, f = findF(fid);
     if (f && f.img) { openF = fid; $('#fileImg').src = fUrl[fid]; $('#fileDlg').showModal(); } else shareF(fid);
   });
@@ -333,7 +359,7 @@
     const ids = Object.keys(G.members).filter(id => id !== G.id), row = (id, t) => `<div class="mem">${face(id, G.members[id])}<span><b>${esc(G.members[id].n || '')}</b></span><small class="muted">${hm(t)}</small></div>`;
     const read = ids.filter(id => m.rd && m.rd[id]), got = ids.filter(id => !(m.rd && m.rd[id]) && m.dv && m.dv[id]), none = ids.filter(id => !(m.dv && m.dv[id]));
     const sec = (title, list, k) => list.length ? `<h3 class="sub-h">${title}</h3>${list.map(id => row(id, k && m[k][id])).join('')}` : '';
-    $('#infoBody').innerHTML = m.pending ? '<p class="muted">ההודעה עוד בדרך לשרת.</p>' : !ids.length ? '<p class="muted">עוד אין חברות נוספות בקבוצה.</p>'
+    $('#infoBody').innerHTML = m.pending ? '<p class="muted">ההודעה עוד בדרך לשרת.</p>' : !ids.length ? '<p class="muted">עוד אין משתתפים נוספים בקבוצה.</p>'
       : sec('<span class="tk rd">✓✓</span> קראו', read, 'rd') + sec('<span class="tk">✓✓</span> הגיעה, עוד לא נקראה', got, 'dv') + sec('<span class="tk">✓</span> עוד לא הגיעה', none, '');
     $('#infoQuote').textContent = (m.f ? (m.f.img ? '📷 ' : m.f.vid ? '🎬 ' : '📎 ') : '') + (m.x || (m.f ? m.f.name : ''));
     $('#infoDlg').showModal();
@@ -356,17 +382,17 @@
   $('#grpForm').onsubmit = async e => { e.preventDefault(); const i = $('#grpText'), x = i.value.trim(); if (!x) return; i.value = ''; $('#emojiPanel').hidden = true; if (!await say(x)) i.value = x; };
   $('#grpQuick').onclick = async e => {
     const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.here != null) { const me = A.me; if (!me) { A.startGPS(true); return A.toast('מאתרת מיקום… לחצי שוב בעוד רגע'); }
+    if (b.dataset.here != null) { const me = A.me; if (!me) { A.startGPS(true); return A.toast('מאתרת מיקום… ללחוץ שוב בעוד רגע'); }
       return say('אני כאן, בואו 📍', { lat: +me.lat.toFixed(5), lng: +me.lng.toFixed(5) }); }
     say(b.textContent);
   };
   $('#grpMembers').onclick = e => { const b = e.target.closest('[data-see]'); if (!b) return; const m = G.members[b.dataset.see]; A.go('map'); setTimeout(() => { A.map?.setView([m.lat, m.lng], 16); drawFriends(); }, 150); };
   $('#grpLeave').onclick = async e => {
-    const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'בטוחה? לחצי שוב ליציאה'; return; }
+    const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'לצאת? ללחוץ שוב לאישור'; return; }
     await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save();
     b.dataset.sure = ''; b.textContent = 'יציאה מהקבוצה'; drawFriends(); render();
   };
-  A.hooks.group = () => { render(); pushUI(); if (G.share) A.startGPS(false); };
+  A.hooks.group = () => { render(); renderTripCard(); pushUI(); if (G.share) A.startGPS(false); };
   A.hooks.chat = () => { unread = 0; ackRead(); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; };
 
   // ───── התראות מובנות (Web Push דרך השרת שלנו) ─────
@@ -388,7 +414,7 @@
       const r = await fetch(PUSH_URL + '/sub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, sub: sub.toJSON() }) });
       if (!r.ok) throw 0;
       G.push = true; save(); A.toast('ההתראות פעילות'); pushUI();
-    } catch { A.toast('הפעלת ההתראות נכשלה. נסי שוב'); }
+    } catch { A.toast('הפעלת ההתראות נכשלה. אפשר לנסות שוב'); }
   }
   $('#pushOn').onclick = pushEnable;
   $('#pushTest').onclick = async () => { try { const r = await (await fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, self: true, title: 'אתונה שלנו', body: 'התראת ניסיון 🎉', site: location.origin + location.pathname }) })).json(); A.toast(r.sent ? 'נשלחה. היא אמורה לקפוץ תוך שניות' : 'השליחה נכשלה'); } catch { A.toast('השליחה נכשלה'); } };
@@ -397,8 +423,10 @@
     try { const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); if (sub) fetch(PUSH_URL + '/sub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, sub: sub.toJSON() }) }).catch(() => {}); } catch {} }
 
   $('#avIn').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-    try { G.av = await makeAvatar(f); save(); render(); drawFriends(); A.toast((await send({ t: 'av', av: G.av })) ? 'התמונה נשלחה לבנות' : 'התמונה נשמרה, ותישלח כשיהיה חיבור'); } catch { A.toast('לא הצלחנו לקרוא את התמונה'); } };
+    try { G.av = await makeAvatar(f); save(); render(); drawFriends(); A.toast((await send({ t: 'av', av: G.av })) ? 'התמונה נשלחה לקבוצה' : 'התמונה נשמרה, ותישלח כשיהיה חיבור'); } catch { A.toast('לא הצלחנו לקרוא את התמונה'); } };
   $('#avClear').onclick = () => { delete G.av; save(); render(); drawFriends(); send({ t: 'av', av: '' }); };
+
+  renderTripCard();
 
   // ───── התחלה ─────
   $('#grpName').value = G.name || '';

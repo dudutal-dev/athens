@@ -68,7 +68,7 @@
   const shadow = (c, on, u) => { c.shadowColor = on ? 'rgba(0,0,0,.55)' : 'transparent'; c.shadowBlur = on ? 14 * u : 0; c.shadowOffsetY = on ? 2 * u : 0; };
   const mk = (W, H) => { const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d'); c.direction = 'rtl'; c.textBaseline = 'alphabetic'; return [cv, c]; };
   const dims = (W, H) => { const P = H > W; return [P, P ? W / 1080 : H / 900]; };
-  function brand(c, W, H, u, light) { c.save(); c.font = `600 ${Math.round(24 * u)}px ${FONT.b}`; c.fillStyle = light ? 'rgba(255,255,255,.6)' : 'rgba(10,61,122,.55)'; c.textAlign = 'center'; c.fillText('אתונה · דפנה חוגגת 50', W / 2, H - 30 * u); c.restore(); }
+  function brand(c, W, H, u, light) { c.save(); c.font = `600 ${Math.round(24 * u)}px ${FONT.b}`; c.fillStyle = light ? 'rgba(255,255,255,.6)' : 'rgba(10,61,122,.55)'; c.textAlign = 'center'; c.fillText('אתונה · ' + TRIP.title, W / 2, H - 30 * u); c.restore(); }
   function dayTag(c, W, u, label) { c.save(); c.font = `700 ${Math.round(28 * u)}px ${FONT.b}`; const w = c.measureText(label).width + 44 * u; c.fillStyle = 'rgba(5,12,30,.45)'; rr(c, W / 2 - w / 2, 40 * u, w, 54 * u, 27 * u); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(label, W / 2, 78 * u); c.restore(); }
 
   // ───── שקפים ─────
@@ -78,7 +78,7 @@
     temple(c, P ? W / 2 : W * .7, P ? H * .3 : H * .52, (P ? 1.6 : 1.3) * u, 'rgba(255,255,255,.13)');
     const tx = P ? W / 2 : W * .7; c.textAlign = 'center'; c.fillStyle = '#fff'; shadow(c, true, u);
     c.font = `900 ${Math.round((P ? 230 : 180) * u)}px ${FONT.d}`; c.fillText('אתונה', tx, P ? H * .36 : H * .5);
-    c.font = `400 ${Math.round((P ? 92 : 72) * u)}px ${FONT.h}`; c.fillStyle = '#ffd6e4'; c.fillText('דפנה חוגגת 50', tx, P ? H * .425 : H * .63);
+    c.font = `400 ${Math.round((P ? 92 : 72) * u)}px ${FONT.h}`; c.fillStyle = '#ffd6e4'; c.fillText(TRIP.title, tx, P ? H * .425 : H * .63);
     shadow(c, false, u); c.font = `600 ${Math.round(36 * u)}px ${FONT.b}`; c.fillStyle = 'rgba(255,255,255,.92)';
     c.fillText(`${st.from.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' })} – ${st.to.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' })}`, tx, P ? H * .47 : H * .72);
     c.font = `700 ${Math.round(30 * u)}px ${FONT.b}`; c.fillStyle = GOLD; c.fillText(st.kind, tx, P ? H * .505 : H * .79);
@@ -163,8 +163,8 @@
     const [cv, c] = mk(W, H), [P, u] = dims(W, H);
     sea(c, W, H); sun(c, W * .84, H * (P ? .1 : .18), 60 * u);
     const tx = P ? W / 2 : W * .7; c.textAlign = 'center'; shadow(c, true, u);
-    c.fillStyle = '#ffd6e4'; c.font = `400 ${Math.round((P ? 116 : 92) * u)}px ${FONT.h}`; c.fillText('חרוניה פולה, דפנה', tx, H * (P ? .2 : .36));
-    shadow(c, false, u); c.fillStyle = '#fff'; c.font = `600 ${Math.round(38 * u)}px ${FONT.b}`; c.fillText('Χρόνια πολλά · עד 120', tx, H * (P ? .25 : .47));
+    c.fillStyle = '#ffd6e4'; c.font = `400 ${Math.round((P ? 116 : 92) * u)}px ${FONT.h}`; c.fillText(TRIP.cfg.occ === 'birthday' ? 'חרוניה פולה!' : 'יאסו, אתונה', tx, H * (P ? .2 : .36));
+    shadow(c, false, u); c.fillStyle = '#fff'; c.font = `600 ${Math.round(38 * u)}px ${FONT.b}`; c.fillText(TRIP.cfg.occ === 'birthday' ? 'Χρόνια πολλά · עד 120' : TRIP.title, tx, H * (P ? .25 : .47));
     meander(c, tx - 160 * u, H * (P ? .275 : .52), 320 * u, GOLD, 2 * u);
     c.font = `700 ${Math.round(42 * u)}px ${FONT.b}`; c.fillText([`${st.photos} תמונות`, st.places ? `${st.places} מקומות` : '', `${st.days} ימים`].filter(Boolean).join('  ·  '), tx, H * (P ? .345 : .66));
     c.font = `900 ${Math.round(74 * u)}px ${FONT.d}`; c.fillText('אתונה 2026', tx, H * (P ? .42 : .82));
@@ -198,7 +198,7 @@
       if (my !== runId) return;
       const dn = Math.round((g.date - t0) / 864e5) + 1, inTrip = dn >= 1 && dn <= A.S.days;
       const label = inTrip ? `יום ${dn}` : g.date.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' });
-      await push(sDay(W, H, { date: g.date, label, title: inTrip ? PLAN[dn - 1]?.title : '', imgs: g.items.filter(e => e._img).map(e => e._img), count: g.items.length }));
+      await push(sDay(W, H, { date: g.date, label, title: inTrip ? TRIP.plan[dn - 1]?.title : '', imgs: g.items.filter(e => e._img).map(e => e._img), count: g.items.length }));
       let run = [];   // רצף תמונות בלי כיתוב הופך לשקף קולאז׳
       const flush = async () => { while (run.length) { const take = run.length === 5 ? 3 : Math.min(4, run.length), part = run.splice(0, take);
         await push(part.length === 1 ? sPhoto(W, H, part[0], part[0]._img, label, n++) : sCollage(W, H, part, label)); } };
@@ -266,19 +266,19 @@
     const xref = len, total = 3 + N * 3;
     add(`xref\n0 ${total}\n0000000000 65535 f \n` + Array.from({ length: total - 1 }, (_, k) => String(offs[k + 1]).padStart(10, '0') + ' 00000 n \n').join(''));
     add(`trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
-    return new File(parts, `אתונה-דפנה-50-${scope === 'me' ? 'אישי' : scope === 'us' ? 'משותף' : 'הכול'}.pdf`, { type: 'application/pdf' });
+    return new File(parts, `אתונה-${TRIP.title.replace(/[^\u0590-\u05FFA-Za-z0-9]+/g, '-')}-${scope === 'me' ? 'אישי' : scope === 'us' ? 'משותף' : 'הכול'}.pdf`, { type: 'application/pdf' });
   }
   // חלון השיתוף של הטלפון נפתח רק מיד אחרי לחיצה, ולכן הקבצים מוכנים מראש
   async function shareFiles(files, title) {
     if (navigator.canShare?.({ files })) {
       try { await navigator.share({ files, title }); return; }
-      catch (e) { if (e?.name === 'AbortError') return; if (e?.name === 'NotAllowedError') return A.toast('הקובץ מוכן. לחצי שוב על השיתוף'); }
+      catch (e) { if (e?.name === 'AbortError') return; if (e?.name === 'NotAllowedError') return A.toast('הקובץ מוכן. ללחוץ שוב על השיתוף'); }
     }
     const a = document.createElement('a'); a.href = URL.createObjectURL(files[0]); a.download = files[0].name; document.body.append(a); a.click(); a.remove();
-    A.toast(files.length > 1 ? 'הדפדפן הזה לא משתף כמה קבצים. נסי את ה־PDF' : 'הקובץ ירד למכשיר');
+    A.toast(files.length > 1 ? 'הדפדפן הזה לא משתף כמה קבצים. אפשר לנסות את ה־PDF' : 'הקובץ ירד למכשיר');
   }
-  $('#showPdf').onclick = async () => { if (!slides.length) return; play(false); if (!pdfFile) return A.toast('ה־PDF עוד בהכנה, עוד רגע'); shareFiles([pdfFile], 'אתונה · דפנה חוגגת 50'); };
-  $('#showImgs').onclick = () => { if (!slides.length) return; play(false); shareFiles(slides.slice(0, 30).map((s, i) => new File([s.blob], `athens-${String(i + 1).padStart(2, '0')}.jpg`, { type: 'image/jpeg' })), 'אתונה · דפנה חוגגת 50'); if (slides.length > 30) A.toast('משתפת את 30 השקפים הראשונים. למצגת המלאה עדיף PDF', 5000); };
+  $('#showPdf').onclick = async () => { if (!slides.length) return; play(false); if (!pdfFile) return A.toast('ה־PDF עוד בהכנה, עוד רגע'); shareFiles([pdfFile], 'אתונה · ' + TRIP.title); };
+  $('#showImgs').onclick = () => { if (!slides.length) return; play(false); shareFiles(slides.slice(0, 30).map((s, i) => new File([s.blob], `athens-${String(i + 1).padStart(2, '0')}.jpg`, { type: 'image/jpeg' })), 'אתונה · ' + TRIP.title); if (slides.length > 30) A.toast('משתפת את 30 השקפים הראשונים. למצגת המלאה עדיף PDF', 5000); };
 
   $('#jrShow').onclick = () => { scope = A.journal.tab() === 'us' ? 'us' : 'me'; runId++; building = false; build(); };
   A.show = { build, get n() { return slides.length; }, get ready() { return !building && !!pdfFile; }, get scope() { return scope; } };
