@@ -140,6 +140,21 @@
   }
   const findF = id => { const m = G.msgs.find(x => x.f && x.f.id === id); return m && m.f; };
 
+  // ───── אישורי מסירה וקריאה: וי אחד = נשלחה, שני וי = הגיעה לכולן, שני וי כחולים = כולן קראו ─────
+  // כל טלפון שמקבל הודעה שולח אישור קצר (מקובץ, כדי לא להציף את השרת)
+  const ackQ = { dl: new Set(), rd: new Set() }; let ackT = null;
+  const chatOpen = () => !$('#v-chat').hidden && !document.hidden;
+  function queueAck(c, read) { if (!c) return; ackQ.dl.add(c); if (read) ackQ.rd.add(c); clearTimeout(ackT); ackT = setTimeout(flushAck, read ? 1500 : 6000); }
+  function flushAck() { if (!key || !ackQ.dl.size) return; const dl = [...ackQ.dl].slice(-60), rd = [...ackQ.rd].slice(-60); ackQ.dl.clear(); ackQ.rd.clear(); send({ t: 'ack', dl, rd }); }
+  function ackRead() { let any = false; for (const m of G.msgs) if (m.ur) { delete m.ur; queueAck(m.c, true); any = true; } if (any) save(); }
+  document.addEventListener('visibilitychange', () => { if (chatOpen()) ackRead(); });
+  const audience = () => Object.keys(G.members).filter(id => id !== G.id && Date.now() - (G.members[id].seen || 0) < 48 * 3600e3);   // מי שפעילה ביומיים האחרונים
+  function ticks(m) {
+    if (m.pending) return '<i class="tk">🕓</i>';
+    const who = audience(), all = k => who.length > 0 && who.every(id => m[k] && m[k][id]);
+    return all('rd') ? '<i class="tk rd">✓✓</i>' : all('dv') ? '<i class="tk">✓✓</i>' : '<i class="tk">✓</i>';
+  }
+
   function handle(p, mid, att) {
     if (!p || !p.d) return;
     const mine = p.d === G.id, mem = G.members[p.d] ||= {};
@@ -151,7 +166,8 @@
       const pend = p.c && G.msgs.find(x => x.id === 'c' + p.c);
       if (pend) { pend.id = mid; delete pend.pending; save(); render(); return; }
       const f = okF(p.f);
-      G.msgs.push({ id: mid, d: p.d, n: p.n, x: p.t === 'hi' ? null : String(p.x || '').slice(0, 1200), ts: p.ts, lat: p.lat, lng: p.lng, ...(f ? { f } : {}) });
+      G.msgs.push({ id: mid, d: p.d, n: p.n, x: p.t === 'hi' ? null : String(p.x || '').slice(0, 1200), ts: p.ts, lat: p.lat, lng: p.lng, ...(f ? { f } : {}), ...(p.c ? { c: p.c } : {}), ...(!mine && p.c && p.t === 'chat' && !chatOpen() ? { ur: 1 } : {}) });
+      if (!mine && p.c && p.t === 'chat' && Date.now() - p.ts < 12 * 3600e3) queueAck(p.c, chatOpen());
       if (f && !mine) { if (att) fetchFile(f, att); else fState[f.id] = 'missing'; }
       G.msgs.sort((a, b) => a.ts - b.ts); if (G.msgs.length > 250) G.msgs.splice(0, G.msgs.length - 250);
       if (!mine && Date.now() - p.ts < 5 * 60e3) { if (p.t === 'chat') beep(); if ($('#v-chat').hidden) { unread++; if (p.t === 'chat') A.toast(`${p.n}: ${p.f ? (p.f.img ? '📷 תמונה' : '📎 ' + String(p.f.name || '')) + ' ' : ''}${String(p.x || '').slice(0, 60)}`, 4000); } }
@@ -160,6 +176,8 @@
     if (p.lat && p.lng) { mem.lat = p.lat; mem.lng = p.lng; mem.lt = p.ts; }
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
     if (p.t === 'bye') delete G.members[p.d];
+    if (p.t === 'ack' && !mine) { const mark = (list, k) => { for (const c of Array.isArray(list) ? list.slice(0, 80) : []) { const m = G.msgs.find(x => x.c === c && x.d === G.id); if (m) (m[k] ||= {})[p.d] = 1; } };
+      mark(p.dl, 'dv'); mark(p.rd, 'dv'); mark(p.rd, 'rd'); }
     if (p.t === 'freq' && !mine && p.fid) fGet(p.fid).then(async v => {   // מישהי מבקשת קובץ שפג תוקפו: מי שמחזיקה אותו מעלה שוב (השולחת קודם)
       const f = findF(p.fid); if (!v || !f) return; const own = G.msgs.some(x => x.f && x.f.id === p.fid && x.d === G.id), t0 = Date.now();
       await new Promise(q => setTimeout(q, own ? 300 + Math.random() * 1200 : 2500 + Math.random() * 3000));
@@ -235,7 +253,7 @@
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     box.innerHTML = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרפה לקבוצה</p>` :
       `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span>${esc(m.x)}</span>` : ''}
-        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</small></div></div>`).join('')
+        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ' ' + ticks(m) : ''}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. כתבי משהו לבנות.</p>';
     if (atEnd) box.scrollTop = box.scrollHeight;
     const favs = Object.entries(G.favs).filter(e => A.byId[e[0]]);
@@ -266,7 +284,7 @@
   // הודעה מופיעה מיד אצל השולחת, ומסומנת כנשלחה כשהשרת מאשר
   let lastPing = 0;
   async function say(x, loc) {
-    const c = Math.random().toString(36).slice(2, 10), m = { id: 'c' + c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, ...loc };
+    const c = Math.random().toString(36).slice(2, 10), m = { id: 'c' + c, c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, ...loc };
     G.msgs.push(m); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight;
     const ok = await send({ t: 'chat', x, c, ...loc });
     if (!ok) { G.msgs = G.msgs.filter(y => y !== m); render(); return false; }
@@ -282,7 +300,7 @@
     const rnd = () => Math.random().toString(36).slice(2, 10), fid = rnd(), c = rnd(), f = { id: fid, name: name.slice(0, 80), type, size: blob.size, img };
     await fPut(fid, { blob, name, type }).catch(() => {}); fUrl[fid] = URL.createObjectURL(blob);
     const inp = $('#grpText'), x = inp.value.trim(); inp.value = '';
-    const m = { id: 'c' + c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, f };
+    const m = { id: 'c' + c, c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, f };
     G.msgs.push(m); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight;
     if (!await postFile({ t: 'chat', x, c, f }, await blob.arrayBuffer())) { G.msgs = G.msgs.filter(y => y !== m); render(); inp.value = x; return A.toast('אין חיבור – הקובץ לא נשלח'); }
     if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${img ? '📷 תמונה' : '📎 ' + name} ${x.slice(0, 100)}`, site: location.origin + location.pathname }) }).catch(() => {});
@@ -329,7 +347,7 @@
     b.dataset.sure = ''; b.textContent = 'יציאה מהקבוצה'; drawFriends(); render();
   };
   A.hooks.group = () => { render(); pushUI(); if (G.share) A.startGPS(false); };
-  A.hooks.chat = () => { unread = 0; render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; };
+  A.hooks.chat = () => { unread = 0; ackRead(); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight; };
 
   // ───── התראות מובנות (Web Push דרך השרת שלנו) ─────
   const b64uToU8 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));

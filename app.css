@@ -499,3 +499,8 @@ body.kb .view { padding-bottom: 12px; }
 .cdoc span { font-size: 14.5px; font-weight: 700; overflow-wrap: anywhere; } .cdoc small { grid-column: 2; font-size: 12px; text-align: start; opacity: .8; }
 .cdoc.wait { display: block; font-size: 14px; }
 .msg.mine .cdoc { background: rgba(255,255,255,.2); } .msg.mine .cdoc small { color: rgba(255,255,255,.85); }
+
+/* אישורי קריאה */
+.tk { font-style: normal; font-weight: 800; letter-spacing: -3px; margin-inline-start: 2px; opacity: .75; }
+.tk.rd { color: #63d8ff; opacity: 1; }
+.msg.pending small::after { content: ''; }
