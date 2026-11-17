@@ -15,7 +15,7 @@
   if (!S.hotel && TRIP.cfg.hotel) S.hotel = TRIP.cfg.hotel;
   if (!S.hotel && TRIP.cfg.legacy) S.hotel = { name: 'NYX Esperia Palace Hotel Athens', addr: 'Stadiou 22, בין סינטגמה לפנפיסטימיו', el: 'Σταδίου 22, Αθήνα 105 64', lat: 37.9790, lng: 23.7320, q: 'NYX Esperia Palace Hotel Athens, Stadiou 22' };
   if (!S.pack) S.pack = PACK_DEFAULT.map(t => ({ t, done: false }));
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+  const save = () => { if (window.__tripSwitch) return; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };   // אחרי מחיקה או החלפה של נסיעה לא שומרים שוב את הנסיעה הישנה
 
   let me = null;                  // {lat,lng,acc}
   let ui = { cat: 'all', sort: 'rec', q: '', mapCat: 'all', day: 0 };
@@ -490,7 +490,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 68;
+  const VERSION = 69;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
