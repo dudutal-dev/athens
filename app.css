@@ -737,3 +737,14 @@ svg .du { fill: currentColor; stroke: none; opacity: .2; }
 /* הלשונית הפעילה מורמת מעט: לא לחתוך אותה */
 .tabbar button { overflow: visible; }
 .tabbar button.on .tic { transform: translateY(-2px); }
+
+/* שש לשוניות (המסלול עבר למסך הבית): יותר אוויר בסרגל */
+.tabbar { grid-template-columns: repeat(6, minmax(0, 1fr)); padding-inline: 18px; }
+.tabbar .tic, .tabbar button.on .tic { width: 46px; height: 46px; border-radius: 14px; }
+.tabbar button, .tabbar button.on { font-size: 11.500px; }
+@media (max-width: 379px) {
+  .tabbar { padding-inline: 12px; }
+  .tabbar .tic, .tabbar button.on .tic { width: 40px; height: 40px; border-radius: 12px; }
+  .tabbar .tic svg, .tabbar button.on .tic svg { width: 23px; height: 23px; }
+  .tabbar button, .tabbar button.on { font-size: 10.500px; }
+}
