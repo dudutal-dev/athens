@@ -684,3 +684,31 @@ svg .du { fill: currentColor; stroke: none; opacity: .2; }
 .msg-acts { display: grid; gap: 8px; } .msg-acts .link { justify-self: center; padding: 8px; }
 .btn.danger { background: #d6336c; box-shadow: none; }
 #grpChat .msg { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+
+/* ═════ סרגל תחתון בסגנון ה-Dock של הטלפון: אייקוני אפליקציה על פס מעוגל, והדף לא נגלל מתחתיו ═════ */
+:root { --tab-h: 92px; }
+.tabbar { inset: auto 0 0 0; height: calc(var(--tab-h) + var(--sab)); padding: 8px 14px calc(var(--sab) + 8px); border: 0; border-radius: 0; box-shadow: none; background: var(--bg); align-items: center; }
+.tabbar::before { content: ''; position: absolute; inset: 6px 8px calc(var(--sab) + 6px) 8px; z-index: -1; border-radius: 28px; border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 82%, transparent); box-shadow: 0 6px 22px rgba(10, 40, 90, .12); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.tabbar::after { content: ''; position: absolute; inset: -14px 0 auto 0; height: 14px; pointer-events: none; background: linear-gradient(to top, var(--bg), transparent); }
+.tabbar button, .tabbar button.on { gap: 4px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.tabbar .tic, .tabbar button.on .tic { width: 44px; height: 44px; padding: 0; border-radius: 13px; color: #fff; display: grid; place-items: center;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 72%, #fff), var(--c)); box-shadow: 0 3px 8px color-mix(in srgb, var(--c) 30%, transparent); transition: transform .15s, box-shadow .15s; }
+.tabbar .tic svg, .tabbar button.on .tic svg { width: 25px; height: 25px; stroke: #fff; }
+.tabbar .tic svg .du, .tabbar button.on .tic svg .du { opacity: .3; }
+.tabbar button.on { color: var(--ink); font-weight: 700; }
+.tabbar button.on .tic { transform: translateY(-3px) scale(1.06); box-shadow: 0 0 0 2.5px var(--surface), 0 0 0 4.5px color-mix(in srgb, var(--c) 55%, transparent), 0 6px 14px color-mix(in srgb, var(--c) 35%, transparent); }
+.tbadge { top: -2px; inset-inline-end: calc(50% - 28px); }
+@media (max-width: 379px) {
+  :root { --tab-h: 84px; }
+  .tabbar { padding-inline: 10px; }
+  .tabbar .tic, .tabbar button.on .tic { width: 37px; height: 37px; border-radius: 11px; }
+  .tabbar .tic svg, .tabbar button.on .tic svg { width: 21px; height: 21px; }
+  .tabbar button, .tabbar button.on { font-size: 10px; gap: 3px; }
+  .tbadge { inset-inline-end: calc(50% - 24px); }
+}
+@media (prefers-color-scheme: dark) {
+  .tabbar .tic, .tabbar button.on .tic { color: #fff; background: linear-gradient(155deg, color-mix(in srgb, var(--c) 80%, #fff), color-mix(in srgb, var(--c) 85%, #000)); }
+  .tabbar button.on { color: var(--ink); }
+  .tabbar::before { box-shadow: 0 6px 22px rgba(0, 0, 0, .4); }
+}
