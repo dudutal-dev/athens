@@ -465,6 +465,13 @@ try { var th = localStorage.getItem('athina.theme'); if (th === 'dark' || th ===
   </form>
 </dialog>
 
+<dialog id="taxiDlg" class="taxi-full">
+  <button type="button" class="taxi-x" id="taxiClose" aria-label="סגירה">✕</button>
+  <p class="taxi-k">Παρακαλώ, πηγαίνετέ με εδώ</p>
+  <p class="taxi-big" id="taxiBig" translate="no" dir="ltr"></p>
+  <p class="taxi-n" id="taxiName" translate="no" dir="ltr"></p>
+  <p class="taxi-he">"בבקשה, קח אותי לכאן"</p>
+</dialog>
 <dialog id="msgDlg" class="sheet">
   <p class="msg-prev" id="msgPrev" translate="no"></p>
   <div class="msg-acts">

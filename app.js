@@ -123,15 +123,16 @@
       c.innerHTML = `<div class="card-head"><h2>המלון שלנו</h2><button class="link" id="hotelEdit">שינוי</button></div>
         ${IMG.hotel && /Esperia/.test(h.name) ? `<figure class="card-img">${pic('hotel', '')}<figcaption>רחוב סטדיו, הרחוב של המלון</figcaption></figure>` : ''}
         <p class="hotel-name">${esc(h.name)}</p>
-        <p class="muted small">${esc(h.addr || '')}${d != null ? ` · <b>${distTxt(d)} ממך</b>` : ''}</p>
-        ${h.el ? `<div class="taxi"><small>להראות לנהג המונית</small>${esc(h.el)}</div>` : ''}
-        <div class="row" style="margin-top:12px">
-          <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(h.q || `${h.lat},${h.lng}`)}">ניווט</a>
-          <button class="btn ghost" id="hotelMap">במפה</button>
-          <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.q || h.name + ' Athens')}">תמונות</a>
+        <p class="muted small hotel-addr">${esc(h.addr || '')}${d != null ? `<span class="pill">${distTxt(d)} ממך</span>` : ''}</p>
+        ${h.el ? `<button type="button" class="taxi" id="taxiShow"><i><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l1.500-4.200A2 2 0 0 1 8.400 5.500h7.200a2 2 0 0 1 1.900 1.300L19 11"/><path d="M4 11h16a1 1 0 0 1 1 1v4.500H3V12a1 1 0 0 1 1-1z"/><path d="M6 16.500V18M18 16.500V18M10 3.500h4M7 13.800h.01M17 13.800h.01"/></svg></i><span><small>להראות לנהג המונית</small><b translate="no" dir="ltr">${esc(h.el)}</b></span><em><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></em></button>` : ''}
+        <div class="hotel-acts">
+          <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(h.q || `${h.lat},${h.lng}`)}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 3.5 3.5 10l6.500 3 3 6.500z"/></svg>ניווט</a>
+          <button class="btn ghost" id="hotelMap"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.500-4.300 7-7.600 7-11a7 7 0 1 0-14 0c0 3.400 2.500 6.700 7 11z"/><circle cx="12" cy="10" r="2.300"/></svg>במפה</button>
+          <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.q || h.name + ' Athens')}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.500" y="5" width="17" height="14" rx="2.500"/><circle cx="9" cy="10" r="1.600"/><path d="M4 17l4.500-4.500 3.500 3.500 3-3 5 5"/></svg>תמונות</a>
         </div>`;
       $('#hotelEdit').onclick = () => renderHotel([]);
       $('#hotelMap').onclick = () => { go('map'); map.setView([h.lat, h.lng], 16); };
+      if (h.el) $('#taxiShow').onclick = () => { $('#taxiBig').textContent = h.el; $('#taxiName').textContent = h.name; $('#taxiDlg').showModal(); };   // כתובת גדולה על כל המסך, להראות לנהג
       return;
     }
     c.innerHTML = `<div class="card-head"><h2>המלון שלנו</h2>${h ? '<button class="link" id="hotelBack">ביטול</button>' : ''}</div>
@@ -464,7 +465,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 50;
+  const VERSION = 51;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {
@@ -521,6 +522,7 @@
     TRIP.apply(cfg); TRIP.refresh('הנסיעה עודכנה');
   };
   const editTrip = () => APP.hooks.editTrip ? APP.hooks.editTrip() : openTrip();
+  $('#taxiClose').onclick = () => $('#taxiDlg').close(); $('#taxiDlg').onclick = e => { if (e.target.id === 'taxiDlg') e.target.close(); };
   $('#tripBtn').onclick = editTrip; $('#setupBtn').onclick = editTrip;
 
   // ───── boot ─────

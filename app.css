@@ -712,3 +712,28 @@ svg .du { fill: currentColor; stroke: none; opacity: .2; }
   .tabbar button.on { color: var(--ink); }
   .tabbar::before { box-shadow: 0 6px 22px rgba(0, 0, 0, .4); }
 }
+
+/* ═════ כרטיס המלון: כתובת לנהג ולחצנים ═════ */
+.hotel-addr { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 4px; }
+.hotel-addr .pill { white-space: nowrap; }
+.taxi { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 14px; padding: 12px 14px; border-radius: 18px; direction: inherit; text-align: start; font-size: inherit; font-weight: inherit; color: var(--ink);
+  background: color-mix(in srgb, #d98a1c 9%, var(--surface)); border: 1.500px dashed color-mix(in srgb, #d98a1c 45%, var(--line)); }
+.taxi i { flex: none; width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: #f2b632; color: #1d1d1f; }
+.taxi span { flex: 1; min-width: 0; }
+.taxi small { display: block; direction: inherit; margin: 0 0 2px; font-size: 12.500px; font-weight: 600; color: var(--muted); }
+.taxi b { display: block; font-size: 17.500px; font-weight: 700; line-height: 1.250; text-align: start; unicode-bidi: plaintext; }
+.taxi em { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); background: var(--surface); border: 1px solid var(--line); }
+.hotel-acts { display: grid; grid-template-columns: 1.300fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+.hotel-acts .btn { min-width: 0; padding: 0 8px; min-height: 48px; gap: 7px; white-space: nowrap; font-size: 15px; }
+.hotel-acts .btn.ghost { background: var(--surface); border: 1.500px solid var(--line); color: var(--sea); box-shadow: none; }
+.hotel-acts .btn svg { flex: none; width: 18px; height: 18px; }
+.taxi-full { border: 0; padding: 28px 22px; margin: auto; width: min(92vw, 520px); border-radius: 26px; background: #111827; color: #fff; text-align: center; }
+.taxi-full::backdrop { background: rgba(5, 10, 22, .82); }
+.taxi-k { font-size: 17px; opacity: .8; margin: 6px 0 14px; }
+.taxi-big { font: 800 clamp(30px, 9.500vw, 48px)/1.200 var(--body); margin: 0 0 14px; color: #ffd24d; overflow-wrap: anywhere; }
+.taxi-n { font-size: 17px; font-weight: 600; margin: 0 0 16px; }
+.taxi-he { font-size: 13.500px; opacity: .6; margin: 0; }
+.taxi-x { position: absolute; top: 12px; inset-inline-end: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.14); color: #fff; font-size: 16px; }
+/* הלשונית הפעילה מורמת מעט: לא לחתוך אותה */
+.tabbar button { overflow: visible; }
+.tabbar button.on .tic { transform: translateY(-2px); }
