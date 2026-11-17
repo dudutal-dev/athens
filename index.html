@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>אתונה שלנו</title>
+<script src="i18n.js"></script>
 <meta name="description" content="המדריך האישי לטיול באתונה: מפה חיה, שופינג, מסעדות, מסלול וכלים">
 <meta name="theme-color" content="#f5f7fb" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1524" media="(prefers-color-scheme: dark)">
@@ -16,7 +17,7 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&family=Gveret+Levin&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&family=Gveret+Levin&family=Caveat:wght@500;700&display=swap">
 <link rel="stylesheet" href="vendor/leaflet.css">
 <link rel="stylesheet" href="app.css">
 </head>
@@ -213,7 +214,7 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
 
       <details class="card acc" id="tripsCard">
         <summary><i class="ic" data-ic="bag" style="--c:#0d5eaf;--c2:#3b9bff"></i>הנסיעות שלי</summary>
-        <p class="muted small">נוסעים שוב לאתונה? הנסיעה הנוכחית נשמרת עם היומן, הצ'אט והמסלול שלה, ומתחילים נסיעה חדשה ונקייה. אפשר לחזור לכל נסיעה שמורה.</p>
+        <p class="muted small">נוסעים שוב לאתונה? הנסיעה הנוכחית נשמרת עם היומן, הצ'אט והמסלול שלה, ומתחילים נסיעה חדשה ונקייה. אפשר לחזור לכל נסיעה שמורה, וגם למחוק נסיעה יחד עם היומן שלה.</p>
         <div id="tripsList" class="trips"></div>
         <button class="btn" id="tripNew" type="button">התחלת נסיעה חדשה</button>
       </details>
@@ -331,6 +332,10 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
         <p class="muted small">לחיצה על מספר מחייגת. כדאי לשמור גם את מספר הביטוח.</p>
       </details>
 
+      <section class="card langs" translate="no">
+        <h2>שפה · Language · Idioma</h2>
+        <div class="row"><button class="btn sm ghost" data-lang="he" type="button">עברית</button><button class="btn sm ghost" data-lang="en" type="button">English</button><button class="btn sm ghost" data-lang="es" type="button">Español</button></div>
+      </section>
       <section class="card about">
         <h2>אודות</h2>
         <p><b>אתונה שלנו</b> · מדריך ומלווה לטיול באתונה</p>

@@ -50,8 +50,8 @@
   const gDir = p => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.q || `${p.lat},${p.lng}`)}`;
   const gPlace = p => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.q || `${p.lat},${p.lng}`)}`;
   const dayDate = i => { const d = new Date(S.start + 'T12:00:00'); d.setDate(d.getDate() + i); return d; };
-  const fmtDay = d => d.toLocaleDateString('he-IL', { weekday: 'short' });
-  const fmtDate = d => d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' });
+  const fmtDay = d => d.toLocaleDateString(LOC, { weekday: 'short' });
+  const fmtDate = d => d.toLocaleDateString(LOC, { day: 'numeric', month: 'numeric' });
   const todayIdx = () => { const t = new Date(); t.setHours(12, 0, 0, 0); return Math.round((t - dayDate(0)) / 864e5); };
 
   // ───── navigation ─────
@@ -185,7 +185,7 @@
       (fl.length ? fl.map(f => {
         const dt = new Date(`${f.date}T${f.time}`), diff = dt - Date.now();
         const cnt = diff > 0 ? (diff < 36e5 * 48 ? `בעוד ${Math.floor(diff / 36e5)} שע׳ ו־${Math.floor(diff % 36e5 / 6e4)} דק׳` : `בעוד ${Math.round(diff / 864e5)} ימים`) : 'המריאה';
-        const at = new Date(dt - 3 * 36e5).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+        const at = new Date(dt - 3 * 36e5).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' });
         return `<div class="flight"><div><div class="route">${f.dir === 'out' ? 'תל אביב ← אתונה' : 'אתונה ← תל אביב'}</div>
           <div class="muted small">${esc(f.air || '')} <b dir="ltr">${esc(f.num)}</b>${f.ref ? ` · הזמנה <b dir="ltr">${esc(f.ref)}</b>` : ''}</div>
           ${f.note ? `<div class="muted small">${esc(f.note)}</div>` : ''}</div>
@@ -425,6 +425,7 @@
   }
 
   // ───── התקנה למסך הבית ─────
+  $$('[data-lang]').forEach(b => { if (b.dataset.lang === LANG) b.classList.remove('ghost'); b.onclick = () => setLang(b.dataset.lang); });
   let A_install = null, A_steps = () => {}, A_now = async () => 'manual';
   (() => {
     const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
@@ -462,7 +463,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 42;
+  const VERSION = 43;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {

@@ -34,7 +34,7 @@
     for (let i = 0; i < list.length; i += 60) {
       const chunk = list.slice(i, i + 60), files = [];
       for (const [k, e] of chunk.entries()) files.push({ name: fileName(e, i + k), data: new Uint8Array(await e.blob.arrayBuffer()), date: new Date(e.ts) });
-      const txt = chunk.map((e, k) => `${fileName(e, i + k)}\n${new Date(e.ts).toLocaleString('he-IL')}${e.place ? ' · ' + placeName(e.place) : ''}${e.by ? ' · צילמה ' + e.by : ''}\n${e.text || ''}\n${(e.tags || []).map(t => '#' + t).join(' ')}\n`).join('\n');
+      const txt = chunk.map((e, k) => `${fileName(e, i + k)}\n${new Date(e.ts).toLocaleString(LOC)}${e.place ? ' · ' + placeName(e.place) : ''}${e.by ? ' · צילמה ' + e.by : ''}\n${e.text || ''}\n${(e.tags || []).map(t => '#' + t).join(' ')}\n`).join('\n');
       files.push({ name: 'יומן.txt', data: new TextEncoder().encode('﻿' + txt), date: new Date() });
       const part = list.length > 60 ? `_${i / 60 + 1}` : '';
       out.push(new File([zip(files)], `athens-${label}-${stamp(Date.now()).slice(0, 10)}${part}.zip`, { type: 'application/zip' }));
@@ -83,7 +83,7 @@
   async function refresh() {
     const all = await photos(), todo = all.filter(e => !e.bk).length, last = +LS.get('athina.bkLast') || 0;
     $('#bkCount').textContent = todo || ''; $('#bkCount').hidden = !todo;
-    $('#bkState').innerHTML = all.length ? `<b>${all.length}</b> תמונות ביומן · ${todo ? `<b>${todo}</b> עוד לא גובו` : 'הכול מגובה'}${last ? ` · גיבוי אחרון ${new Date(last).toLocaleString('he-IL', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}` : 'אין עדיין תמונות ביומן.';
+    $('#bkState').innerHTML = all.length ? `<b>${all.length}</b> תמונות ביומן · ${todo ? `<b>${todo}</b> עוד לא גובו` : 'הכול מגובה'}${last ? ` · גיבוי אחרון ${new Date(last).toLocaleString(LOC, { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}` : 'אין עדיין תמונות ביומן.';
     $('#bkNew').textContent = todo ? `גיבוי ${todo} התמונות החדשות` : 'אין תמונות חדשות לגיבוי'; $('#bkNew').disabled = !todo;
     $('#bkAuto').checked = autoOn();
     $('#bkAutoTxt').textContent = IOS ? 'תזכורת לגיבוי כל 3 שעות' : 'גיבוי אוטומטי לתיקיית ההורדות כל 3 שעות';

@@ -64,7 +64,7 @@
     return best && best[0] < .3 ? best[1] : '';
   }
   const placeName = id => id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
-  const time = ts => new Date(ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+  const time = ts => new Date(ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' });
   const dayKey = ts => { const d = new Date(ts); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 
   let urls = [], entries = [], cur = null;
@@ -90,15 +90,15 @@
     const t0 = A.dayDate(0); t0.setHours(0, 0, 0, 0);
     body.innerHTML = Object.values(groups).reverse().map(g => {
       const d = new Date(g[0].ts), n = Math.floor((d - t0) / 864e5) + 1;
-      const title = n >= 1 && n <= A.S.days ? `יום ${n}` : d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' });
+      const title = n >= 1 && n <= A.S.days ? `יום ${n}` : d.toLocaleDateString(LOC, { day: 'numeric', month: 'long' });
       return `<h2 class="jr-day">${title}<small>${A.fmtDay(d)} ${A.fmtDate(d)} · ${g.length} רגעים</small></h2><div class="jr-grid">` + g.map(e => {
         const meta = `<span class="loc">${e.place ? '📍 ' + esc(placeName(e.place)) + ' · ' : ''}${time(e.ts)}${e.by ? ' · ' + esc(e.by) : ''}${!us && inUs(e) ? ' · גם במשותף' : us && inMe(e) ? ' · גם באישי' : ''}</span>${e.tags?.length ? `<span class="hash">${e.tags.map(t => '#' + esc(t)).join(' ')}</span>` : ''}`;
-        if (e.type === 'note') return `<button class="note" data-id="${e.id}">${esc(e.text)}${meta}</button>`;
+        if (e.type === 'note') return `<button class="note" data-id="${e.id}"><span translate="no">${esc(e.text)}</span>${meta}</button>`;
         if (!e.blob) return `<button class="pol" data-id="${e.id}"><span class="tape"></span><span class="ph-wait">${e.type === 'video' ? 'הסרטון' : 'התמונה'} של ${esc(e.by || '')} בדרך…</span>${meta}</button>`;
         if (e.type === 'video') { const pu = e.poster ? URL.createObjectURL(e.poster) : ''; if (pu) urls.push(pu);
-          return `<button class="pol vid" data-id="${e.id}"><span class="tape"></span><span class="vwrap">${pu ? `<img src="${pu}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">` : '<span class="vblank">🎬</span>'}<span class="vplay">▶ ${mmss(e.dur)}</span></span>${e.text ? `<span class="cap">${esc(e.text)}</span>` : ''}${meta}</button>`; }
+          return `<button class="pol vid" data-id="${e.id}"><span class="tape"></span><span class="vwrap">${pu ? `<img src="${pu}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">` : '<span class="vblank">🎬</span>'}<span class="vplay">▶ ${mmss(e.dur)}</span></span>${e.text ? `<span class="cap" translate="no">${esc(e.text)}</span>` : ''}${meta}</button>`; }
         const u = URL.createObjectURL(e.blob); urls.push(u);
-        return `<button class="pol" data-id="${e.id}"><span class="tape"></span><img src="${u}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">${e.text ? `<span class="cap">${esc(e.text)}</span>` : ''}${meta}</button>`;
+        return `<button class="pol" data-id="${e.id}"><span class="tape"></span><img src="${u}" alt="" loading="lazy" width="${e.w || 4}" height="${e.h || 3}">${e.text ? `<span class="cap" translate="no">${esc(e.text)}</span>` : ''}${meta}</button>`;
       }).join('') + '</div>';
     }).join('');
   }
@@ -219,7 +219,7 @@
     let st = null; try { st = JSON.parse(localStorage.getItem(OFF_KEY)); } catch {}
     $('#offState').textContent = st ? 'שמורה בטלפון' : 'עוד לא הורדה';
     $('#offBtn').textContent = st ? 'הורדה מחדש' : 'הורדת המפה';
-    $('#offMsg').textContent = msg ?? (st ? `${st.n} קבצים · ${new Date(st.t).toLocaleDateString('he-IL')}` : '');
+    $('#offMsg').textContent = msg ?? (st ? `${st.n} קבצים · ${new Date(st.t).toLocaleDateString(LOC)}` : '');
   }
   let busy = false;
   $('#offBtn').onclick = async () => {

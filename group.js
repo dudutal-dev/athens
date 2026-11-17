@@ -246,7 +246,7 @@
     Object.entries(G.members).forEach(([id, m]) => {
       if (id === G.id || !m.lat || Date.now() - m.lt > 3 * 36e5) return;
       const icon = L.divIcon({ className: '', html: face(id, m, 'friend pinf'), iconSize: [44, 44], iconAnchor: [22, 22] });
-      L.marker([m.lat, m.lng], { icon, zIndexOffset: 900 }).addTo(friendLayer).bindPopup(`<b>${esc(m.n)}</b><br>${ago(m.lt)}`);
+      L.marker([m.lat, m.lng], { icon, zIndexOffset: 900 }).addTo(friendLayer).bindPopup(`<b translate="no">${esc(m.n)}</b><br>${ago(m.lt)}`);
     });
   }
   A.hooks.map = drawFriends;
@@ -279,8 +279,8 @@
     }).join('');
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרף/ה לקבוצה</p>` :
-      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span>${esc(m.x)}</span>` : ''}
-        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קרא">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
+      `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b translate="no">${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span translate="no">${esc(m.x)}</span>` : ''}
+        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קרא">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. אפשר לכתוב משהו לקבוצה.</p>';
     if ([...box.querySelectorAll('video')].some(v => !v.paused && !v.ended)) box._dirty = true;   // סרטון מתנגן: מעדכנים כשהוא נעצר
     else if (chatHtml !== box._html) { box.innerHTML = chatHtml; box._html = chatHtml; box._dirty = false; }
@@ -380,7 +380,7 @@
   // מי קראה: לחיצה על הווי פותחת פירוט לפי חברה
   $('#grpChat').addEventListener('click', e => {
     const b = e.target.closest('[data-info]'); if (!b) return; const m = G.msgs.find(x => x.id === b.dataset.info); if (!m) return;
-    const hm = t => t > 1 ? new Date(t).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '';
+    const hm = t => t > 1 ? new Date(t).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' }) : '';
     const ids = Object.keys(G.members).filter(id => id !== G.id), row = (id, t) => `<div class="mem">${face(id, G.members[id])}<span><b>${esc(G.members[id].n || '')}</b></span><small class="muted">${hm(t)}</small></div>`;
     const read = ids.filter(id => m.rd && m.rd[id]), got = ids.filter(id => !(m.rd && m.rd[id]) && m.dv && m.dv[id]), none = ids.filter(id => !(m.dv && m.dv[id]));
     const sec = (title, list, k) => list.length ? `<h3 class="sub-h">${title}</h3>${list.map(id => row(id, k && m[k][id])).join('')}` : '';

@@ -7,7 +7,7 @@
   const get = k => { try { return localStorage.getItem(k); } catch { return null; } };
   const parse = s => { try { return JSON.parse(s || 'null'); } catch { return null; } };
   let T = parse(get('athina.trips')) || {}; T.cur ||= 't1'; T.list ||= [];
-  const fmt = iso => iso ? new Date(iso + 'T12:00:00').toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' }) : '';
+  const fmt = iso => iso ? new Date(iso + 'T12:00:00').toLocaleDateString(LOC, { day: 'numeric', month: 'numeric', year: 'numeric' }) : '';
   const info = keys => { const c = parse(keys['athina.trip']) || {}, s = parse(keys['athina.v1']) || {}; return { name: c.name || 'טיול לאתונה', start: s.start || c.start || '' }; };
   const live = () => Object.fromEntries(KEYS.map(k => [k, get(k)]));
   // כותבת קודם את רשימת הנסיעות (הגדולה). אם אין מקום בטלפון, לא נוגעים בשום דבר
@@ -31,19 +31,26 @@
     if (now) { old.me = { ...now, hotelRef: old.me?.hotelRef }; to.keys['athina.v1'] = JSON.stringify(old); }
     commit({ cur: id, list: [...T.list.filter(x => x.id !== id), { id: T.cur, t: Date.now(), keys: live() }] }, to.keys);
   }
+  let sure = '';
   async function remove(id) {
     for (const e of await A.journal.raw()) if ((e.trip || 't1') === id) await A.journal.del(e.id);
+    if (id === T.cur) {   // מחיקת הנסיעה הנוכחית: עוברים לנסיעה השמורה האחרונה, ואם אין – מתחילים נסיעה נקייה
+      await A.hooks.pushOff?.();
+      const to = [...T.list].sort((a, b) => b.t - a.t)[0], S = parse(get('athina.v1')) || {}, G = parse(get('athina.group')) || {}, me = { ...(S.me || {}) }; delete me.hotelRef;
+      if (to) { const old = parse(to.keys['athina.v1']) || {}; old.me = { ...me, hotelRef: old.me?.hotelRef }; to.keys['athina.v1'] = JSON.stringify(old); return commit({ cur: to.id, list: T.list.filter(x => x.id !== to.id) }, to.keys); }
+      return commit({ cur: 't' + Date.now().toString(36), list: [] }, { 'athina.v1': JSON.stringify({ me, rate: S.rate }), 'athina.trip': null, 'athina.group': JSON.stringify({ id: G.id, name: G.name, av: G.av }) });
+    }
     T.list = T.list.filter(x => x.id !== id); try { localStorage.setItem('athina.trips', JSON.stringify(T)); } catch {} render(); A.toast('הנסיעה נמחקה');
   }
   async function render() {
     const n = {}; for (const e of await A.journal.raw().catch(() => [])) { const k = e.trip || 't1'; n[k] = (n[k] || 0) + 1; }
-    const row = (id, i, cur) => `<div class="trip-row${cur ? ' cur' : ''}"><div><b>${esc(i.name)}</b><small>${[fmt(i.start), n[id] ? n[id] + ' רשומות ביומן' : 'יומן ריק'].filter(Boolean).join(' · ')}</small></div>${cur ? '<span class="trip-now">הנסיעה הנוכחית</span>' : `<div class="row"><button class="btn sm" data-open="${id}" type="button">מעבר לנסיעה</button><button class="link" data-del="${id}" type="button">מחיקה</button></div>`}</div>`;
+    const row = (id, i, cur) => `<div class="trip-row${cur ? ' cur' : ''}"><div><b>${esc(i.name)}</b><small>${[fmt(i.start), n[id] ? n[id] + ' רשומות ביומן' : 'יומן ריק'].filter(Boolean).join(' · ')}</small></div><div class="row">${cur ? '<span class="trip-now">הנסיעה הנוכחית</span>' : `<button class="btn sm" data-open="${id}" type="button">מעבר לנסיעה</button>`}<button class="link trip-del" data-del="${id}" type="button">${sure === id ? 'למחוק עם היומן? ללחוץ שוב' : 'מחיקה'}</button></div></div>`;
     $('#tripsList').innerHTML = row(T.cur, info(live()), true) + [...T.list].sort((a, b) => b.t - a.t).map(x => row(x.id, info(x.keys), false)).join('');
   }
   $('#tripsList').onclick = e => {
     const o = e.target.closest('[data-open]'), d = e.target.closest('[data-del]');
     if (o) switchTo(o.dataset.open);
-    if (d) { if (!d.dataset.sure) { d.dataset.sure = '1'; d.textContent = 'למחוק עם היומן? ללחוץ שוב'; return; } remove(d.dataset.del); }
+    if (d) { if (sure !== d.dataset.del) { sure = d.dataset.del; return render(); } sure = ''; remove(d.dataset.del); }
   };
   $('#tripNew').onclick = () => $('#tripNewDlg').showModal();
   $('#tripNewNo').onclick = () => $('#tripNewDlg').close();

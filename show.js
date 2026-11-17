@@ -2,11 +2,11 @@
    שלושה מקורות: היומן האישי, היומן המשותף, או הכול. */
 (() => {
   const A = window.APP, $ = s => document.querySelector(s);
-  const FONT = { d: '"Frank Ruhl Libre", serif', h: '"Gveret Levin", "Assistant", cursive', b: 'Assistant, system-ui, sans-serif' };
+  const FONT = { d: '"Frank Ruhl Libre", serif', h: LANG === 'he' ? '"Gveret Levin", "Assistant", cursive' : 'Caveat, "Gveret Levin", cursive', b: 'Assistant, system-ui, sans-serif' };
   const BLUE1 = '#0a3d7a', BLUE2 = '#1479de', PINK = '#ff7aa8', GOLD = '#f5b942';
   const placeName = id => id === 'hotel' ? (A.S.hotel?.name || 'המלון') : A.byId[id]?.he || '';
-  const hm = ts => new Date(ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
-  const longDate = d => d.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+  const hm = ts => new Date(ts).toLocaleTimeString(LOC, { hour: '2-digit', minute: '2-digit' });
+  const longDate = d => d.toLocaleDateString(LOC, { weekday: 'long', day: 'numeric', month: 'long' });
 
   // ───── כלי ציור ─────
   const loadImg = blob => new Promise((res, rej) => { const i = new Image(), u = URL.createObjectURL(blob); i.onload = () => { res(i); setTimeout(() => URL.revokeObjectURL(u), 5000); }; i.onerror = rej; i.src = u; });
@@ -14,12 +14,12 @@
   function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
   function wrap(c, text, maxW, maxLines) {
     const out = []; for (const para of String(text).split('\n')) { let line = '';
-      for (const w of para.split(/\s+/)) { const t = line ? line + ' ' + w : w; if (c.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }
+      for (const w of para.split(/\s+/)) { const t = line ? line + ' ' + w : w; if (c.rawMeasure(t).width > maxW && line) { out.push(line); line = w; } else line = t; }
       if (line) out.push(line); }
     if (out.length > maxLines) { out.length = maxLines; out[maxLines - 1] = out[maxLines - 1].replace(/\s*\S*$/, '') + '…'; }
     return out;
   }
-  function lines(c, arr, x, y, lh) { arr.forEach((l, i) => c.fillText(l, x, y + i * lh)); return y + arr.length * lh; }
+  function lines(c, arr, x, y, lh) { arr.forEach((l, i) => c.rawFill(l, x, y + i * lh)); return y + arr.length * lh; }
   function meander(c, x, y, w, color, s = 2) {   // פס מפתח יווני
     c.save(); c.strokeStyle = color; c.lineWidth = 1.7 * s; c.beginPath();
     for (let px = x; px < x + w - 24 * s + 1; px += 24 * s) { const p = (dx, dy) => [px + dx * s, y + dy * s];
@@ -66,7 +66,7 @@
   }
   const meta = e => [e.type === 'video' ? '🎬 סרטון' : '', e.place ? '📍 ' + placeName(e.place) : '', hm(e.ts), e.by ? 'מאת ' + e.by : ''];
   const shadow = (c, on, u) => { c.shadowColor = on ? 'rgba(0,0,0,.55)' : 'transparent'; c.shadowBlur = on ? 14 * u : 0; c.shadowOffsetY = on ? 2 * u : 0; };
-  const mk = (W, H) => { const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d'); c.direction = 'rtl'; c.textBaseline = 'alphabetic'; return [cv, c]; };
+  const mk = (W, H) => { const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d'); c.direction = LANG === 'he' ? 'rtl' : 'ltr'; c.textBaseline = 'alphabetic'; return [cv, c]; };
   const dims = (W, H) => { const P = H > W; return [P, P ? W / 1080 : H / 900]; };
   function brand(c, W, H, u, light) { c.save(); c.font = `600 ${Math.round(24 * u)}px ${FONT.b}`; c.fillStyle = light ? 'rgba(255,255,255,.6)' : 'rgba(10,61,122,.55)'; c.textAlign = 'center'; c.fillText('אתונה · ' + TRIP.title, W / 2, H - 30 * u); c.restore(); }
   function dayTag(c, W, u, label) { c.save(); c.font = `700 ${Math.round(28 * u)}px ${FONT.b}`; const w = c.measureText(label).width + 44 * u; c.fillStyle = 'rgba(5,12,30,.45)'; rr(c, W / 2 - w / 2, 40 * u, w, 54 * u, 27 * u); c.fill(); c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(label, W / 2, 78 * u); c.restore(); }
@@ -80,7 +80,7 @@
     c.font = `900 ${Math.round((P ? 230 : 180) * u)}px ${FONT.d}`; c.fillText('אתונה', tx, P ? H * .36 : H * .5);
     c.font = `400 ${Math.round((P ? 92 : 72) * u)}px ${FONT.h}`; c.fillStyle = '#ffd6e4'; c.fillText(TRIP.title, tx, P ? H * .425 : H * .63);
     shadow(c, false, u); c.font = `600 ${Math.round(36 * u)}px ${FONT.b}`; c.fillStyle = 'rgba(255,255,255,.92)';
-    c.fillText(`${st.from.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' })} – ${st.to.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' })}`, tx, P ? H * .47 : H * .72);
+    c.fillText(`${st.from.toLocaleDateString(LOC, { day: 'numeric', month: 'long' })} – ${st.to.toLocaleDateString(LOC, { day: 'numeric', month: 'long', year: 'numeric' })}`, tx, P ? H * .47 : H * .72);
     c.font = `700 ${Math.round(30 * u)}px ${FONT.b}`; c.fillStyle = GOLD; c.fillText(st.kind, tx, P ? H * .505 : H * .79);
     if (st.names.length) { c.font = `500 ${Math.round(28 * u)}px ${FONT.b}`; c.fillStyle = 'rgba(255,255,255,.75)'; lines(c, wrap(c, st.names.join(' · '), P ? W * .8 : W * .5, 2), tx, P ? H * .54 : H * .85, 38 * u); }
     if (P) fan(c, st.pick, W / 2, H * .74, W * .4, u); else fan(c, st.pick, W * .27, H * .52, W * .2, u);
@@ -197,7 +197,7 @@
     for (const g of groups) {
       if (my !== runId) return;
       const dn = Math.round((g.date - t0) / 864e5) + 1, inTrip = dn >= 1 && dn <= A.S.days;
-      const label = inTrip ? `יום ${dn}` : g.date.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' });
+      const label = inTrip ? `יום ${dn}` : g.date.toLocaleDateString(LOC, { day: 'numeric', month: 'numeric' });
       await push(sDay(W, H, { date: g.date, label, title: inTrip ? TRIP.plan[dn - 1]?.title : '', imgs: g.items.filter(e => e._img).map(e => e._img), count: g.items.length }));
       let run = [];   // רצף תמונות בלי כיתוב הופך לשקף קולאז׳
       const flush = async () => { while (run.length) { const take = run.length === 5 ? 3 : Math.min(4, run.length), part = run.splice(0, take);

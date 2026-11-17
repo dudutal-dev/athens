@@ -570,3 +570,16 @@ body.kb .view { padding-bottom: 12px; }
 #installDlg h2, #tripNewDlg h2 { margin-bottom: 8px; } #tripNewDlg p { margin: 0 0 10px; }
 .inv-l { display: grid; gap: 6px; font-weight: 700; margin: 10px 0 14px; } .inv-l input { font: inherit; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); }
 #inviteDlg p { margin: 0 0 14px; }
+.trip-del { color: #c92a2a; margin-inline-start: auto; }
+.trip-row .row { align-items: center; }
+
+/* ───── English / Español (LTR) ───── */
+html[dir=ltr] { --hand: 'Caveat', 'Gveret Levin', cursive; }
+html[dir=ltr] .faces { margin-right: 0; margin-left: auto; }
+html[dir=ltr] .hero h1 { letter-spacing: 0; }
+.langs .row { gap: 8px; flex-wrap: wrap; }
+html[dir=ltr] .hero::before { left: auto; right: 24px; }
+html[dir=ltr] .hero-set { left: auto; right: 92px; }
+html[dir=ltr] .hero-art { left: auto; right: -30px; }
+.gcode { white-space: nowrap; }
+html[dir=ltr] .gcode { font-size: 22px; letter-spacing: 1px; }
