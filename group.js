@@ -303,7 +303,6 @@
     await derive(code); connect(); render();
     setTimeout(() => send({ t: 'hi' }).then(() => { if (G.av) send({ t: 'av', av: G.av }); if (isNew) sendTrip(); }), 800);
     A.toast(isNew ? 'הקבוצה נוצרה. עכשיו שולחים הזמנה לשאר' : 'הצטרפת לקבוצה');
-    if (!isNew && /[?&]j=/.test(location.search) && A.install) setTimeout(() => A.install(), 1800);   // הגיעו מקישור הזמנה בדפדפן: מציעים מיד להתקין למסך הבית
   }
   $('#grpJoinForm').onsubmit = e => { e.preventDefault(); join($('#grpCodeIn').value, $('#grpName').value.trim(), false); };
   // פתיחת קבוצה: קודם מגדירים את הנסיעה, ואז נוצר הקוד
@@ -457,8 +456,15 @@
     let used = ''; try { used = localStorage.getItem('athina.jused') || ''; } catch {}
     if (used.split(',').includes(norm(j))) { if (!G.code) $('#grpCodeIn').value = j; }
     else if (!G.code) { $('#grpCodeIn').value = j; A.go('group');
-      if (G.name) join(j, G.name, false);
-      else { const n = $('#grpInvited'); n.hidden = false; n.textContent = 'הוזמנת לקבוצה 🎉 נשאר רק לכתוב שם וללחוץ "הצטרפות".'; setTimeout(() => $('#grpName').focus(), 400); } }
+      const alone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      if (G.name && alone) join(j, G.name, false);   // האפליקציה כבר במסך הבית והשם ידוע: מצטרפים מיד
+      else { // חלון אחד: שם, ולחיצה אחת שמצרפת לקבוצה ומתקינה למסך הבית
+        const dlg = $('#inviteDlg'), can = !alone && !!A.install; $('#invName').value = G.name || '';
+        $('#invGo').textContent = can ? 'כן, להצטרף ולהתקין' : 'הצטרפות לקבוצה'; $('#invOnly').hidden = !can; $('#invQ').hidden = !can;
+        const go = install => { const name = $('#invName').value.trim(); if (!name) { A.toast('איך קוראים לך?'); return $('#invName').focus(); }
+          dlg.close(); $('#grpName').value = name; if (install && can) A.install(); join(j, name, false); };
+        $('#invForm').onsubmit = e => { e.preventDefault(); go(true); }; $('#invOnly').onclick = () => go(false);
+        setTimeout(() => dlg.showModal(), 500); } }
     else if (norm(G.code) !== norm(j)) setTimeout(() => A.toast('הקישור הוא לקבוצה אחרת. כדי להצטרף אליה צריך קודם לצאת מהקבוצה הנוכחית', 7000), 1500);
   }
   render();

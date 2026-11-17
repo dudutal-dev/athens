@@ -566,5 +566,7 @@ body.kb .view { padding-bottom: 12px; }
 .inst { margin: 10px 0 12px; padding-inline-start: 22px; display: grid; gap: 12px; font-size: 16px; line-height: 1.5; }
 .inst li::marker { font-weight: 800; color: var(--sea); }
 .inst-ic { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: rgba(13,94,175,.1); color: var(--sea); vertical-align: middle; font-weight: 800; }
-#installDlg, #tripNewDlg { padding: 20px 18px calc(18px + env(safe-area-inset-bottom)); }
+#installDlg, #tripNewDlg, #inviteDlg { padding: 20px 18px calc(18px + env(safe-area-inset-bottom)); }
 #installDlg h2, #tripNewDlg h2 { margin-bottom: 8px; } #tripNewDlg p { margin: 0 0 10px; }
+.inv-l { display: grid; gap: 6px; font-weight: 700; margin: 10px 0 14px; } .inv-l input { font: inherit; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); }
+#inviteDlg p { margin: 0 0 14px; }

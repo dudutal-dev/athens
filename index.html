@@ -514,6 +514,14 @@ if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgen
 
 <div id="toast" class="toast" hidden></div>
 
+<dialog id="inviteDlg" class="sheet">
+  <form id="invForm">
+    <h2>הוזמנת לקבוצה 🎉</h2>
+    <label class="inv-l">השם שלך<input id="invName" autocomplete="off" maxlength="16" placeholder="השם שלך"></label>
+    <p id="invQ"><b>להתקין את האפליקציה במסך הבית?</b><br><span class="muted small">אייקון משלה, מסך מלא, והתראות על הודעות.</span></p>
+    <div class="row"><button class="btn" id="invGo">כן, להצטרף ולהתקין</button><button class="link" id="invOnly" type="button">רק להצטרף</button></div>
+  </form>
+</dialog>
 <dialog id="installDlg" class="sheet">
   <h2>התקנה למסך הבית</h2>
   <p class="muted small">הטלפון לא מרשה לאפליקציה להתקין את עצמה, אז עושים את זה פעם אחת, בשלושה צעדים:</p>
