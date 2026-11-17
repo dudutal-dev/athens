@@ -85,7 +85,23 @@ export default {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
-      if (url.pathname.startsWith('/lic/')) return await lic(req, env, url, json);   // רישיונות (lic.js)
+      if (url.pathname.startsWith('/lic/')) return await lic(req, env, url, json);
+      // העברת הזמנה מהדפדפן של האייפון לאפליקציה שבמסך הבית (שני אחסונים נפרדים באותו טלפון).
+      // הדפדפן משאיר כאן את קוד הקבוצה לרבע שעה, לפי כתובת הרשת וסוג המכשיר, והאפליקציה אוספת אותו בפתיחה הראשונה.
+      if (url.pathname === '/h/put' || url.pathname === '/h/get') {
+        if (req.method !== 'POST') return json({ error: 'method' }, 405);
+        const hb = await req.json(), app = String(hb.app || '');
+        if (!/^[a-z]{3,12}$/.test(app)) return json({ error: 'bad app' }, 400);
+        const who = (req.headers.get('cf-connecting-ip') || 'local') + '|' + (req.headers.get('user-agent') || '').replace(/Version\/[\d.]+|Safari\/[\d.]+/g, '').replace(/\s+/g, ' ').trim() + '|' + app;
+        const hk = 'h:' + btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(who))))).replace(/[^A-Za-z0-9]/g, '').slice(0, 32);
+        if (url.pathname === '/h/put') {
+          if (!/^[A-Za-z0-9-]{6,20}$/.test(String(hb.j || ''))) return json({ error: 'bad code' }, 400);
+          await env.SUBS.put(hk, JSON.stringify({ j: hb.j, k: /^[PI]\.[a-z0-9]{6,12}\.[A-Za-z0-9_-]{22}$/.test(String(hb.k || '')) ? hb.k : '', t: Date.now() }), { expirationTtl: 900 });
+          return json({ ok: true });
+        }
+        const hv = await env.SUBS.get(hk, 'json'); if (!hv || Date.now() - hv.t > 900e3) return json({ ok: true });
+        await env.SUBS.delete(hk); return json({ ok: true, j: hv.j, k: hv.k });
+      }   // רישיונות (lic.js)
       const rm = url.pathname.match(/^\/r\/([a-z0-9]{10,40})(\/ws)?$/);
       if (rm) { if (!env.ROOMS) return json({ error: 'no rooms' }, 503); return env.ROOMS.get(env.ROOMS.idFromName(rm[1])).fetch(req); }
       // קבצים גדולים של הקבוצה (סרטונים): נשמרים ב-R2 (binding בשם FILES) כשהם כבר מוצפנים בטלפון. נמחקים לבד אחרי 30 יום
