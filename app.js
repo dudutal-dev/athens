@@ -420,7 +420,12 @@
 
   function renderStatic() {
     $('#tips').innerHTML = TIPS.map(g => `<div class="tipg"><h3>${g.h}</h3><ul>${g.items.map(i => `<li>${i}</li>`).join('')}</ul></div>`).join('');
-    $('#phrases').innerHTML = PHRASES.map(p => `<div class="ph"><b>${p[0]}</b><span>${p[2]}</span><small>${p[1]}</small></div>`).join('');
+    $('#phrases').innerHTML = PHRASES.map(p => `<div class="ph"><button type="button" class="ph-play" data-say="${p[3]}" aria-label="השמעה"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.500v13l11-6.500z"/></svg></button><div><b>${p[0]}</b><span>${p[2]}</span><small translate="no" lang="el">${p[1]}</small></div></div>`).join('');
+    let sayNow = null;   // הקלטה בקול נשי, קובץ לכל ביטוי
+    $('#phrases').onclick = e => { const b = e.target.closest('[data-say]'); if (!b) return;
+      if (sayNow) { sayNow.pause(); document.querySelectorAll('.ph-play.on').forEach(x => x.classList.remove('on')); }
+      const a = sayNow = new Audio('audio/el/' + b.dataset.say + '.mp3'); b.classList.add('on');
+      a.onended = a.onerror = () => b.classList.remove('on'); a.play().catch(() => { b.classList.remove('on'); toast('ההשמעה לא זמינה כרגע. צריך אינטרנט בפעם הראשונה'); }); };
     $('#guide').innerHTML = GUIDE.map(s => `<details class="g"><summary>${s.h}</summary>${s.p.map(x => Array.isArray(x) ? `<ol>${x.map(i => `<li>${i}</li>`).join('')}</ol>` : `<p>${x}</p>`).join('')}</details>`).join('');
     $('#emergency').innerHTML = EMERGENCY.map(e => `<a href="tel:${e[1].replace(/\s/g, '')}">${e[0]}<span>${e[1]}</span></a>`).join('');
   }
@@ -465,7 +470,7 @@
   })();
 
   // ───── עדכון אוטומטי: בודקים אם יש גרסה חדשה באתר, ואם כן טוענים אותה ─────
-  const VERSION = 54;
+  const VERSION = 55;
   async function checkUpdate() {
     if (location.protocol !== 'https:' || !navigator.onLine) return;
     try {

@@ -275,13 +275,33 @@
   "en": "Χρόνια πολλά · Many happy returns",
   "es": "Χρόνια πολλά · Por muchos años más"
  },
+ "אֶחִי אֶקְפְּטוֹסִי?": {
+  "en": "Échi ékptosi?",
+  "es": "Échi ékptosi?"
+ },
  "אֶחֶטֶה אָלוֹ נוּמֶרוֹ?": {
   "en": "Échete állo noúmero?",
   "es": "¿Éjete álo número?"
  },
+ "אֶנָה טְרָפֶּזִי יָה טֶסֶרִיס, פָּרָקָלוֹ": {
+  "en": "Éna trapézi ya tésseris, parakaló",
+  "es": "Éna trapézi ya tésseris, parakaló"
+ },
+ "אֶנָה, דִיוֹ, טְרִיָה": {
+  "en": "Éna, dío, tría",
+  "es": "Éna, dío, tría"
+ },
+ "אֶנָן קָפֶה, פָּרָקָלוֹ": {
+  "en": "Énan kafé, parakaló",
+  "es": "Énan kafé, parakaló"
+ },
  "אֶפְחָרִיסְטוֹ": {
   "en": "Efcharistó",
   "es": "Efjaristó"
+ },
+ "אָרִיסְטֶרָה / דֶקְסְיָה / אֶפְתִיָה": {
+  "en": "Aristerá / dexiá / efthía",
+  "es": "Aristerá / dexiá / efthía"
  },
  "אאוטלט": {
   "en": "Outlet",
@@ -370,6 +390,10 @@
  "אחרי הצילום נפתח חלון: כותבים כמה מילים, בוחרים מקום (האפליקציה מציעה את הקרוב ביותר) ותגיות.": {
   "en": "After the shot a window opens: write a few words, choose a place (the app suggests the nearest one) and tags.",
   "es": "Después de la foto se abre una ventana: escribe unas palabras, elige un lugar (la app sugiere el más cercano) y etiquetas."
+ },
+ "אחת, שתיים, שלוש": {
+  "en": "One, two, three",
+  "es": "Uno, dos, tres"
  },
  "אטיקה – כל־בו האופנה": {
   "en": "Attica – the fashion department store",
@@ -491,6 +515,10 @@
   "en": "Where",
   "es": "Dónde"
  },
+ "איפה המטרו?": {
+  "en": "Where is the metro?",
+  "es": "¿Dónde está el metro?"
+ },
  "איפה השירותים?": {
   "en": "Where is the toilet?",
   "es": "¿Dónde está el baño?"
@@ -587,6 +615,10 @@
   "en": "I'm here, come over 📍",
   "es": "Estoy aquí, venid 📍"
  },
+ "אני לא מבין/ה": {
+  "en": "I don't understand",
+  "es": "No entiendo"
+ },
  "אסור לפספס": {
   "en": "Not to be missed",
   "es": "Imprescindibles"
@@ -607,9 +639,17 @@
   "en": "You can search by words, for example \"sandals\" or \"rooftop\".",
   "es": "Puedes buscar con palabras, por ejemplo \"sandalias\" o \"azotea\"."
  },
+ "אפשר למדוד?": {
+  "en": "Can I try it on?",
+  "es": "¿Puedo probármelo?"
+ },
  "אפשר לעמוד על הפודיום ולהצטלם.": {
   "en": "You can stand on the podium for a photo.",
   "es": "Puedes subirte al podio y hacerte una foto."
+ },
+ "אפשר לשלם בכרטיס?": {
+  "en": "Can I pay by card?",
+  "es": "¿Puedo pagar con tarjeta?"
  },
  "אפשרות א׳ – אגם ושחייה": {
   "en": "Option A – lake and a swim",
@@ -715,6 +755,10 @@
   "en": "The trip is set up by whoever created the group.",
   "es": "El viaje lo configura quien creó el grupo."
  },
+ "את התפריט, בבקשה": {
+  "en": "The menu, please",
+  "es": "La carta, por favor"
+ },
  "אתונה": {
   "en": "Athens",
   "es": "Atenas"
@@ -746,6 +790,14 @@
  "אתרים": {
   "en": "Sights",
   "es": "Lugares de interés"
+ },
+ "בּוֹרוֹ נָה טוֹ דוֹקִימָסוֹ?": {
+  "en": "Boró na to dokimáso?",
+  "es": "Boró na to dokimáso?"
+ },
+ "בּוֹרוֹ נָה פְּלִירוֹסוֹ מֶה קָרְטָה?": {
+  "en": "Boró na pliróso me kárta?",
+  "es": "Boró na pliróso me kárta?"
  },
  "באבא או ראם": {
   "en": "Baba Au Rum",
@@ -1087,6 +1139,10 @@
   "en": "Pharmacies (green cross) are much cheaper than in Israel. Look out for 1+1 deals.",
   "es": "Las farmacias (cruz verde) son bastante más baratas que en Israel. Busca las ofertas 1+1."
  },
+ "בתיאבון": {
+  "en": "Enjoy your meal",
+  "es": "Buen provecho"
+ },
  "בתפריט שלוש הנקודות של כרום לבחור \"התקנת האפליקציה\" או \"הוספה למסך הבית\".": {
   "en": "In Chrome's three-dot menu choose \"Install app\" or \"Add to Home screen\".",
   "es": "En el menú de tres puntos de Chrome elige \"Instalar aplicación\" o \"Añadir a pantalla de inicio\"."
@@ -1190,6 +1246,10 @@
  "ג׳לטו איטלקי בעבודת יד מחומרים יווניים. פיסטוק מאגינה ומסטיקה.": {
   "en": "Handmade Italian gelato using Greek ingredients. Aegina pistachio and mastiha.",
   "es": "Gelato italiano artesanal con ingredientes griegos. Pistacho de Egina y mastiha."
+ },
+ "דֶן קָטָלָבֶנוֹ": {
+  "en": "Den katalavéno",
+  "es": "Den katalavéno"
  },
  "דגים על המרינה": {
   "en": "Fish on the marina",
@@ -1434,6 +1494,10 @@
  "ההחזר לא חל על מסעדות, מלון ושירותים. הנהלים והעמלות משתנים בין חברות, כדאי לשאול בחנות.": {
   "en": "The refund doesn't apply to restaurants, hotels and services. Procedures and fees vary between companies, so it's worth asking in the shop.",
   "es": "La devolución no se aplica a restaurantes, hotel ni servicios. Los trámites y las comisiones varían según la empresa; conviene preguntar en la tienda."
+ },
+ "ההשמעה לא זמינה כרגע. צריך אינטרנט בפעם הראשונה": {
+  "en": "Playback isn't available right now. It needs internet the first time",
+  "es": "La reproducción no está disponible ahora. Necesita internet la primera vez"
  },
  "ההתראות חסומות. לאשר בהגדרות הטלפון ← התראות ← אתונה, ואז לחזור לכאן.": {
   "en": "Notifications are blocked. Allow them in your phone settings → Notifications → Athens, then come back here.",
@@ -2047,6 +2111,10 @@
   "en": "Saving failed – your phone may be out of free space",
   "es": "No se ha podido guardar: puede que no quede espacio en el teléfono"
  },
+ "השמעה": {
+  "en": "Play",
+  "es": "Reproducir"
+ },
  "השמש שוקעת בסביבות 17:10, אז את האתרים הפתוחים עושים בבוקר.": {
   "en": "The sun sets around 17:10, so do the outdoor sights in the morning.",
   "es": "El sol se pone sobre las 17:10, así que visita los sitios al aire libre por la mañana."
@@ -2118,6 +2186,10 @@
  "וארולקו – דגים על המים": {
   "en": "Varoulko – fish by the water",
   "es": "Varoulko – pescado junto al agua"
+ },
+ "ווֹאִיתְיָה!": {
+  "en": "Voíthia!",
+  "es": "Voíthia!"
  },
  "זו הגרסה העדכנית ({})": {
   "en": "This is the latest version ({0})",
@@ -2259,6 +2331,10 @@
   "en": "Important:",
   "es": "Importante:"
  },
+ "טִי קָנִיס?": {
+  "en": "Ti kánis?",
+  "es": "Ti kánis?"
+ },
  "טאף קפה": {
   "en": "Taf Coffee",
   "es": "Taf Coffee"
@@ -2278,6 +2354,14 @@
  "טוֹן לוֹגָרְיַאזְמוֹ, פָּרָקָלוֹ": {
   "en": "Ton logariasmó, parakaló",
   "es": "Ton logariasmó, parakaló"
+ },
+ "טוֹן קָטָלוֹגוֹ, פָּרָקָלוֹ": {
+  "en": "Ton katálogo, parakaló",
+  "es": "Ton katálogo, parakaló"
+ },
+ "טוב, תודה": {
+  "en": "Fine, thank you",
+  "es": "Bien, gracias"
  },
  "טיול חברים": {
   "en": "Trip with friends",
@@ -2435,6 +2519,10 @@
   "en": "Sea, market and goodbye",
   "es": "Mar, mercado y despedida"
  },
+ "יפה מאוד": {
+  "en": "Very nice",
+  "es": "Muy bonito"
+ },
  "יציאה מהקבוצה": {
   "en": "Leave the group",
   "es": "Salir del grupo"
@@ -2446,6 +2534,10 @@
  "ירדו רק {} מתוך {}. אפשר לנסות שוב בחיבור יציב": {
   "en": "Only {0} of {1} downloaded. Try again on a stable connection",
   "es": "Solo se han descargado {0} de {1}. Prueba de nuevo con una conexión estable"
+ },
+ "יש הנחה?": {
+  "en": "Is there a discount?",
+  "es": "¿Hay descuento?"
  },
  "יש חלק מקורה ומחומם לערבי נובמבר.": {
   "en": "There's a covered, heated section for November evenings.",
@@ -3003,6 +3095,10 @@
   "en": "Night",
   "es": "Noche"
  },
+ "לילה טוב": {
+  "en": "Good night",
+  "es": "Buenas noches"
+ },
  "ליקאבטוס": {
   "en": "Lycabettus",
   "es": "Licabeto"
@@ -3078,6 +3174,10 @@
  "למי שנשאר כוח.": {
   "en": "For anyone with energy left.",
   "es": "Para quien aún tenga energía."
+ },
+ "למלון הזה, בבקשה": {
+  "en": "To this hotel, please",
+  "es": "A este hotel, por favor"
  },
  "למפה בלי אינטרנט": {
   "en": "Go to the offline map",
@@ -3227,6 +3327,10 @@
   "en": "Heads-up: passport validity",
   "es": "Atención: validez del pasaporte"
  },
+ "מִילָטֶה אַנְגְלִיקָה?": {
+  "en": "Miláte angliká?",
+  "es": "Miláte angliká?"
+ },
  "מאני מאני": {
   "en": "Mani Mani",
   "es": "Mani Mani"
@@ -3254,6 +3358,10 @@
  "מגיעים בטראם מסינטגמה (כ־45 דק׳) או במונית (כ־25 דק׳).": {
   "en": "Get there by tram from Syntagma (about 45 min) or by taxi (about 25 min).",
   "es": "Se llega en tranvía desde Syntagma (unos 45 min) o en taxi (unos 25 min)."
+ },
+ "מדברים אנגלית?": {
+  "en": "Do you speak English?",
+  "es": "¿Habla inglés?"
  },
  "מדרחוב היוקרה: לואי ויטון, הרמס, פראדה, דיור, וגם תכשיטנים יוונים מפורסמים ומותג האופנה היווני Zeus+Dione.": {
   "en": "The luxury pedestrian street: Louis Vuitton, Hermès, Prada, Dior, plus famous Greek jewellers and the Greek fashion label Zeus+Dione.",
@@ -3290,6 +3398,10 @@
  "מה קרוב אליי": {
   "en": "What's near me",
   "es": "Qué hay cerca de mí"
+ },
+ "מה שלומך?": {
+  "en": "How are you?",
+  "es": "¿Cómo estás?"
  },
  "מה שמוגדר כאן יעבור לכל מי שמצטרף עם הקוד.": {
   "en": "What you set here is passed on to everyone who joins with the code.",
@@ -3570,6 +3682,10 @@
  "מידע רפואי חשוב (אלרגיות, תרופות, סוג דם)": {
   "en": "Important medical information (allergies, medication, blood type)",
   "es": "Información médica importante (alergias, medicamentos, grupo sanguíneo)"
+ },
+ "מים, בבקשה": {
+  "en": "Water, please",
+  "es": "Agua, por favor"
  },
  "מינימום": {
   "en": "Minimum",
@@ -3895,6 +4011,10 @@
   "en": "Né",
   "es": "Ne"
  },
+ "נֶרוֹ, פָּרָקָלוֹ": {
+  "en": "Neró, parakaló",
+  "es": "Neró, parakaló"
+ },
  "נואל": {
   "en": "Noel",
   "es": "Noel"
@@ -4014,6 +4134,10 @@
  "סִיגְנוֹמִי": {
   "en": "Signómi",
   "es": "Signómi"
+ },
+ "סֶה אַפְטוֹ טוֹ קְסֶנוֹדוֹחִיוֹ, פָּרָקָלוֹ": {
+  "en": "Se aftó to xenodochío, parakaló",
+  "es": "Se aftó to xenodochío, parakaló"
  },
  "סגירה": {
   "en": "Close",
@@ -4227,6 +4351,10 @@
   "en": "Do this on Wi‑Fi, before the flight. Once downloaded, the Athens map works without a data plan too, and the blue dot keeps showing your location.",
   "es": "Hazlo con Wi‑Fi, antes del vuelo. Tras la descarga, el mapa de Atenas funciona también sin datos móviles, y el punto azul sigue mostrando tu ubicación."
  },
+ "עזרה!": {
+  "en": "Help!",
+  "es": "¡Ayuda!"
+ },
  "עכשיו": {
   "en": "just now",
   "es": "ahora mismo"
@@ -4279,6 +4407,10 @@
   "en": "Parakaló",
   "es": "Parakaló"
  },
+ "פּוֹלִי אוֹרֶאוֹ": {
+  "en": "Polí oréo",
+  "es": "Polí oréo"
+ },
  "פּוֹלִי נוֹסְטִימוֹ": {
   "en": "Polí nóstimo",
   "es": "Polí nóstimo"
@@ -4290,6 +4422,10 @@
  "פּוּ אִינֶה אִי טוּאָלֶטָה?": {
   "en": "Pou íne i toualéta?",
   "es": "¿Pu íne i tualéta?"
+ },
+ "פּוּ אִינֶה טוֹ מֶטְרוֹ?": {
+  "en": "Pu íne to metró?",
+  "es": "Pu íne to metró?"
  },
  "פאב־גריל יפני קטן עם שיפודים, המבורגר מפורסם וקוקטיילים. אווירה של ערב יציאה.": {
   "en": "A small Japanese pub-grill with skewers, a famous burger and cocktails. A night-out kind of atmosphere.",
@@ -4487,13 +4623,25 @@
   "en": "Check-out and luggage",
   "es": "Check-out y maletas"
  },
+ "קָלִי אוֹרֶקְסִי": {
+  "en": "Kalí órexi",
+  "es": "Kalí órexi"
+ },
  "קָלִימֶרָה": {
   "en": "Kaliméra",
   "es": "Kaliméra"
  },
+ "קָלִינִיחְטָה": {
+  "en": "Kaliníchta",
+  "es": "Kaliníchta"
+ },
  "קָלִיסְפֶּרָה": {
   "en": "Kalispéra",
   "es": "Kalispéra"
+ },
+ "קָלָה, אֶפְחָרִיסְטוֹ": {
+  "en": "Kalá, efcharistó",
+  "es": "Kalá, efcharistó"
  },
  "קבוצה מחברת את האפליקציות של כולם: צ׳אט, מיקום על המפה, יומן משותף ומקומות שסימנתן.": {
   "en": "A group links everyone's apps: chat, location on the map, shared journal and places you've marked.",
@@ -4594,6 +4742,10 @@
  "קניות: Tax Free, מחשבון וקופה": {
   "en": "Shopping: Tax Free, converter and kitty",
   "es": "Compras: Tax Free, conversor y bote común"
+ },
+ "קפה אחד, בבקשה": {
+  "en": "One coffee, please",
+  "es": "Un café, por favor"
  },
  "קפה ומתוקים": {
   "en": "Coffee & sweets",
@@ -4731,6 +4883,10 @@
   "en": "A long table, sharing plates and lots of toasts. Book ahead.",
   "es": "Mesa larga, platos para compartir y muchos brindis. Reserva con antelación."
  },
+ "שולחן לארבעה, בבקשה": {
+  "en": "A table for four, please",
+  "es": "Una mesa para cuatro, por favor"
+ },
  "שומרת את הסרטון…": {
   "en": "Saving the video…",
   "es": "Guardando el vídeo…"
@@ -4826,6 +4982,10 @@
  "שם של משתתף": {
   "en": "Participant's name",
   "es": "Nombre de participante"
+ },
+ "שמאלה / ימינה / ישר": {
+  "en": "Left / right / straight on",
+  "es": "Izquierda / derecha / recto"
  },
  "שמורה בטלפון": {
   "en": "Saved on your phone",
