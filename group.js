@@ -31,41 +31,64 @@
   async function dec(s) { const raw = unb64(s); return JSON.parse(td.decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, key, raw.slice(12)))); }
 
   // ───── רשת ─────
+  // ההודעות עוברות דרך השרת שלנו (חדר לכל קבוצה). בינתיים הן נשלחות גם לשרת הציבורי, כדי שטלפונים עם גרסה ישנה ימשיכו לקבל,
+  // וכגיבוי אם אחד מהם לא זמין. לכל הודעה יש מזהה u, כך שמי שמקבל אותה משני המקורות מציג אותה פעם אחת.
+  const OWN = PUSH_URL ? PUSH_URL + '/r/' : '';
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  async function post(body) {
+    const one = url => fetch(url, { method: 'POST', body }).then(r => r.ok, () => false);
+    const res = await Promise.all([OWN ? one(OWN + topic) : false, one(BASE + topic)]);
+    return res[0] || res[1];
+  }
   async function send(obj) {
     if (!key) return false;
-    try {
-      const r = await fetch(BASE + topic, { method: 'POST', body: await enc({ ...obj, n: G.name, d: G.id, ts: Date.now() }) });
-      if (r.status === 429) { A.toast('הגענו למגבלת ההודעות של השירות. אפשר לנסות שוב בעוד כמה דקות'); return false; }
-      return r.ok;
-    } catch { if (obj.t === 'chat') A.toast('אין חיבור – ההודעה לא נשלחה'); return false; }
+    let ok = false; try { ok = await post(await enc({ ...obj, u: uid(), n: G.name, d: G.id, ts: Date.now() })); } catch {}
+    if (!ok && obj.t === 'chat') A.toast('אין חיבור – ההודעה לא נשלחה');
+    return ok;
   }
   // חיבור חי: WebSocket (מיידי), ואם הוא לא נפתח – SSE
   let ws = null, wsFails = 0;
-  function onRaw(data) {
+  function onRaw(data, own) {
     let m; try { m = JSON.parse(data); } catch { return; }
     if (m.event !== 'message' || !m.message) return;
-    G.last = m.id;
-    dec(m.message).then(p => handle(p, m.id, m.attachment && m.attachment.url)).catch(() => {});   // הודעה שלא נפתחת עם המפתח שלנו – מתעלמים
+    if (own) G.last2 = m.id; else G.last = m.id;
+    dec(m.message).then(p => {
+      if (p && p.u) { const seen = G.seen ||= []; if (seen.includes(p.u)) return; seen.push(p.u); if (seen.length > 600) seen.splice(0, 200); }
+      handle(p, m.id, m.attachment && m.attachment.url);
+    }).catch(() => {});   // הודעה שלא נפתחת עם המפתח שלנו – מתעלמים
   }
-  const live = () => (ws && ws.readyState === 1) || (es && es.readyState === 1);
+  const live1 = () => (ws && ws.readyState === 1) || (es && es.readyState === 1), live2 = () => !!ws2 && ws2.readyState === 1;
+  const live = () => live1() || live2();
+  const upd = () => { online = live(); status(); };
+  // החיבור לשרת שלנו
+  let ws2 = null, retry2 = null, fails2 = 0, ping2 = null;
+  function connectOwn() {
+    clearTimeout(retry2); clearInterval(ping2); if (ws2) { ws2.onclose = null; try { ws2.close(); } catch {} ws2 = null; }
+    if (!key || !OWN || !('WebSocket' in window)) return;
+    try { ws2 = new WebSocket(OWN.replace(/^http/, 'ws') + topic + '/ws?since=' + encodeURIComponent(G.last2 || 0)); } catch { return; }
+    ws2.onopen = () => { fails2 = 0; upd(); ping2 = setInterval(() => { try { ws2.send('ping'); } catch {} }, 25000); };
+    ws2.onmessage = ev => { if (ev.data !== 'pong') onRaw(ev.data, true); };
+    ws2.onclose = () => { clearInterval(ping2); upd(); retry2 = setTimeout(connectOwn, Math.min(15000, 1500 * ++fails2)); };
+  }
   function connect() {
     clearTimeout(retry); if (es) { es.close(); es = null; } if (ws) { ws.onclose = null; try { ws.close(); } catch {} ws = null; }
+    connectOwn();
     if (!key) return;
     const since = encodeURIComponent(G.last || '12h');
     if (wsFails < 2 && 'WebSocket' in window) {
       let opened = false;
       try { ws = new WebSocket('wss://ntfy.sh/' + topic + '/ws?since=' + since); } catch { wsFails = 2; return connect(); }
-      ws.onopen = () => { opened = true; wsFails = 0; online = true; status(); };
+      ws.onopen = () => { opened = true; wsFails = 0; upd(); };
       ws.onmessage = ev => onRaw(ev.data);
-      ws.onclose = () => { online = false; status(); if (!opened) wsFails++; retry = setTimeout(connect, opened ? 1500 : 400); };
+      ws.onclose = () => { upd(); if (!opened) wsFails++; retry = setTimeout(connect, opened ? 1500 : 400); };
       return;
     }
     es = new EventSource(BASE + topic + '/sse?since=' + since);
-    es.onopen = () => { online = true; status(); };
+    es.onopen = upd;
     es.onmessage = ev => onRaw(ev.data);
-    es.onerror = () => { online = false; status(); es.close(); retry = setTimeout(connect, 4000); };
+    es.onerror = () => { es.close(); upd(); retry = setTimeout(connect, 4000); };
   }
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && key && !live()) connect(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && key && !(live1() && (live2() || !OWN))) connect(); });
   addEventListener('online', () => key && connect());
 
   // צליל קצר להודעה נכנסת
@@ -80,7 +103,7 @@
   async function decBytes(buf) { const raw = new Uint8Array(buf); return crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, key, raw.slice(12)); }
   const served = {}, asked = {};
   // קבצים גדולים (מעל 14 מ״ב ועד 95 מ״ב) עולים מוצפנים לאחסון שלנו ונשמרים שם 30 יום, במקום לשרת ההודעות שמקבל רק קבצים קטנים
-  const SMALL = 14e6, BIG = PUSH_URL ? 95e6 : SMALL;
+  const SMALL = 14e6, BIG = PUSH_URL ? 95e6 : SMALL;   // SMALL: מה שהשרת הציבורי מסוגל לקבל, כגיבוי
   const bigUrl = id => PUSH_URL + '/f/' + ntopic + '/' + String(id).toLowerCase().replace(/[^a-z0-9]/g, '');
   async function bigUp(id, blob) { try { return (await fetch(bigUrl(id), { method: 'PUT', body: await encBytes(await blob.arrayBuffer()) })).ok; } catch { return false; } }
   A.hooks.shareMax = () => (key ? BIG : 0);
@@ -88,17 +111,22 @@
     if (!key) return false;
     try {
       const meta = { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}) };
-      const big = e.type === 'video' && e.blob && e.blob.size > SMALL;
-      if (big && withImage) { if (e.blob.size > BIG) return false; A.toast('מעלה את הסרטון לקבוצה… לא לסגור את האפליקציה', 60000); if (!await bigUp(e.id, e.blob)) { A.toast('העלאת הסרטון נכשלה. לנסות שוב כשיש קליטה טובה', 5000); return false; } A.toast('הסרטון עלה לקבוצה'); }
-      if (big) meta.r = 1;
-      const payload = await enc({ t: 'j', e: meta, n: G.name, d: G.id, ts: Date.now() });
-      let r;
-      if (!big && (e.type === 'photo' || e.type === 'video') && e.blob && withImage) {
-        const small = e.type === 'video' ? e.blob : await A.journal.shrink(e.blob, 1280), body = await encBytes(await small.arrayBuffer());   // סרטון נשלח כמו שהוא
-        r = await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body });
-      } else r = await fetch(BASE + topic, { method: 'POST', body: payload });
-      if (r.ok) served[e.id] = Date.now();
-      return r.ok;
+      const media = (e.type === 'photo' || e.type === 'video') && e.blob;
+      const small = !media ? null : e.type === 'video' ? e.blob : await A.journal.shrink(e.blob, 1280);   // סרטון נשלח כמו שהוא
+      const heavy = media && small.size > SMALL;
+      if (heavy && small.size > BIG) return false;
+      if (media && withImage && OWN) {   // קודם לאחסון שלנו
+        if (heavy) A.toast('מעלה את הסרטון לקבוצה… לא לסגור את האפליקציה', 60000);
+        if (await bigUp(e.id, small)) { e.r = 1; A.journal.put(e).catch(() => {}); if (heavy) A.toast('הסרטון עלה לקבוצה'); }
+        else if (heavy) { A.toast('העלאת הסרטון נכשלה. לנסות שוב כשיש קליטה טובה', 5000); return false; }
+      }
+      if (e.r) meta.r = 1;
+      const payload = await enc({ t: 'j', e: meta, u: uid(), n: G.name, d: G.id, ts: Date.now() });
+      let ok;
+      if (media && withImage && !e.r) ok = (await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) })).ok;   // גיבוי: השרת הציבורי
+      else ok = await post(payload);
+      if (ok) served[e.id] = Date.now();
+      return ok;
     } catch { return false; }
   }
   A.hooks.inGroup = () => !!key;
@@ -114,7 +142,7 @@
     if (isMedia && !e.blob && url) try { e.blob = new Blob([await decBytes(await (await fetch(url)).arrayBuffer())], { type: e.type === 'video' ? e.mime || 'video/mp4' : 'image/jpeg' }); served[e.id] = Date.now();
       if (e.type === 'video') { const p = await J.poster(e.blob); if (p) { e.poster = p.blob; e.w = p.w; e.h = p.h; e.dur = e.dur || p.dur; } } } catch {}
     await J.put(e).catch(() => {}); J.render();
-    if (isMedia && !e.blob && !e.r && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
+    if (isMedia && !e.blob && !(Date.now() - (asked[e.id] || 0) < 10 * 60e3)) { asked[e.id] = Date.now(); send({ t: 'jreq', id: e.id }); }  // הקובץ פג תוקף – מבקשים ממי שיש לה
     if (isNew && Date.now() - p.ts < 10 * 60e3 && $('#v-journal').hidden) A.toast(`${e.type === 'photo' ? 'תמונה חדשה' : e.type === 'video' ? 'סרטון חדש' : 'רשומה חדשה'} ביומן מאת ${p.n}`, 4000);
   }
   async function journalReq(p) {   // מישהי חסרה תמונה: מי שמחזיקה אותה מעלה שוב, אחרי השהיה אקראית כדי שרק אחת תענה
@@ -123,9 +151,11 @@
     const t0 = Date.now(); await new Promise(r => setTimeout(r, (e.byId ? 2500 : 300) + Math.random() * 3000));
     if ((served[e.id] || 0) >= t0) return;
     served[e.id] = Date.now();
-    const big = e.type === 'video' && e.blob.size > SMALL;
-    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}), ...(big ? { r: 1 } : {}) }, n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
-    if (big) { fetch(BASE + topic, { method: 'POST', body: payload }).catch(() => {}); return; }   // הסרטון הגדול כבר באחסון: שולחים רק את הפרטים
+    const small0 = e.type === 'video' ? e.blob : await J.shrink(e.blob, 1280);
+    const r2 = !!OWN && small0.size <= BIG && await bigUp(e.id, small0);   // מעלים שוב לאחסון שלנו (נשמר 30 יום)
+    const payload = await enc({ t: 'j', e: { id: e.id, ts: e.ts, type: e.type, text: e.text, place: e.place, tags: e.tags, w: e.w, h: e.h, ...(e.type === 'video' ? { mime: e.mime, size: e.size, dur: e.dur } : {}), ...(r2 ? { r: 1 } : {}) }, u: uid(), n: e.by || G.name, d: e.byId || G.id, ts: Date.now() });
+    if (r2) { post(payload); return; }
+    if (small0.size > SMALL) return;
     try { const small = e.type === 'video' ? e.blob : await J.shrink(e.blob, 1280); await fetch(BASE + topic + '?filename=p.bin&message=' + encodeURIComponent(payload), { method: 'POST', body: await encBytes(await small.arrayBuffer()) }); } catch {}
   }
 
@@ -174,7 +204,7 @@
     if (G.out?.[p.d]) return;   // מי שהוסר מהקבוצה: מתעלמים מההודעות שלו
     if (p.t === 'kick') {       // רק מי שהקים את הקבוצה יכול להסיר משתתף
       if (!TRIP.cfg.by || p.d !== TRIP.cfg.by || !p.k || p.k === p.d) return;
-      if (p.k === G.id) { if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save(); drawFriends(); render(); A.toast('הוסרת מהקבוצה על ידי מנהל הקבוצה', 6000); return; }
+      if (p.k === G.id) { key = null; connect(); online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save(); drawFriends(); render(); A.toast('הוסרת מהקבוצה על ידי מנהל הקבוצה', 6000); return; }
       delete G.members[p.k]; (G.out ||= {})[p.k] = 1; save(); drawFriends(); render(); return;
     }
     const mine = p.d === G.id, mem = G.members[p.d] ||= {};
@@ -350,15 +380,18 @@
     if (img) try { blob = await A.journal.shrink(file, 1280); type = 'image/jpeg'; name = name.replace(/\.\w+$/, '') + '.jpg'; } catch { return A.toast('לא הצלחנו לקרוא את התמונה'); }
     const vid = !img && (/^video\//.test(file.type) || /\.(mp4|mov|m4v|webm)$/i.test(name));
     if (vid && !/^video\//.test(type)) type = /\.mov$/i.test(name) ? 'video/quicktime' : 'video/mp4';
-    const big = blob.size > SMALL;
+    const heavy = blob.size > SMALL;
     if (blob.size > BIG) return A.toast(vid ? 'הסרטון גדול מדי. אפשר לשלוח עד 95 מ״ב, בערך דקה' : 'הקובץ גדול מדי. אפשר לשלוח עד 95 מ״ב');
-    if (blob.size > 3e6) A.toast(big ? 'מעלה… זה יכול לקחת דקה. לא לסגור את האפליקציה' : 'מעלה… זה יכול לקחת כמה שניות', big ? 60000 : 8000);
-    const rnd = () => Math.random().toString(36).slice(2, 10), fid = rnd(), c = rnd(), f = { id: fid, name: name.slice(0, 80), type, size: blob.size, img, vid, ...(big ? { r: 1 } : {}) };
+    if (blob.size > 3e6) A.toast(heavy ? 'מעלה… זה יכול לקחת דקה. לא לסגור את האפליקציה' : 'מעלה… זה יכול לקחת כמה שניות', heavy ? 60000 : 8000);
+    const rnd = () => Math.random().toString(36).slice(2, 10), fid = rnd(), c = rnd(), f = { id: fid, name: name.slice(0, 80), type, size: blob.size, img, vid };
     await fPut(fid, { blob, name, type }).catch(() => {}); fUrl[fid] = URL.createObjectURL(blob);
     const inp = $('#grpText'), x = inp.value.trim(); inp.value = '';
     const m = { id: 'c' + c, c, d: G.id, n: G.name, x, ts: Date.now(), pending: true, f };
     G.msgs.push(m); render(); const box = $('#grpChat'); box.scrollTop = box.scrollHeight;
-    if (!(big ? (await bigUp('c' + fid, blob)) && (await send({ t: 'chat', x, c, f })) : await postFile({ t: 'chat', x, c, f }, await blob.arrayBuffer()))) { G.msgs = G.msgs.filter(y => y !== m); render(); inp.value = x; return A.toast('אין חיבור – הקובץ לא נשלח'); }
+    let sent = false;
+    if (OWN && await bigUp('c' + fid, blob)) { f.r = 1; sent = await send({ t: 'chat', x, c, f }); }   // קודם לאחסון שלנו
+    else if (!heavy) sent = await postFile({ t: 'chat', x, c, f }, await blob.arrayBuffer());           // גיבוי: השרת הציבורי, לקבצים קטנים
+    if (!sent) { G.msgs = G.msgs.filter(y => y !== m); render(); inp.value = x; return A.toast('אין חיבור – הקובץ לא נשלח'); }
     if (PUSH_URL) fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, title: 'אתונה שלנו', body: `${G.name}: ${img ? '📷 תמונה' : vid ? '🎬 סרטון' : '📎 ' + name} ${x.slice(0, 100)}`, site: location.origin + location.pathname }) }).catch(() => {});
   }
   $('#chatFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) sayFile(f); };
@@ -420,7 +453,7 @@
     const b = e.target.closest('[data-see]'); if (!b) return; const m = G.members[b.dataset.see]; A.go('map'); setTimeout(() => { A.map?.setView([m.lat, m.lng], 16); drawFriends(); }, 150); };
   $('#grpLeave').onclick = async e => {
     const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'לצאת? ללחוץ שוב לאישור'; return; }
-    await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save();
+    await send({ t: 'bye' }); key = null; connect(); online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save();
     b.dataset.sure = ''; b.textContent = 'יציאה מהקבוצה'; drawFriends(); render();
   };
   A.hooks.group = () => { render(); renderTripCard(); pushUI(); if (G.share) A.startGPS(false); };

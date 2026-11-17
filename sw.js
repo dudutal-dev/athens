@@ -1,5 +1,5 @@
 // שומר את האפליקציה ואת אריחי המפה, כדי שתעבוד גם בלי אינטרנט
-const V = 'athina-v43', TILES = 'athina-tiles2';
+const V = 'athina-v44', TILES = 'athina-tiles2';
 const SHELL = ['./', 'index.html', 'app.css', 'i18n.js', 'i18n/en.js', 'i18n/es.js', 'app.js', 'data.js', 'trip.js', 'extras.js', 'group.js', 'show.js', 'backup.js', 'start.js', 'trips.js', 'icon.svg', 'icon-180.png', 'manifest.webmanifest', 'vendor/leaflet.js', 'vendor/leaflet.css'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== TILES).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

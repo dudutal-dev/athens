@@ -47,11 +47,45 @@ async function push(env, sub, payload, subject) {
 }
 const okEndpoint = u => { try { const h = new URL(u).host; return /(^|\.)push\.apple\.com$|(^|\.)googleapis\.com$|(^|\.)mozilla\.com$|(^|\.)windows\.com$/.test(h); } catch { return false; } };
 
+// חדר של קבוצה (Durable Object): שומר את ההודעות המוצפנות של שלושת הימים האחרונים ומעביר כל הודעה חדשה מיד לכל הטלפונים המחוברים.
+// הפורמט זהה לזה של ntfy, כדי שהאפליקציה תקרא את שני המקורות באותה דרך.
+export class Room {
+  constructor(state) {
+    this.state = state; this.sql = state.storage.sql;
+    this.sql.exec('CREATE TABLE IF NOT EXISTS m (id INTEGER PRIMARY KEY AUTOINCREMENT, t INTEGER, b TEXT)');
+    state.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping', 'pong'));
+  }
+  async fetch(req) {
+    const url = new URL(req.url);
+    if (req.headers.get('upgrade') === 'websocket') {
+      const pair = new WebSocketPair(), since = parseInt(url.searchParams.get('since'), 10) || 0;
+      this.state.acceptWebSocket(pair[1]);
+      pair[1].send(JSON.stringify({ event: 'open' }));
+      for (const r of this.sql.exec('SELECT id, t, b FROM m WHERE id > ? ORDER BY id', since)) pair[1].send(JSON.stringify({ id: String(r.id), time: r.t, event: 'message', message: r.b }));
+      return new Response(null, { status: 101, webSocket: pair[0] });
+    }
+    if (req.method === 'POST') {
+      const b = await req.text(); if (!b || b.length > 16000) return json({ error: 'bad message' }, 413);
+      const t = Math.floor(Date.now() / 1000), id = this.sql.exec('INSERT INTO m (t, b) VALUES (?, ?) RETURNING id', t, b).one().id;
+      this.sql.exec('DELETE FROM m WHERE t < ? OR id <= ?', t - 3 * 86400, id - 3000);
+      const msg = JSON.stringify({ id: String(id), time: t, event: 'message', message: b });
+      for (const ws of this.state.getWebSockets()) try { ws.send(msg); } catch { /* נסגר */ }
+      return json({ id: String(id), time: t, event: 'message' });
+    }
+    return json({ error: 'method' }, 405);
+  }
+  webSocketMessage() { /* הטלפונים רק מקשיבים; ping נענה אוטומטית */ }
+  webSocketClose(ws) { try { ws.close(); } catch { /* כבר סגור */ } }
+  webSocketError(ws) { try { ws.close(); } catch { /* כבר סגור */ } }
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
+      const rm = url.pathname.match(/^\/r\/([a-z0-9]{10,40})(\/ws)?$/);
+      if (rm) { if (!env.ROOMS) return json({ error: 'no rooms' }, 503); return env.ROOMS.get(env.ROOMS.idFromName(rm[1])).fetch(req); }
       // קבצים גדולים של הקבוצה (סרטונים): נשמרים ב-R2 (binding בשם FILES) כשהם כבר מוצפנים בטלפון. נמחקים לבד אחרי 30 יום
       const fm = url.pathname.match(/^\/f\/([a-z0-9]{10,40})\/([a-z0-9]{4,32})$/);
       if (fm) {
