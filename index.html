@@ -10,6 +10,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="אתונה">
 <link rel="manifest" href="manifest.webmanifest">
+<script>/* קישור הזמנה באייפון: בלי manifest, "הוספה למסך הבית" שומרת את הכתובת עם הקוד, והאפליקציה שבמסך הבית מצטרפת לבד */
+if (/[?&]j=/.test(location.search) && /iPhone|iPad|iPod/.test(navigator.userAgent) && !navigator.standalone) document.querySelector('link[rel=manifest]').remove();</script>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -137,6 +139,7 @@
     <div class="stack" id="grpJoin">
       <section class="card">
         <h2>להצטרף לקבוצה</h2>
+        <p class="invited" id="grpInvited" hidden></p>
         <form id="grpJoinForm" class="form-in">
           <label>השם שלך<input id="grpName" autocomplete="off" maxlength="16" placeholder="השם שלך"></label>
           <label>קוד הקבוצה<input id="grpCodeIn" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX" dir="ltr"></label>
@@ -145,7 +148,7 @@
         <p class="muted small" style="margin:14px 0 8px">מי שמארגן פותח קבוצה, מגדיר את הנסיעה ושולח את הקוד לכולם:</p>
         <button class="btn ghost" id="grpNew" type="button">פתיחת קבוצה חדשה</button>
       </section>
-      <p class="muted small center">ההודעות והמיקומים מוצפנים בטלפון עם הקוד. רק מי שיש לה את הקוד יכולה לקרוא.</p>
+      <p class="muted small center">ההודעות והמיקומים מוצפנים בטלפון עם הקוד. רק מי שיש לו את הקוד יכול לקרוא.</p>
     </div>
     <div class="stack" id="grpMain" hidden>
       <section class="card" id="tripCard"></section>

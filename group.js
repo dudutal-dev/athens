@@ -160,6 +160,12 @@
 
   function handle(p, mid, att) {
     if (!p || !p.d) return;
+    if (G.out?.[p.d]) return;   // מי שהוסר מהקבוצה: מתעלמים מההודעות שלו
+    if (p.t === 'kick') {       // רק מי שהקים את הקבוצה יכול להסיר משתתף
+      if (!TRIP.cfg.by || p.d !== TRIP.cfg.by || !p.k || p.k === p.d) return;
+      if (p.k === G.id) { if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save(); drawFriends(); render(); A.toast('הוסרת מהקבוצה על ידי מנהל הקבוצה', 6000); return; }
+      delete G.members[p.k]; (G.out ||= {})[p.k] = 1; save(); drawFriends(); render(); return;
+    }
     const mine = p.d === G.id, mem = G.members[p.d] ||= {};
     mem.n = p.n; mem.seen = Math.max(mem.seen || 0, p.ts);
     if (p.t === 'av') { if (okAv(p.av)) mem.av = p.av; else delete mem.av; }
@@ -180,7 +186,8 @@
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
     if (p.t === 'bye') delete G.members[p.d];
     // הגדרת הנסיעה: נשלחת על ידי מי שהקים את הקבוצה, ומי שכבר מחזיק בה מעביר אותה למצטרפים חדשים
-    if (p.t === 'trip' && p.cfg && !mine) { const n = TRIP.norm(p.cfg); if (n.set && (!G.trip || n.u > (G.trip.u || 0))) { G.trip = p.cfg; save(); if (TRIP.apply(p.cfg)) TRIP.refresh('הגדרות הנסיעה התקבלו מהקבוצה'); } }
+    if (p.t === 'trip' && p.cfg && !mine) { const n = TRIP.norm(p.cfg), okBy = !TRIP.cfg.by || (p.d === TRIP.cfg.by && n.by === TRIP.cfg.by);   // אחרי שיש מנהל, רק הוא משנה את ההגדרות
+      if (n.set && okBy && (!G.trip || n.u > (G.trip.u || 0))) { G.trip = p.cfg; save(); if (TRIP.apply(p.cfg)) TRIP.refresh('הגדרות הנסיעה התקבלו מהקבוצה'); } }
     if (p.t === 'hi' && !mine && Date.now() - p.ts < 5 * 60e3 && TRIP.cfg.set) setTimeout(() => { if (!tripSent[p.d]) sendTrip(); }, (TRIP.cfg.by === G.id ? 400 : 1500) + Math.random() * 2500);
     if (p.t === 'trip') tripSent[p.d === G.id ? '*' : p.d] = Date.now();
     if (p.t === 'ack' && !mine) { const mark = (list, k) => { for (const c of Array.isArray(list) ? list.slice(0, 80) : []) { const m = G.msgs.find(x => x.c === c && x.d === G.id); if (m && !(m[k] ||= {})[p.d]) m[k][p.d] = p.ts || 1; } };
@@ -237,6 +244,7 @@
 
   // ───── ממשק ─────
   function status() { $('#grpStatus').textContent = !G.code ? 'צ׳אט, מיקום חי ומקומות משותפים, רק למי שיש את הקוד.' : online ? 'מחוברים · ההודעות מוצפנות' : 'מתחברים…'; }
+  let kickSure = '';
   function render() {
     const joined = !!G.code;
     $('#grpJoin').hidden = joined; $('#grpMain').hidden = !joined; status();
@@ -253,9 +261,10 @@
     const me = A.me;
     $('#grpMembers').innerHTML = Object.entries({ [G.id]: { n: G.name, seen: Date.now() }, ...G.members }).filter((e, i, a) => a.findIndex(x => x[0] === e[0]) === i).map(([id, m]) => {
       const mine = id === G.id, fresh = m.lat && Date.now() - m.lt < 3 * 36e5;
-      return `<div class="mem">${face(id, m)}<span><b>${esc(m.n || '')}${mine ? ' (אני)' : ''}</b>
+      const boss = TRIP.cfg.by && id === TRIP.cfg.by, admin = TRIP.cfg.by === G.id;
+      return `<div class="mem">${face(id, m)}<span><b>${esc(m.n || '')}${mine ? ' (אני)' : ''}${boss ? ' <em class="boss">ניהול</em>' : ''}</b>
         <small>${mine ? (G.share ? 'משתפת מיקום' : 'לא משתפת מיקום') : fresh ? `${ago(m.lt)}${me ? ' · ' + A.distTxt(A.km(me, m)) + ' ממך' : ''}` : m.seen ? 'נראתה ' + ago(m.seen) : ''}</small></span>
-        ${!mine && fresh ? `<button class="btn ghost sm" data-see="${id}">במפה</button>` : ''}</div>`;
+        ${!mine && fresh ? `<button class="btn ghost sm" data-see="${id}">במפה</button>` : ''}${admin && !mine ? `<button class="link kick" data-kick="${id}" type="button">${kickSure === id ? 'להסיר? ללחוץ שוב' : 'הסרה'}</button>` : ''}</div>`;
     }).join('');
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרף/ה לקבוצה</p>` :
@@ -290,6 +299,7 @@
     code = norm(code); if (code.length < 6) return A.toast('הקוד קצר מדי');
     if (!name) return A.toast('איך קוראים לך?');
     G = { ...blank(), id: G.id, av: G.av, name, code: code.replace(/(.{4})(?=.)/g, '$1-') }; save();
+    try { const u = (localStorage.getItem('athina.jused') || '').split(',').filter(Boolean); if (!u.includes(code)) localStorage.setItem('athina.jused', [...u, code].slice(-20).join(',')); } catch {}
     await derive(code); connect(); render();
     setTimeout(() => send({ t: 'hi' }).then(() => { if (G.av) send({ t: 'av', av: G.av }); if (isNew) sendTrip(); }), 800);
     A.toast(isNew ? 'הקבוצה נוצרה. עכשיו שולחים את הקוד לשאר' : 'הצטרפת לקבוצה');
@@ -306,8 +316,8 @@
     } });
   };
   $('#grpInvite').onclick = () => {
-    const url = location.origin + location.pathname;
-    const text = `הצטרפי לקבוצה שלנו באפליקציית אתונה 🇬🇷\n1. לפתוח: ${url}\n2. להוסיף למסך הבית\n3. ללחוץ על כפתור הקבוצה בעמוד הבית ולהזין את הקוד: ${G.code}`;
+    const url = location.origin + location.pathname + '?j=' + G.code;
+    const text = `הוזמנת לקבוצה "${TRIP.title}" באפליקציית אתונה 🇬🇷\nלוחצים על הקישור, כותבים שם, וזהו:\n${url}\n\nכבר יש לך את האפליקציה? בלשונית הקבוצה מזינים את הקוד: ${G.code}`;
     if (navigator.share) navigator.share({ text }).catch(() => {});
     else navigator.clipboard?.writeText(text).then(() => A.toast('ההזמנה הועתקה'), () => A.toast('הקוד: ' + G.code));
   };
@@ -388,7 +398,13 @@
       return say('אני כאן, בואו 📍', { lat: +me.lat.toFixed(5), lng: +me.lng.toFixed(5) }); }
     say(b.textContent);
   };
-  $('#grpMembers').onclick = e => { const b = e.target.closest('[data-see]'); if (!b) return; const m = G.members[b.dataset.see]; A.go('map'); setTimeout(() => { A.map?.setView([m.lat, m.lng], 16); drawFriends(); }, 150); };
+  $('#grpMembers').onclick = async e => {
+    const k = e.target.closest('[data-kick]');
+    if (k) { const id = k.dataset.kick, n = G.members[id]?.n || '';
+      if (kickSure !== id) { kickSure = id; k.textContent = 'להסיר? ללחוץ שוב'; return; }   // הרשימה מצוירת מחדש כל כמה שניות, לכן האישור נשמר במשתנה
+      kickSure = ''; if (!(await send({ t: 'kick', k: id }))) return A.toast('אין חיבור כרגע. לנסות שוב');
+      delete G.members[id]; (G.out ||= {})[id] = 1; save(); drawFriends(); render(); return A.toast(`${n} הוסר/ה מהקבוצה`); }
+    const b = e.target.closest('[data-see]'); if (!b) return; const m = G.members[b.dataset.see]; A.go('map'); setTimeout(() => { A.map?.setView([m.lat, m.lng], 16); drawFriends(); }, 150); };
   $('#grpLeave').onclick = async e => {
     const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'לצאת? ללחוץ שוב לאישור'; return; }
     await send({ t: 'bye' }); if (es) es.close(); key = null; online = false; G = { ...blank(), id: G.id, name: G.name, av: G.av }; save();
@@ -433,7 +449,17 @@
 
   // ───── התחלה ─────
   $('#grpName').value = G.name || '';
-  const j = location.hash.match(/^#join-([A-Za-z0-9-]+)/); if (j && !G.code) { $('#grpCodeIn').value = j[1]; A.go('group'); }
+  // קישור הזמנה (?j=קוד): מי שכבר כתב שם מצטרף מיד, ומי שלא – כותב רק שם
+  const j = new URLSearchParams(location.search).get('j') || location.hash.match(/^#join-([A-Za-z0-9-]+)/)?.[1];
+  if (j && /^[A-Za-z0-9-]{6,20}$/.test(j)) {
+    // קישור הזמנה מצרף פעם אחת בלבד. מי שיצא או הוסר לא יצורף שוב לבד בכל פתיחה של האפליקציה ממסך הבית
+    let used = ''; try { used = localStorage.getItem('athina.jused') || ''; } catch {}
+    if (used.split(',').includes(norm(j))) { if (!G.code) $('#grpCodeIn').value = j; }
+    else if (!G.code) { $('#grpCodeIn').value = j; A.go('group');
+      if (G.name) join(j, G.name, false);
+      else { const n = $('#grpInvited'); n.hidden = false; n.textContent = 'הוזמנת לקבוצה 🎉 נשאר רק לכתוב שם וללחוץ "הצטרפות".'; setTimeout(() => $('#grpName').focus(), 400); } }
+    else if (norm(G.code) !== norm(j)) setTimeout(() => A.toast('הקישור הוא לקבוצה אחרת. כדי להצטרף אליה צריך קודם לצאת מהקבוצה הנוכחית', 7000), 1500);
+  }
   render();
   if (G.code) derive(G.code).then(() => { connect(); if (G.share) A.startGPS(false); pushRefresh(); render(); });
   pushUI();
