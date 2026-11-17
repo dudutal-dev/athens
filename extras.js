@@ -12,8 +12,11 @@
   const tx = async (mode, fn, store = 'entries') => { const db = await dbp; return new Promise((res, rej) => {
     const t = db.transaction(store, mode), rq = fn(t.objectStore(store));
     t.oncomplete = () => res(rq && rq.result); t.onerror = t.onabort = () => rej(t.error); }); };
-  const all = () => tx('readonly', s => s.getAll());
-  const put = e => tx('readwrite', s => s.put(e));
+  // כל רשומה שייכת לנסיעה אחת. רשומות ישנות, מלפני שהיו כמה נסיעות, שייכות לנסיעה הראשונה
+  let CUR = 't1'; try { CUR = JSON.parse(localStorage.getItem('athina.trips') || '{}').cur || 't1'; } catch {}
+  const raw = () => tx('readonly', s => s.getAll());
+  const all = () => raw().then(l => l.filter(e => (e.trip || 't1') === CUR));
+  const put = e => { e.trip ||= CUR; return tx('readwrite', s => s.put(e)); };
   const del = id => tx('readwrite', s => s.delete(id));
   const get = id => tx('readonly', s => s.get(id));
   // שני יומנים: האישי ('me') והמשותף ('us'). רשומה יכולה להיות באחד מהם או בשניהם
@@ -100,7 +103,7 @@
     }).join('');
   }
   A.hooks.journal = render;
-  A.journal = { get, put, del, all, render, shrink, poster: b => poster(b) };
+  A.journal = { get, put, del, all, raw, render, shrink, poster: b => poster(b) };
 
   // ───── עורך ─────
   let editUrl = null;

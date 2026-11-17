@@ -421,6 +421,7 @@
   $('#pushOn').onclick = pushEnable;
   $('#pushTest').onclick = async () => { try { const r = await (await fetch(PUSH_URL + '/push', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, self: true, title: 'אתונה שלנו', body: 'התראת ניסיון 🎉', site: location.origin + location.pathname }) })).json(); A.toast(r.sent ? 'נשלחה. היא אמורה לקפוץ תוך שניות' : 'השליחה נכשלה'); } catch { A.toast('השליחה נכשלה'); } };
   // מחדשים את הרישום בשקט בכל פתיחה, למקרה שהמנוי התחלף
+  A.hooks.pushOff = async () => { if (PUSH_URL && G.push && ntopic) try { await fetch(PUSH_URL + '/unsub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id }) }); } catch {} };   // כשעוברים לנסיעה אחרת: בלי התראות מהקבוצה הקודמת
   async function pushRefresh() { if (!PUSH_URL || !G.push || !key || !pushSupported() || Notification.permission !== 'granted') return;
     try { const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); if (sub) fetch(PUSH_URL + '/sub', { method: 'POST', body: JSON.stringify({ g: ntopic, d: G.id, sub: sub.toJSON() }) }).catch(() => {}); } catch {} }
 

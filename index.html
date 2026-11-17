@@ -208,6 +208,13 @@
         <div id="guide" class="guide"></div>
       </details>
 
+      <details class="card acc" id="tripsCard">
+        <summary><i class="ic" data-ic="bag" style="--c:#0d5eaf;--c2:#3b9bff"></i>הנסיעות שלי</summary>
+        <p class="muted small">נוסעים שוב לאתונה? הנסיעה הנוכחית נשמרת עם היומן, הצ'אט והמסלול שלה, ומתחילים נסיעה חדשה ונקייה. אפשר לחזור לכל נסיעה שמורה.</p>
+        <div id="tripsList" class="trips"></div>
+        <button class="btn" id="tripNew" type="button">התחלת נסיעה חדשה</button>
+      </details>
+
       <details class="card acc" id="meCard">
         <summary><i class="ic" data-ic="id" style="--c:#f08c00;--c2:#ffc94d"></i>הפרטים והמסמכים שלי</summary>
         <p class="muted small">נשמר רק בטלפון הזה ולא נשלח לשום מקום.</p>
@@ -504,6 +511,13 @@
 
 <div id="toast" class="toast" hidden></div>
 
+<dialog id="tripNewDlg" class="sheet">
+  <h2>נסיעה חדשה</h2>
+  <p><b>מה נשמר בצד:</b> הנסיעה הנוכחית כולה: היומן, הצ'אט, המסלול, המלון, הטיסות והקופה. אפשר לחזור אליה מתי שרוצים.</p>
+  <p><b>מה נשאר:</b> הפרטים האישיים, המסמכים המצולמים והמפה השמורה.</p>
+  <p class="muted small">הנסיעה החדשה מתחילה בלי קבוצה. מקימים קבוצה חדשה או מצטרפים עם קוד.</p>
+  <div class="row"><button class="btn" id="tripNewYes" type="button">להתחיל נסיעה חדשה</button><button class="btn ghost" id="tripNewNo" type="button">ביטול</button></div>
+</dialog>
 <script src="vendor/leaflet.js"></script>
 <script src="data.js"></script>
 <script src="trip.js"></script>
@@ -513,5 +527,6 @@
 <script src="show.js"></script>
 <script src="backup.js"></script>
 <script src="start.js"></script>
+<script src="trips.js"></script>
 </body>
 </html>
