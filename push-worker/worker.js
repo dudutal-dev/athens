@@ -1,6 +1,7 @@
 // שרת התראות קטן (Cloudflare Worker) לאפליקציית אתונה.
 // שומר לכל קבוצה את מנויי ה-Web Push של הטלפונים, ושולח התראה לכולן כשמגיעה הודעה.
 // אין כאן סודות: מפתחות ה-VAPID נוצרים בהפעלה הראשונה ונשמרים ב-KV (binding בשם SUBS).
+import { lic } from './lic.js';
 const te = new TextEncoder();
 const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64u = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
@@ -84,6 +85,7 @@ export default {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
+      if (url.pathname.startsWith('/lic/')) return await lic(req, env, url, json);   // רישיונות (lic.js)
       const rm = url.pathname.match(/^\/r\/([a-z0-9]{10,40})(\/ws)?$/);
       if (rm) { if (!env.ROOMS) return json({ error: 'no rooms' }, 503); return env.ROOMS.get(env.ROOMS.idFromName(rm[1])).fetch(req); }
       // קבצים גדולים של הקבוצה (סרטונים): נשמרים ב-R2 (binding בשם FILES) כשהם כבר מוצפנים בטלפון. נמחקים לבד אחרי 30 יום
