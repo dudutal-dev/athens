@@ -508,3 +508,9 @@ body.kb .view { padding-bottom: 12px; }
 /* סרטונים בצ׳אט */
 .cvid { display: block; width: 100%; max-width: 240px; max-height: 300px; border-radius: 12px; background: #000; margin-bottom: 2px; }
 .clink { display: block; font-size: 12.5px; font-weight: 700; text-decoration: underline; color: inherit; opacity: .85; margin-bottom: 4px; text-align: start; }
+
+/* מי קראה */
+.tkbtn { color: inherit; padding: 2px 0 2px 4px; margin: -2px 0; }
+.info-quote { background: var(--surface2); border-radius: 12px; padding: 8px 12px; font-size: 14.5px; overflow-wrap: anywhere; max-height: 4.5em; overflow: hidden; }
+#infoBody .tk { letter-spacing: -3px; margin-inline-end: 8px; opacity: 1; } #infoBody .tk.rd { color: var(--sea); } #infoBody .sub-h { font-size: 15px; font-family: var(--body); margin-top: 12px; }
+#infoBody .mem small { margin-inline-start: auto; font-variant-numeric: tabular-nums; }

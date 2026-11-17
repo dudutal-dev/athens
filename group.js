@@ -177,7 +177,7 @@
     if (p.lat && p.lng) { mem.lat = p.lat; mem.lng = p.lng; mem.lt = p.ts; }
     if (p.t === 'fav' && p.pid) { const f = G.favs[p.pid] ||= {}; p.on ? f[p.d] = p.n : delete f[p.d]; if (!Object.keys(f).length) delete G.favs[p.pid]; }
     if (p.t === 'bye') delete G.members[p.d];
-    if (p.t === 'ack' && !mine) { const mark = (list, k) => { for (const c of Array.isArray(list) ? list.slice(0, 80) : []) { const m = G.msgs.find(x => x.c === c && x.d === G.id); if (m) (m[k] ||= {})[p.d] = 1; } };
+    if (p.t === 'ack' && !mine) { const mark = (list, k) => { for (const c of Array.isArray(list) ? list.slice(0, 80) : []) { const m = G.msgs.find(x => x.c === c && x.d === G.id); if (m && !(m[k] ||= {})[p.d]) m[k][p.d] = p.ts || 1; } };
       mark(p.dl, 'dv'); mark(p.rd, 'dv'); mark(p.rd, 'rd'); }
     if (p.t === 'freq' && !mine && p.fid) fGet(p.fid).then(async v => {   // מישהי מבקשת קובץ שפג תוקפו: מי שמחזיקה אותו מעלה שוב (השולחת קודם)
       const f = findF(p.fid); if (!v || !f) return; const own = G.msgs.some(x => x.f && x.f.id === p.fid && x.d === G.id), t0 = Date.now();
@@ -254,7 +254,7 @@
     const box = $('#grpChat'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
     const chatHtml = G.msgs.length ? G.msgs.map(m => m.x === null ? `<p class="sys">${esc(m.n)} הצטרפה לקבוצה</p>` :
       `<div class="mrow ${m.d === G.id ? 'mine' : ''}">${m.d === G.id ? '' : face(m.d, G.members[m.d], 'friend sm')}<div class="msg ${m.d === G.id ? 'mine' : ''} ${m.pending ? 'pending' : ''}" style="--c:${color(m.d)}">${m.d === G.id ? '' : `<b>${esc(m.n)}</b>`}${fileView(m)}${m.x ? `<span>${esc(m.x)}</span>` : ''}
-        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ' ' + ticks(m) : ''}</small></div></div>`).join('')
+        ${m.lat ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${m.lat},${m.lng}">📍 ניווט לשם</a>` : ''}<small>${new Date(m.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}${m.d === G.id ? ` <button type="button" class="tkbtn" data-info="${m.id}" aria-label="מי קראה">${ticks(m)}</button>` : ''}</small></div></div>`).join('')
       : '<p class="sys">עוד אין הודעות. כתבי משהו לבנות.</p>';
     if ([...box.querySelectorAll('video')].some(v => !v.paused && !v.ended)) box._dirty = true;   // סרטון מתנגן: מעדכנים כשהוא נעצר
     else if (chatHtml !== box._html) { box.innerHTML = chatHtml; box._html = chatHtml; box._dirty = false; }
@@ -326,6 +326,19 @@
     if (f && f.img) { openF = fid; $('#fileImg').src = fUrl[fid]; $('#fileDlg').showModal(); } else shareF(fid);
   });
   for (const ev of ['pause', 'ended']) $('#grpChat').addEventListener(ev, () => { if ($('#grpChat')._dirty) render(); }, true);
+  // מי קראה: לחיצה על הווי פותחת פירוט לפי חברה
+  $('#grpChat').addEventListener('click', e => {
+    const b = e.target.closest('[data-info]'); if (!b) return; const m = G.msgs.find(x => x.id === b.dataset.info); if (!m) return;
+    const hm = t => t > 1 ? new Date(t).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '';
+    const ids = Object.keys(G.members).filter(id => id !== G.id), row = (id, t) => `<div class="mem">${face(id, G.members[id])}<span><b>${esc(G.members[id].n || '')}</b></span><small class="muted">${hm(t)}</small></div>`;
+    const read = ids.filter(id => m.rd && m.rd[id]), got = ids.filter(id => !(m.rd && m.rd[id]) && m.dv && m.dv[id]), none = ids.filter(id => !(m.dv && m.dv[id]));
+    const sec = (title, list, k) => list.length ? `<h3 class="sub-h">${title}</h3>${list.map(id => row(id, k && m[k][id])).join('')}` : '';
+    $('#infoBody').innerHTML = m.pending ? '<p class="muted">ההודעה עוד בדרך לשרת.</p>' : !ids.length ? '<p class="muted">עוד אין חברות נוספות בקבוצה.</p>'
+      : sec('<span class="tk rd">✓✓</span> קראו', read, 'rd') + sec('<span class="tk">✓✓</span> הגיעה, עוד לא נקראה', got, 'dv') + sec('<span class="tk">✓</span> עוד לא הגיעה', none, '');
+    $('#infoQuote').textContent = (m.f ? (m.f.img ? '📷 ' : m.f.vid ? '🎬 ' : '📎 ') : '') + (m.x || (m.f ? m.f.name : ''));
+    $('#infoDlg').showModal();
+  });
+  $('#infoClose').onclick = () => $('#infoDlg').close();
   $('#fileShare').onclick = () => openF && shareF(openF);
   $('#fileClose').onclick = () => $('#fileDlg').close();
 
