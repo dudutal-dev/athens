@@ -651,6 +651,10 @@
   "en": "Oineas",
   "es": "Oineas"
  },
+ "אינטרנט: eSIM לכל נער עולה כמה אירו ופותר מפות, מוניות וקשר עם ההורים. לוודא לפני הטיסה שהטלפון תומך, ולהביא סוללה ניידת.": {
+  "en": "Internet: an eSIM for each teen costs a few euros and takes care of maps, taxis and staying in touch with parents. Check before the flight that the phone supports it, and bring a power bank.",
+  "es": "Internet: una eSIM para cada adolescente cuesta unos pocos euros y resuelve los mapas, los taxis y el contacto con los padres. Comprobar antes del vuelo que el móvil es compatible y llevar una batería externa."
+ },
  "איסוף או הגעה למרינה בסביבות 7:30": {
   "en": "Pickup or arrival at the marina around 7:30",
   "es": "Recogida o llegada a la marina sobre las 7:30"
@@ -727,6 +731,10 @@
   "en": "Allou! Fun Park",
   "es": "Allou! Fun Park"
  },
+ "אלכוהול: מגיל 18 בלבד. מאז 2025 האכיפה הוחמרה: בודקים תעודות, ולמי שמתחת ל־18 אסור להיכנס לברים ולמועדונים שמגישים אלכוהול. בני 18–19 – להביא דרכון או צילום שלו. לגבי גגות ומסעדות־בר כדאי לבדוק מראש.": {
+  "en": "Alcohol: 18 and over only. Enforcement has been tightened since 2025: IDs are checked, and under-18s may not enter bars and clubs that serve alcohol. Ages 18–19 – bring a passport or a photo of it. For rooftops and restaurant-bars, check ahead.",
+  "es": "Alcohol: solo a partir de los 18 años. Desde 2025 el control es más estricto: piden documentación y los menores de 18 no pueden entrar en bares ni discotecas que sirvan alcohol. Con 18–19 años: llevar el pasaporte o una foto de él. Para azoteas y restaurantes-bar conviene consultar antes."
+ },
  "אם החיבור לא נעשה לבד: בעמוד הקבוצה מזינים את הקוד": {
   "en": "If you are not connected automatically: on the Group page, enter the code",
   "es": "Si no te conectas automáticamente: en la página del grupo, introduce el código"
@@ -746,6 +754,10 @@
  "אמבולנס": {
   "en": "Ambulance",
   "es": "Ambulancia"
+ },
+ "אמנות רחוב בפסירי": {
+  "en": "Street art in Psyrri",
+  "es": "Arte urbano en Psyrri"
  },
  "אנגלית": {
   "en": "English",
@@ -935,6 +947,10 @@
   "en": "A light lunch in the middle of a shopping day on Ermou.",
   "es": "Un almuerzo ligero en mitad de un día de compras por Ermou."
  },
+ "ארמו ושוק הפשפשים בעיר, או האאוטלט למי שנוסע לגן החיות.": {
+  "en": "Ermou and the flea market in town, or the outlet for those heading to the zoo.",
+  "es": "Ermou y el mercadillo en la ciudad, o el outlet para quienes van al zoo."
+ },
  "את הנסיעה מגדיר מי שהקים את הקבוצה.": {
   "en": "The trip is set up by whoever created the group.",
   "es": "El viaje lo configura quien creó el grupo."
@@ -958,6 +974,10 @@
  "אתונה · {}": {
   "en": "Athens · {0}",
   "es": "Atenas · {0}"
+ },
+ "אתונה נחשבת לאחת מבירות חדרי הבריחה בעולם. Lockholic נמצא במרכז, כמה דקות הליכה מהמטרו, ופתוח כל יום.": {
+  "en": "Athens is considered one of the escape-room capitals of the world. Lockholic is in the centre, a few minutes' walk from the metro, and open every day.",
+  "es": "Atenas está considerada una de las capitales mundiales de los escape rooms. Lockholic está en el centro, a pocos minutos a pie del metro, y abre todos los días."
  },
  "אתונה שלנו": {
   "en": "Athens Together",
@@ -1051,6 +1071,10 @@
   "en": "When booking, ask for a rooftop table with a view (Acropolis view). In November the rooftop is heated or glassed in.",
   "es": "Al reservar, pide una mesa en la azotea con vistas (Acropolis view). En noviembre la azotea está climatizada o cerrada con cristal."
  },
+ "בהזמנה לבקש שולחן בגג עם נוף (Acropolis view). בנובמבר כדאי לוודא שהגג פתוח. סגור בדרך כלל בימי שני.": {
+  "en": "When booking, ask for a rooftop table with a view (Acropolis view). In November, check that the rooftop is open. Usually closed on Mondays.",
+  "es": "Al reservar, pide una mesa en la azotea con vistas (Acropolis view). En noviembre conviene confirmar que la azotea está abierta. Suele cerrar los lunes."
+ },
  "בוחרים": {
   "en": "Choose",
   "es": "Elige"
@@ -1071,6 +1095,10 @@
   "en": "Antiquities in the morning, an easy afternoon",
   "es": "Antigüedades por la mañana, tarde tranquila"
  },
+ "בזמן שהקטנים נחים. להזמין יום קודם ולבדוק אנגלית וגיל מינימום.": {
+  "en": "While the little ones rest. Book a day ahead and check for English and the minimum age.",
+  "es": "Mientras los pequeños descansan. Reservar un día antes y comprobar que haya inglés y la edad mínima."
+ },
  "בחורף חלק מהגן מחומם.": {
   "en": "In winter part of the garden is heated.",
   "es": "En invierno, parte del jardín está climatizada."
@@ -1086,6 +1114,10 @@
  "בחנות": {
   "en": "In the shop",
   "es": "En la tienda"
+ },
+ "בטראם מסינטגמה: קו T6 עד פיקרודפני ושם מחליפים ל־T7 לכיוון וולה (בערך שעה), או במונית (כ־25 דק׳).": {
+  "en": "By tram from Syntagma: line T6 to Pikrodafni, then change to T7 towards Voula (about an hour), or by taxi (approx. 25 min).",
+  "es": "En tranvía desde Syntagma: línea T6 hasta Pikrodafni y allí cambio a la T7 dirección Voula (alrededor de una hora), o en taxi (unos 25 min)."
  },
  "ביום 16–20 מעלות ונעים, בערב 10–13. שכבות וז׳קט.": {
   "en": "16–20 degrees and pleasant by day, 10–13 in the evening. Layers and a jacket.",
@@ -1118,6 +1150,10 @@
  "בין המלון לחוף עובר כביש ראשי – לחצות רק במעבר מסודר. הטראם למרכז עוצר קרוב (כ־45 דקות לסינטגמה).": {
   "en": "A main road runs between the hotel and the beach – cross only at a proper crossing. The tram to the centre stops nearby (about 45 minutes to Syntagma).",
   "es": "Entre el hotel y la playa pasa una carretera principal – cruza solo por un paso señalizado. El tranvía al centro para cerca (unos 45 minutos hasta Syntagma)."
+ },
+ "בין המלון לחוף עובר כביש ראשי – לחצות רק במעבר מסודר. תחנת הטראם פאראליה גליפדס כחמש דקות הליכה; לסינטגמה בערך שעה, עם החלפת קו בפיקרודפני.": {
+  "en": "A main road runs between the hotel and the beach – cross only at a proper crossing. The Paralia Glyfadas tram stop is about a five-minute walk; about an hour to Syntagma, with a line change at Pikrodafni.",
+  "es": "Entre el hotel y la playa pasa una carretera principal – cruza solo por un paso habilitado. La parada de tranvía Paralia Glyfadas está a unos cinco minutos a pie; hasta Syntagma, alrededor de una hora, con cambio de línea en Pikrodafni."
  },
  "בירדמן": {
   "en": "Birdman",
@@ -1219,9 +1255,17 @@
   "en": "On the map",
   "es": "En el mapa"
  },
+ "במקום הרכבת: ציורי קיר, חנויות וינטג׳ ותקליטים, הכול בכמה סמטאות. נפגשים עם כולם למשהו מתוק.": {
+  "en": "Instead of the little train: murals, vintage and record shops, all within a few alleys. Meet up with everyone for something sweet.",
+  "es": "En lugar del trenecito: murales, tiendas vintage y de discos, todo en unas pocas callejuelas. Luego se reúnen con todos para tomar algo dulce."
+ },
  "במקום כל היום הזה: אי קרוב במעבורת, שייט לשלושה איים, או חוף חולי עם יער אורנים.": {
   "en": "Instead of this whole day: a nearby island by ferry, a three-island cruise, or a sandy beach with a pine forest.",
   "es": "En lugar de todo este día: una isla cercana en ferri, un crucero por tres islas o una playa de arena con pinar."
+ },
+ "במקום מוזיאון הילדים: מוזיאון הרכב עם סימולטור פורמולה 1. סגור בימי שני. טוב גם ליום גשום.": {
+  "en": "Instead of the children's museum: the Motor Museum with its Formula 1 simulator. Closed on Mondays. Also good for a rainy day.",
+  "es": "En lugar del museo infantil: el Museo del Motor con simulador de Fórmula 1. Cierra los lunes. También ideal para un día de lluvia."
  },
  "בנובמבר השמש שוקעת בסביבות 17:10.": {
   "en": "In November the sun sets at around 17:10.",
@@ -1254,6 +1298,10 @@
  "בעונה אפשר לשכור אופניים ליד הנמל. מחוץ לקיץ יש מעט הפלגות וחלק מהמקומות סגורים – לבדוק לפני שיוצאים.": {
   "en": "In season you can rent bikes near the port. Outside summer there are few sailings and some places are closed – check before you go.",
   "es": "En temporada se pueden alquilar bicicletas junto al puerto. Fuera del verano hay pocas salidas y algunos sitios cierran: compruébalo antes de salir."
+ },
+ "בעונה החמה: וייקבורד ואבובים בוורקיזה. מחוץ לעונה: חנויות ובתי קפה בגליפדה, בדרך חזרה בטראם.": {
+  "en": "In the warm season: wakeboarding and tubing in Varkiza. Off season: shops and cafés in Glyfada, on the way back by tram.",
+  "es": "En temporada cálida: wakeboard y flotadores de arrastre en Varkiza. Fuera de temporada: tiendas y cafés en Glyfada, de vuelta en tranvía."
  },
  "בעמוד הבית ללחוץ על גלגל השיניים שבכותרת, או על \"הגדרת הנסיעה\".": {
   "en": "On the home page, tap the cog in the header, or \"Trip setup\".",
@@ -1295,6 +1343,10 @@
   "en": "About €110–130 per person including lunch. Hotel transfer usually costs extra.",
   "es": "Unos 110–130 € por persona con almuerzo incluido. El traslado desde el hotel suele tener un suplemento."
  },
+ "בערך 110–145 אירו לאדם כולל ארוחת צהריים. הסעה מהמלון לרוב בתוספת תשלום.": {
+  "en": "About €110–145 per person including lunch. Hotel pick-up usually costs extra.",
+  "es": "Unos 110–145 euros por persona, almuerzo incluido. La recogida en el hotel suele tener un suplemento."
+ },
  "בערך 20–40 אירו לאדם למעבורת הלוך ושוב, לפי סוג המעבורת.": {
   "en": "About €20–40 per person for the round-trip ferry, depending on the type of ferry.",
   "es": "Unos 20–40 € por persona por el ferri de ida y vuelta, según el tipo de barco."
@@ -1311,6 +1363,10 @@
   "en": "About €50–60 per person on an organized tour. By bus about €15 round trip, plus site admission (about €20, worth checking).",
   "es": "Unos 50–60 € por persona en excursión organizada. En autobús, unos 15 € ida y vuelta, más la entrada al yacimiento (unos 20 €, conviene comprobarlo)."
  },
+ "בערך 60–70 אירו לאדם בסיור מאורגן. ברכבת בערך 12–18 אירו הלוך ושוב, ועוד מוניות וכניסה לאתר (כדאי לבדוק מחיר).": {
+  "en": "About €60–70 per person on an organised tour. By train about €12–18 return, plus taxis and site admission (worth checking the price).",
+  "es": "Unos 60–70 euros por persona en excursión organizada. En tren, unos 12–18 euros ida y vuelta, más taxis y la entrada al yacimiento (conviene comprobar el precio)."
+ },
  "בערך 60–70 אירו לאדם בסיור מאורגן. ברכבת כ־20 אירו הלוך ושוב, ועוד מוניות וכניסה לאתר (כדאי לבדוק מחיר).": {
   "en": "About €60–70 per person on an organized tour. By train about €20 round trip, plus taxis and site admission (worth checking the price).",
   "es": "Unos 60–70 € por persona en excursión organizada. En tren, unos 20 € ida y vuelta, más taxis y la entrada al yacimiento (conviene comprobar el precio)."
@@ -1318,6 +1374,14 @@
  "בערך 70–85 אירו לאדם למעבורת הלוך ושוב, ועוד אוכל באי.": {
   "en": "About €70–85 per person for the round-trip ferry, plus food on the island.",
   "es": "Unos 70–85 € por persona por el ferri de ida y vuelta, más la comida en la isla."
+ },
+ "בערך 80–90 אירו לאדם למעבורת הלוך ושוב, ועוד אוכל באי.": {
+  "en": "About €80–90 per person for the return ferry, plus food on the island.",
+  "es": "Unos 80–90 euros por persona por el ferri de ida y vuelta, más la comida en la isla."
+ },
+ "בערך 90–110 אירו לאדם בסיור מאורגן. באוטובוס כ־30–35 אירו הלוך ושוב, ועוד כניסה לאתר ולמוזיאון (כ־20 אירו, כדאי לבדוק).": {
+  "en": "About €90–110 per person on an organised tour. By bus approx. €30–35 return, plus admission to the site and museum (approx. €20, worth checking).",
+  "es": "Unos 90–110 euros por persona en excursión organizada. En autobús, unos 30–35 euros ida y vuelta, más la entrada al yacimiento y al museo (unos 20 euros, conviene comprobarlo)."
  },
  "בערך 90–110 אירו לאדם בסיור מאורגן. באוטובוס כ־35–40 אירו הלוך ושוב, ועוד כניסה לאתר ולמוזיאון (כ־20 אירו, כדאי לבדוק).": {
   "en": "About €90–110 per person on an organized tour. By bus about €35–40 round trip, plus admission to the site and museum (about €20, worth checking).",
@@ -1394,6 +1458,10 @@
  "ברים וגגות": {
   "en": "Bars & rooftops",
   "es": "Bares y azoteas"
+ },
+ "ברים מהטובים בעולם במרחק הליכה, במרכז העיר.": {
+  "en": "Some of the world's best bars within walking distance, in the city centre.",
+  "es": "Algunos de los mejores bares del mundo a poca distancia a pie, en el centro de la ciudad."
  },
  "בשדה התעופה, ביום החזרה": {
   "en": "At the airport, on the day you fly back",
@@ -1515,9 +1583,17 @@
   "en": "Even in November.",
   "es": "También en noviembre."
  },
+ "גם כרטיס חינם צריך להזמין לשעה מסוימת או לקחת בקופה מול דרכון. למוזיאון האקרופוליס יש כללים ומחירים משלו – כדאי לבדוק בנפרד.": {
+  "en": "Even a free ticket has to be booked for a specific time slot or collected at the ticket office with a passport. The Acropolis Museum has its own rules and prices – check separately.",
+  "es": "Incluso la entrada gratuita hay que reservarla para una hora concreta o recogerla en taquilla con el pasaporte. El Museo de la Acrópolis tiene sus propias normas y precios: conviene consultarlo aparte."
+ },
  "גן החיות": {
   "en": "The zoo",
   "es": "El zoo"
+ },
+ "גן חיות גדול ומטופח עם אוסף ציפורים מרשים, ג׳ירפות וקופים. חצי יום שהילדים לא ישכחו.": {
+  "en": "A large, well-kept zoo with an impressive bird collection, giraffes and monkeys. A half day the kids won't forget.",
+  "es": "Un zoo grande y bien cuidado, con una impresionante colección de aves, jirafas y monos. Medio día que los niños no olvidarán."
  },
  "גן חיות גדול ומטופח עם אוסף ציפורים מרשים, ג׳ירפות, קופים ודולפינים. חצי יום שהילדים לא ישכחו.": {
   "en": "A large, well-kept zoo with an impressive bird collection, giraffes, monkeys and dolphins. A half day the kids won't forget.",
@@ -1699,6 +1775,10 @@
   "en": "The first capital of modern Greece: a Venetian old town, lanes draped in bougainvillea, Palamidi Fortress above the sea and little Bourtzi Fortress in the middle of the bay.",
   "es": "La primera capital de la Grecia moderna: casco antiguo veneciano, callejuelas con buganvillas, la fortaleza de Palamidi sobre el mar y el pequeño castillo de Bourtzi en plena bahía."
  },
+ "הבית של אולימפיאקוס: המוזיאון החדש של המועדון (נפתח ב־2025) בתוך האצטדיון. סיורים באצטדיון ובחדרי ההלבשה לא תמיד מתקיימים – כדאי לבדוק באתר המועדון. אם יש משחק בזמן הטיול, האווירה שווה את הכרטיס.": {
+  "en": "The home of Olympiacos: the club's new museum (opened in 2025) inside the stadium. Tours of the stadium and dressing rooms don't always run – check the club's website. If there's a match during your trip, the atmosphere is worth the ticket.",
+  "es": "La casa del Olympiacos: el nuevo museo del club (inaugurado en 2025) dentro del estadio. Las visitas al estadio y a los vestuarios no siempre se realizan – conviene consultar la web del club. Si hay partido durante el viaje, el ambiente vale la entrada."
+ },
  "הבית של אולימפיאקוס: סיור באצטדיון, חדרי ההלבשה ומוזיאון המועדון. אם יש משחק בזמן הטיול, האווירה שווה את הכרטיס.": {
   "en": "The home of Olympiacos: a tour of the stadium, the dressing rooms and the club museum. If there's a match during the trip, the atmosphere is worth the ticket.",
   "es": "La casa del Olympiacos: visita al estadio, los vestuarios y el museo del club. Si hay partido durante el viaje, el ambiente bien vale la entrada."
@@ -1875,6 +1955,10 @@
   "en": "Expense",
   "es": "Gasto"
  },
+ "הוקאט – סובלאקי של שפים": {
+  "en": "Hoocut – chef-made souvlaki",
+  "es": "Hoocut – souvlaki de chefs"
+ },
  "הורדה לטלפון": {
   "en": "Download to phone",
   "es": "Descargar al teléfono"
@@ -2042,6 +2126,10 @@
  "הכי חי בבוקר, סגור בימי ראשון. מקום מצוין לקנות תבלינים ואורגנו הביתה.": {
   "en": "Liveliest in the morning, closed on Sundays. A great place to buy spices and oregano to take home.",
   "es": "Más animado por la mañana, cerrado los domingos. Un sitio excelente para comprar especias y orégano para llevar a casa."
+ },
+ "הכי טוב באור יום. יש גם סיורים מודרכים של שעתיים–שלוש, בערך 25–55 אירו לאדם. חלק מהסיורים עוברים באקסרכיה – לשם רק עם מדריך.": {
+  "en": "Best in daylight. There are also guided tours of two to three hours, about €25–55 per person. Some tours pass through Exarchia – go there only with a guide.",
+  "es": "Mejor con luz de día. También hay visitas guiadas de dos a tres horas, unos 25–55 euros por persona. Algunas pasan por Exarchia – allí, solo con guía."
  },
  "הכי יפה אחרי החשכה. באים בשביל התמונות, נשארים לשוקו חם.": {
   "en": "At its prettiest after dark. You come for the photos and stay for the hot chocolate.",
@@ -2291,6 +2379,10 @@
   "en": "The luxury spa of the Hotel Grande Bretagne: indoor pool, steam room and treatments.",
   "es": "El lujoso spa del Hotel Grande Bretagne: piscina interior, baño de vapor y tratamientos."
  },
+ "הספורט הימי פועל בערך ממאי עד אוקטובר ובתיאום מראש. כניסה לחוף בערך 10–15 אירו בעונה. מחוץ לעונה זה טיול על החוף בלבד.": {
+  "en": "Water sports run roughly from May to October, by prior arrangement. Beach admission about €10–15 in season. Off season it's just a walk on the beach.",
+  "es": "Los deportes acuáticos funcionan aproximadamente de mayo a octubre y con reserva previa. Entrada a la playa unos 10–15 euros en temporada. Fuera de temporada es solo un paseo por la playa."
+ },
  "הסרה": {
   "en": "Remove",
   "es": "Quitar"
@@ -2491,6 +2583,10 @@
   "en": "The Athens Riviera – Glyfada to Vouliagmeni",
   "es": "La Riviera ateniense – de Glyfada a Vouliagmeni"
  },
+ "הריביירה – ורקיזה": {
+  "en": "The Riviera – Varkiza",
+  "es": "La Riviera – Varkiza"
+ },
  "הרישיון בוטל.": {
   "en": "The licence has been cancelled.",
   "es": "La licencia se ha cancelado."
@@ -2655,6 +2751,10 @@
   "en": "Vouliagmeni",
   "es": "Vouliagmeni"
  },
+ "וינטג׳ ותקליטים – פרוטוגנוס ומונסטירקי": {
+  "en": "Vintage and vinyl – Protogenous and Monastiraki",
+  "es": "Vintage y vinilos – Protogenous y Monastiraki"
+ },
  "זו הגרסה העדכנית ({})": {
   "en": "This is the latest version ({0})",
   "es": "Esta es la última versión ({0})"
@@ -2691,6 +2791,10 @@
   "en": "Lads",
   "es": "Chicos"
  },
+ "חדר בריחה – Lockholic": {
+  "en": "Escape room – Lockholic",
+  "es": "Escape room – Lockholic"
+ },
  "חדר פרטי לקבוצה משתלם כמעט כמו מלון. האזור שמח ורועש בסופי שבוע.": {
   "en": "A private room for a group is almost as good value as a hotel. The area is lively and noisy on weekends.",
   "es": "Una habitación privada para un grupo sale casi tan a cuenta como un hotel. La zona es animada y ruidosa los fines de semana."
@@ -2715,9 +2819,17 @@
   "en": "Skala's sandy beach or a short walk to Chalikiada beach",
   "es": "La playa de arena de Skala o un paseo corto hasta la playa de Chalikiada"
  },
+ "חוף ורקיזה (יאבנאקי) – ספורט ימי": {
+  "en": "Varkiza Beach (Yabanaki) – water sports",
+  "es": "Playa de Varkiza (Yabanaki) – deportes acuáticos"
+ },
  "חוף חולי ארוך עם מים רדודים ויער אורנים שנותן צל טבעי – מהחופים הנוחים לילדים באזור אתונה. בדרך: תל הקבר של לוחמי מרתון.": {
   "en": "A long sandy beach with shallow water and a pine forest for natural shade – one of the most kid-friendly beaches around Athens. On the way: the burial mound of the Marathon warriors.",
   "es": "Una larga playa de arena con aguas poco profundas y un pinar que da sombra natural: de las playas más cómodas para niños cerca de Atenas. De camino: el túmulo de los guerreros de Maratón."
+ },
+ "חוף חולי גדול ומסודר עם כדורעף חופים, מסעדות ומרכז ספורט ימי: וייקבורד, סקי מים ואבובים.": {
+  "en": "A large, well-kept sandy beach with beach volleyball, restaurants and a water sports centre: wakeboarding, water skiing and tubing.",
+  "es": "Una playa de arena grande y bien cuidada, con vóley playa, restaurantes y un centro de deportes acuáticos: wakeboard, esquí acuático y flotadores de arrastre."
  },
  "חוף חולי פתוח עם מים רדודים ושקטים, עצים שנותנים צל וטברנות דגים ממש על החול.": {
   "en": "An open sandy beach with calm, shallow water, trees for shade and fish tavernas right on the sand.",
@@ -2834,6 +2946,10 @@
  "חנויות קטנות נסגרות מוקדם בימי שני ורביעי (בערך 15:00–18:00). בשלישי, חמישי ושישי פתוח עד הערב.": {
   "en": "Small shops close early on Mondays and Wednesdays (around 15:00–18:00). On Tuesdays, Thursdays and Fridays they stay open into the evening.",
   "es": "Las tiendas pequeñas cierran temprano los lunes y miércoles (sobre las 15:00–18:00). Los martes, jueves y viernes abren hasta la noche."
+ },
+ "חנויות קטנות נפתחות לקראת 11:00 וסגורות ביום ראשון. במזומן לפעמים זול יותר.": {
+  "en": "Small shops open around 11:00 and are closed on Sundays. Paying cash is sometimes cheaper.",
+  "es": "Las tiendas pequeñas abren hacia las 11:00 y cierran los domingos. En efectivo a veces sale más barato."
  },
  "חנויות קטנות: שני, רביעי ושבת עד אחר הצהריים. שלישי, חמישי ושישי עד 20:00–21:00. הרשתות בארמו והכל־בו פתוחים ברצף.": {
   "en": "Small shops: Monday, Wednesday and Saturday until the afternoon. Tuesday, Thursday and Friday until 20:00–21:00. The chain stores on Ermou and the department stores stay open all day.",
@@ -2975,9 +3091,17 @@
   "en": "Delicious",
   "es": "Muy rico"
  },
+ "טראם (עם החלפה בפיקרודפני) או מונית לגליפדה, קפה ושופינג ברחוב מטקסה": {
+  "en": "Tram (changing at Pikrodafni) or taxi to Glyfada, coffee and shopping on Metaxa Street",
+  "es": "Tranvía (con cambio en Pikrodafni) o taxi a Glyfada, café y compras en la calle Metaxa"
+ },
  "טראם או מונית לגליפדה, קפה ושופינג ברחוב מטקסה": {
   "en": "Tram or taxi to Glyfada, coffee and shopping on Metaxa Street",
   "es": "Tranvía o taxi a Glyfada, café y compras en la calle Metaxa"
+ },
+ "טראם מסינטגמה (קו 6) עם החלפה בתחנת פיקרודפני לקו 7 לכיוון גליפדה ווולה (כשעה), אוטובוס 122 מתחנת המטרו אליניקו לווליאגמני, או מונית (כ־30–40 דקות).": {
+  "en": "Tram from Syntagma (line 6), changing at Pikrodafni station to line 7 towards Glyfada and Voula (about an hour), bus 122 from Elliniko metro station to Vouliagmeni, or a taxi (approx. 30–40 minutes).",
+  "es": "Tranvía desde Syntagma (línea 6) con cambio en la parada Pikrodafni a la línea 7 dirección Glyfada y Voula (alrededor de una hora), autobús 122 desde la estación de metro Elliniko hasta Vouliagmeni, o taxi (unos 30–40 minutos)."
  },
  "טראם מסינטגמה עד גליפדה או וולה (כ־45–60 דקות), אוטובוס 122 מתחנת המטרו אליניקו לווליאגמני, או מונית (כ־30–40 דקות).": {
   "en": "Tram from Syntagma to Glyfada or Voula (about 45–60 minutes), bus 122 from Elliniko metro station to Vouliagmeni, or a taxi (about 30–40 minutes).",
@@ -3107,9 +3231,17 @@
   "en": "journal.txt",
   "es": "diario.txt"
  },
+ "יוצאת מכיכר סינטגמה, סיבוב של 40–60 דקות. אפשר לרדת ולעלות.": {
+  "en": "Departs from Syntagma Square, a 40–60 minute loop. You can hop on and off.",
+  "es": "Sale de la plaza Syntagma, un recorrido de 40–60 minutos. Se puede bajar y subir."
+ },
  "יוצאת מכיכר סינטגמה, סיבוב של כשעה. אפשר לרדת ולעלות.": {
   "en": "Leaves from Syntagma Square, about an hour per loop. You can hop on and off.",
   "es": "Sale de la plaza Syntagma y la vuelta dura una hora aproximadamente. Puedes bajar y volver a subir."
+ },
+ "יותר ממאה מכוניות על שלוש קומות: קלאסיקות, מכוניות מרוץ ורכבי יוקרה. יש גם סימולטור פורמולה 1 בתוספת תשלום.": {
+  "en": "More than a hundred cars on three floors: classics, race cars and luxury models. There's also a Formula 1 simulator for an extra fee.",
+  "es": "Más de cien coches en tres plantas: clásicos, coches de carreras y de lujo. También hay un simulador de Fórmula 1 con suplemento."
  },
  "ייתכן גשם – מטרייה קטנה בתיק. ביום גשום: מוזיאונים, אטיקה, חמאם.": {
   "en": "Rain is possible – keep a small umbrella in your bag. On a rainy day: museums, Attica, hammam.",
@@ -3327,6 +3459,10 @@
   "en": "Lively Monastiraki Square with its flea market, and next to it Psyrri – lanes of tavernas, bars and street art. Alive from morning until after midnight.",
   "es": "La animada plaza Monastiraki con su mercadillo y, al lado, Psyrri – callejuelas de tabernas, bares y arte urbano. Con vida desde la mañana hasta pasada la medianoche."
  },
+ "כיכר קטנה ותוססת, חמש דקות מהמשפחה. הדוכן הוותיק פתוח רק עד הצהריים, השני גם בערב.": {
+  "en": "A small, lively square five minutes from the family. The long-established stand is open only until midday; the other one is open in the evening too.",
+  "es": "Una plaza pequeña y animada, a cinco minutos de la familia. El puesto de toda la vida solo abre hasta el mediodía; el otro, también por la noche."
+ },
  "כל 3 שעות האפליקציה מזכירה לגבות אם יש תמונות חדשות. באנדרואיד ובמחשב היא שומרת אותן לבד לתיקיית ההורדות. אפשר לכבות את זה בחלון הגיבוי.": {
   "en": "Every 3 hours the app reminds you to back up if there are new photos. On Android and on a computer it saves them to the Downloads folder by itself. You can turn this off in the backup window.",
   "es": "Cada 3 horas la app te recuerda hacer la copia si hay fotos nuevas. En Android y en el ordenador las guarda sola en la carpeta de descargas. Puedes desactivarlo en la ventana de copia."
@@ -3395,6 +3531,10 @@
   "en": "Yes",
   "es": "Sí"
  },
+ "כניסה בערך 10 אירו, סימולטור בערך 5–7 אירו. סגור בימי שני. טוב ליום גשום. להגיע במטרו או במונית, ולא להסתובב באזור אחרי החשכה.": {
+  "en": "Admission about €10, simulator about €5–7. Closed on Mondays. Good for a rainy day. Get there by metro or taxi, and don't wander the area after dark.",
+  "es": "Entrada unos 10 euros, simulador unos 5–7 euros. Cierra los lunes. Ideal para un día de lluvia. Llegar en metro o taxi y no pasear por la zona de noche."
+ },
  "כף סוניון": {
   "en": "Cape Sounion",
   "es": "Cabo Sunión"
@@ -3427,6 +3567,10 @@
   "en": "A regular metro ticket (about €1.20), or a taxi for roughly €15–20.",
   "es": "Billete de metro normal (unos 1,20 €) o taxi por unos 15–20 €."
  },
+ "כרטיס מטרו רגיל תקף 90 דקות. אפשר לשלם גם בהצמדת כרטיס אשראי בשער (לא תקף לנסיעה לשדה התעופה).": {
+  "en": "A standard metro ticket is valid for 90 minutes. You can also pay by tapping a credit card at the gate (not valid for the airport journey).",
+  "es": "El billete normal de metro es válido 90 minutos. También se puede pagar acercando una tarjeta de crédito al torno (no válido para el trayecto al aeropuerto)."
+ },
  "כרטיס מטרו רגיל תקף 90 דקות. אפשר לשלם גם בהצמדת כרטיס אשראי בשער.": {
   "en": "A standard metro ticket is valid for 90 minutes. You can also pay by tapping a credit card at the gate.",
   "es": "El billete normal de metro vale 90 minutos. También puedes pagar acercando la tarjeta de crédito al torno."
@@ -3442,6 +3586,10 @@
  "כרטיסי טיסה וכרטיס עלייה למטוס": {
   "en": "Flight tickets and boarding pass",
   "es": "Billetes de avión y tarjeta de embarque"
+ },
+ "כרטיסים לאתרים: לפי הפרסומים, עד גיל 18 הכניסה לאתרים הממשלתיים חינם גם למי שאינו מהאיחוד האירופי. בני 18–25 נכנסים חינם רק אם הם אזרחי האיחוד, והשאר משלמים מחיר מלא (באקרופוליס בערך 30 אירו). כדאי לבדוק באתר הרשמי hhticket.gr ולהביא דרכון.": {
+  "en": "Site tickets: according to published information, admission to state-run sites is free up to age 18, including for non-EU visitors. Ages 18–25 get in free only if they are EU citizens; everyone else pays full price (about €30 at the Acropolis). Check the official site hhticket.gr and bring a passport.",
+  "es": "Entradas a los yacimientos: según lo publicado, la entrada a los sitios estatales es gratuita hasta los 18 años, también para quienes no son de la Unión Europea. De 18 a 25 años solo entran gratis los ciudadanos de la UE; el resto paga la tarifa completa (unos 30 euros en la Acrópolis). Conviene consultar la web oficial hhticket.gr y llevar el pasaporte."
  },
  "כרטיסים: ילדים ונוער מהאיחוד האירופי נכנסים לרוב חינם לאתרים הממשלתיים, ולילדים ממדינות אחרות יש לעיתים כניסה חופשית או כרטיס מוזל לפי גיל. כדאי לבדוק באתר הרשמי ולהביא דרכון.": {
   "en": "Tickets: children and young people from the EU usually enter state-run sites free, and children from other countries sometimes get free or reduced entry depending on age. Check the official website and bring a passport.",
@@ -3583,6 +3731,38 @@
   "en": "Ask for a table with a view and mention it's your anniversary.",
   "es": "Pide una mesa con vistas y di que es vuestro aniversario."
  },
+ "לגדולים (16–19): אופניים חשמליים או שקיעה מהסלע": {
+  "en": "For teens (16–19): e-bikes or sunset from the rock",
+  "es": "Para los mayores (16–19): bici eléctrica o atardecer desde la roca"
+ },
+ "לגדולים (16–19): אצטדיון במקום פלנטריום": {
+  "en": "For teens (16–19): stadium instead of planetarium",
+  "es": "Para los mayores (16–19): estadio en lugar de planetario"
+ },
+ "לגדולים (16–19): חדר בריחה או חדר זעם": {
+  "en": "For teens (16–19): escape room or rage room",
+  "es": "Para los mayores (16–19): escape room o sala de la furia"
+ },
+ "לגדולים (16–19): מכוניות וסימולטור": {
+  "en": "For teens (16–19): cars and a simulator",
+  "es": "Para los mayores (16–19): coches y simulador"
+ },
+ "לגדולים (16–19): סובלאקי בכיכר": {
+  "en": "For teens (16–19): souvlaki in the square",
+  "es": "Para los mayores (16–19): souvlaki en la plaza"
+ },
+ "לגדולים (16–19): סיבוב עצמאי בפסירי": {
+  "en": "For teens (16–19): exploring Psyrri on their own",
+  "es": "Para los mayores (16–19): una vuelta por Psyrri a su aire"
+ },
+ "לגדולים (16–19): ספורט ימי או שופינג בגליפדה": {
+  "en": "For teens (16–19): water sports or shopping in Glyfada",
+  "es": "Para los mayores (16–19): deportes acuáticos o compras en Glyfada"
+ },
+ "לגדולים (16–19): קניות אחרונות": {
+  "en": "For teens (16–19): last-minute shopping",
+  "es": "Para los mayores (16–19): últimas compras"
+ },
  "לגלול למטה ולבחור": {
   "en": "Scroll down and choose",
   "es": "Desplázate hacia abajo y elige"
@@ -3635,6 +3815,10 @@
   "en": "Order a Freddo Cappuccino – the national iced coffee.",
   "es": "Pide un Freddo Cappuccino: el café frío nacional."
  },
+ "להזמין Freddo Cappuccino – הקפה הקר הלאומי. נסגר אחר הצהריים וסגור בימי ראשון.": {
+  "en": "Order a Freddo Cappuccino – the national iced coffee. Closes in the afternoon and is closed on Sundays.",
+  "es": "Pide un Freddo Cappuccino – el café frío nacional. Cierra por la tarde y no abre los domingos."
+ },
  "להזמין טיפול זוגי מראש.": {
   "en": "Book a couples' treatment ahead.",
   "es": "Reserva un tratamiento en pareja con antelación."
@@ -3651,6 +3835,10 @@
   "en": "Book a table or arrive early. Dishes for sharing – perfect for a group.",
   "es": "Reserva mesa o llega temprano. Platos para compartir: perfecto para un grupo."
  },
+ "להזמין מקום או להגיע מוקדם. מנות לחלוקה – מושלם לחבורה. סגור בימי ראשון.": {
+  "en": "Book a table or arrive early. Sharing plates – perfect for a group. Closed on Sundays.",
+  "es": "Reserva mesa o llega temprano. Platos para compartir – perfecto para un grupo. Cerrado los domingos."
+ },
  "להזמין מקום מראש, המקום קטן.": {
   "en": "Book ahead – the place is small.",
   "es": "Reserva con antelación: el local es pequeño."
@@ -3658,6 +3846,14 @@
  "להזמין מקום. בערב עדיף להגיע ולחזור במונית.": {
   "en": "Book a table. In the evening it's best to go and come back by taxi.",
   "es": "Reserva mesa. Por la noche es mejor ir y volver en taxi."
+ },
+ "להזמין מראש באתר, ולוודא שהחדר שבחרתם מתנהל באנגלית ומה גיל המינימום. בערך 15–30 אירו לאדם, לפי החדר וגודל הקבוצה. חדרי אימה – רק למי שאוהב.": {
+  "en": "Book ahead online, and check that the room you choose runs in English and what the minimum age is. About €15–30 per person, depending on the room and group size. Horror rooms – only for those who enjoy them.",
+  "es": "Reserva con antelación en la web y comprueba que la sala elegida se juega en inglés y cuál es la edad mínima. Unos 15–30 euros por persona, según la sala y el tamaño del grupo. Salas de terror – solo para quien las disfrute."
+ },
+ "להזמין מראש ולשאול על גיל מינימום – ייתכן שמתחת ל־18 צריך הורה שיחתום. נעליים סגורות חובה.": {
+  "en": "Book ahead and ask about the minimum age – under-18s may need a parent to sign. Closed shoes are a must.",
+  "es": "Reservar con antelación y preguntar por la edad mínima: los menores de 18 pueden necesitar la firma de un adulto. Calzado cerrado obligatorio."
  },
  "להזמין מראש, במיוחד לקבוצה. מקבלים הכול במקום.": {
   "en": "Book ahead, especially for a group. Everything you need is provided on site.",
@@ -3678,6 +3874,10 @@
  "להסיר? ללחוץ שוב": {
   "en": "Remove? Tap again",
   "es": "¿Quitar? Toca otra vez"
+ },
+ "להסתובב לבד: ביום אין בעיה בסינטגמה, ארמו, פלאקה, מונסטירקי, פסירי וקולונאקי. בערב עדיף בזוגות, ולא באומוניה, באקסרכיה או על הגבעות.": {
+  "en": "Going around on their own: by day it's fine in Syntagma, Ermou, Plaka, Monastiraki, Psyrri and Kolonaki. In the evening, better in pairs – and not in Omonia, Exarchia or on the hills.",
+  "es": "Moverse solos: de día no hay problema en Syntagma, Ermou, Plaka, Monastiraki, Psyrri y Kolonaki. Por la noche, mejor en parejas, y no por Omonia, Exarchia ni las colinas."
  },
  "להצטרף ולהתקין": {
   "en": "Join and install",
@@ -3823,6 +4023,10 @@
   "en": "Near the Central Market",
   "es": "Junto al Mercado Central"
  },
+ "ליד מטרו ויקטוריה": {
+  "en": "Near Victoria metro",
+  "es": "Junto al metro Victoria"
+ },
  "ליום גשום: הפלנטריום": {
   "en": "For a rainy day: the planetarium",
   "es": "Para un día de lluvia: el planetario"
@@ -3842,6 +4046,10 @@
  "לילה טוב": {
   "en": "Good night",
   "es": "Buenas noches"
+ },
+ "לימבה – חדר זעם": {
+  "en": "Limba – rage room",
+  "es": "Limba – sala de la ira"
  },
  "ליקאבטוס": {
   "en": "Lycabettus",
@@ -3934,6 +4142,10 @@
  "למרכז כ־30–45 דקות במונית או כ־45–60 בטראם מגליפדה. לווליאגמני אין מטרו, אז כדאי לחשב מוניות בתקציב.": {
   "en": "To the centre it's about 30–45 minutes by taxi or about 45–60 by tram from Glyfada. Vouliagmeni has no metro, so budget for taxis.",
   "es": "Al centro son unos 30–45 minutos en taxi o unos 45–60 en tranvía desde Glyfada. A Vouliagmeni no llega el metro, así que conviene incluir taxis en el presupuesto."
+ },
+ "למרכז כ־30–45 דקות במונית או כשעה בטראם מגליפדה (עם החלפת קו בפיקרודפני). לווליאגמני אין מטרו, אז כדאי לחשב מוניות בתקציב.": {
+  "en": "To the centre, approx. 30–45 minutes by taxi or about an hour by tram from Glyfada (with a line change at Pikrodafni). There is no metro to Vouliagmeni, so budget for taxis.",
+  "es": "Hasta el centro, unos 30–45 minutos en taxi o alrededor de una hora en tranvía desde Glyfada (con cambio de línea en Pikrodafni). A Vouliagmeni no llega el metro, así que conviene incluir taxis en el presupuesto."
  },
  "למשל Electra Palace": {
   "en": "e.g. Electra Palace",
@@ -4039,6 +4251,10 @@
   "en": "Set as our hotel",
   "es": "Fijar como nuestro hotel"
  },
+ "לקבוע מראש שעה ונקודת מפגש ברורה, למשל המזרקה בכיכר סינטגמה או הכנסייה בכיכר מונסטירקי, ולשתף מיקום חי בוואטסאפ.": {
+  "en": "Agree in advance on a time and a clear meeting point, such as the fountain in Syntagma Square or the church in Monastiraki Square, and share live location on WhatsApp.",
+  "es": "Acordar de antemano una hora y un punto de encuentro claro, por ejemplo la fuente de la plaza Syntagma o la iglesia de la plaza Monastiraki, y compartir la ubicación en tiempo real por WhatsApp."
+ },
  "לקבוצה": {
   "en": "To the group",
   "es": "Al grupo"
@@ -4134,6 +4350,10 @@
  "מגדירים מלון בכרטיס \"המלון שלנו\" בעמוד הבית, והוא עובר לכל הקבוצה.": {
   "en": "Set the hotel in the \"Our hotel\" card on the home page and it will be shared with the whole group.",
   "es": "Define el hotel en la tarjeta \"Nuestro hotel\" de la página de inicio y se compartirá con todo el grupo."
+ },
+ "מגיל 14 בערך, קסדה כלולה. בערך 35–45 אירו לאדם. יש גם סיור שקיעה – להזמין מראש, ובגשם מבטלים.": {
+  "en": "From about age 14, helmet included. About €35–45 per person. There's also a sunset tour – book ahead; cancelled in rain.",
+  "es": "A partir de unos 14 años, casco incluido. Unos 35–45 euros por persona. También hay un tour al atardecer: reservar con antelación; se cancela si llueve."
  },
  "מגיעים בטראם מסינטגמה (כ־45 דק׳) או במונית (כ־25 דק׳).": {
   "en": "Get there by tram from Syntagma (about 45 min) or by taxi (about 25 min).",
@@ -4267,6 +4487,10 @@
   "en": "Goulandris Natural History Museum",
   "es": "Museo Goulandris de Historia Natural"
  },
+ "מוזיאון הילדים (ליד מטרו אוונגליסמוס, סגור בימי שני) ומשם כרבע שעה הליכה לגן הלאומי ולחילופי המשמר בסינטגמה.": {
+  "en": "The Children's Museum (near Evangelismos metro, closed on Mondays), then about a 15-minute walk to the National Garden and the Changing of the Guard at Syntagma.",
+  "es": "El Museo de los Niños (junto al metro Evangelismos, cerrado los lunes) y de allí, un cuarto de hora a pie hasta el Jardín Nacional y el cambio de guardia en Syntagma."
+ },
  "מוזיאון הילדים היווני": {
   "en": "Hellenic Children's Museum",
   "es": "Museo Helénico de los Niños"
@@ -4274,6 +4498,10 @@
  "מוזיאון הילדים והגן הלאומי, שניהם ליד סינטגמה, ואחריהם חילופי המשמר.": {
   "en": "The Children's Museum and the National Garden, both near Syntagma, followed by the Changing of the Guard.",
   "es": "El Museo de los Niños y el Jardín Nacional, ambos cerca de Syntagma, y después el cambio de guardia."
+ },
+ "מוזיאון הרכב ההלני": {
+  "en": "Hellenic Motor Museum",
+  "es": "Museo Helénico del Motor"
  },
  "מוזיאון טבע עם שלדי דינוזאורים, מאובנים, חיות וצמחים, ולצידו מרכז גאיה האינטראקטיבי על כדור הארץ.": {
   "en": "A natural history museum with dinosaur skeletons, fossils, animals and plants, plus the interactive Gaia Centre about planet Earth next door.",
@@ -4322,6 +4550,10 @@
  "מונית למרכז במחיר קבוע: בערך 40 אירו ביום ו־55 בלילה (אחרי חצות). לוודא עם הנהג לפני הנסיעה.": {
   "en": "Fixed-price taxi to the centre: about 40 euros by day and 55 at night (after midnight). Confirm with the driver before setting off.",
   "es": "Taxi al centro a precio fijo: unos 40 euros de día y 55 de noche (después de medianoche). Confírmalo con el conductor antes de salir."
+ },
+ "מונית למרכז במחיר קבוע: בערך 50 אירו ביום ו־65 בלילה (מחצות עד 5:00). לוודא עם הנהג לפני הנסיעה.": {
+  "en": "Fixed-fare taxi to the centre: about €50 by day and €65 at night (midnight to 5:00). Confirm with the driver before setting off.",
+  "es": "Taxi al centro con tarifa fija: unos 50 euros de día y 65 de noche (de medianoche a 5:00). Confírmalo con el conductor antes de salir."
  },
  "מונית של רבע שעה. גני שעשועים, דשא ותצפית על הים מגג הבניין.": {
   "en": "A fifteen-minute taxi ride. Playgrounds, lawns and a sea view from the building's roof.",
@@ -4475,6 +4707,10 @@
   "en": "Cuisine from the Mani region of the Peloponnese, in a charming old flat. Precise, tasty and not expensive.",
   "es": "Cocina de la región de Mani, en el Peloponeso, en un piso antiguo con mucho encanto. Cuidada, sabrosa y nada cara."
  },
+ "מטבח פיוז׳ן יצירתי – יווני עם השפעות מהעולם, קטן ואופנתי. אחת המסעדות המדוברות במרכז.": {
+  "en": "Creative fusion cuisine – Greek with global influences, small and trendy. One of the most talked-about restaurants in the centre.",
+  "es": "Cocina fusión creativa – griega con influencias del mundo, pequeña y de moda. Uno de los restaurantes más comentados del centro."
+ },
  "מטען ומטען נייד": {
   "en": "Charger and power bank",
   "es": "Cargador y batería externa"
@@ -4503,13 +4739,25 @@
   "en": "Metro line 3 (blue) to Syntagma, about 40 minutes, then a few minutes' walk along Stadiou Street to the hotel (number 22). Or a fixed-price taxi to the door. Details in the \"More\" tab.",
   "es": "Metro línea 3 (azul) hasta Syntagma, unos 40 minutos, y desde allí unos minutos a pie por la calle Stadiou hasta el hotel (número 22). O un taxi a precio fijo hasta la puerta. Detalles en la pestaña \"Más\"."
  },
+ "מטרו קו 3 (כחול): בערך כל חצי שעה (כל 36 דקות), כ־40 דקות לסינטגמה. כרטיס מיוחד לשדה, כ־9 אירו.": {
+  "en": "Metro line 3 (blue): roughly every half hour (every 36 minutes), approx. 40 minutes to Syntagma. Special airport ticket, approx. €9.",
+  "es": "Metro línea 3 (azul): aproximadamente cada media hora (cada 36 minutos), unos 40 minutos hasta Syntagma. Billete especial para el aeropuerto, unos 9 euros."
+ },
  "מטרו קו 3 (כחול): כל חצי שעה, כ־40 דקות לסינטגמה. כרטיס מיוחד לשדה, כ־9 אירו.": {
   "en": "Metro line 3 (blue): every half hour, about 40 minutes to Syntagma. Special airport ticket, about 9 euros.",
   "es": "Metro línea 3 (azul): cada media hora, unos 40 minutos hasta Syntagma. Billete especial del aeropuerto, unos 9 euros."
  },
+ "מטרו: בתחנות יש מעליות, אבל לפעמים הן מושבתות. ילדים עד גיל 6 נוסעים חינם, וילדים גדולים יותר בכרטיס מוזל.": {
+  "en": "Metro: stations have lifts, but they are sometimes out of service. Children up to age 6 travel free, and older children with a reduced-fare ticket.",
+  "es": "Metro: las estaciones tienen ascensores, pero a veces están fuera de servicio. Los niños de hasta 6 años viajan gratis, y los mayores con billete reducido."
+ },
  "מטרו: בתחנות יש מעליות, אבל לפעמים הן מושבתות. ילדים קטנים נוסעים לרוב חינם – כדאי לבדוק עד איזה גיל.": {
   "en": "Metro: stations have lifts, but they are sometimes out of service. Small children usually travel free – check up to what age.",
   "es": "Metro: las estaciones tienen ascensores, pero a veces están fuera de servicio. Los niños pequeños suelen viajar gratis – conviene comprobar hasta qué edad."
+ },
+ "מטרו: פשוט ובטוח, שלושה קווים בצבעים. לשים לב לכייסים בקרונות צפופים. לחזרה מאוחרת בלילה עדיף מונית מאפליקציה.": {
+  "en": "Metro: simple and safe, three colour-coded lines. Watch out for pickpockets in crowded carriages. For a late-night return, an app-booked taxi is better.",
+  "es": "Metro: sencillo y seguro, tres líneas por colores. Cuidado con los carteristas en los vagones llenos. Para volver tarde por la noche, mejor un taxi por aplicación."
  },
  "מטרייה קטנה": {
   "en": "Small umbrella",
@@ -4623,6 +4871,10 @@
   "en": "An elegant hotel on a quiet street in Plaka, with a rooftop pool facing the Acropolis, an indoor pool and a spa. A safe choice for almost any kind of trip.",
   "es": "Un hotel elegante en una calle tranquila de Plaka, con piscina en la azotea frente a la Acrópolis, piscina cubierta y spa. Una apuesta segura para casi cualquier tipo de viaje."
  },
+ "מלון ארבעה כוכבים ותיק ואהוב, שלוש דקות ממוזיאון האקרופוליס, עם גג שבו ג׳קוזי ומסעדה מול הפרתנון (מסעדת הגג פועלת בעיקר בעונה החמה). שקט ונוח לזוגות ולמשפחות.": {
+  "en": "A long-established, well-loved four-star hotel, three minutes from the Acropolis Museum, with a rooftop featuring a hot tub and a restaurant facing the Parthenon (the rooftop restaurant operates mainly in the warm season). Quiet and comfortable for couples and families.",
+  "es": "Un hotel de cuatro estrellas veterano y muy querido, a tres minutos del Museo de la Acrópolis, con una azotea con jacuzzi y restaurante frente al Partenón (el restaurante de la azotea funciona sobre todo en la temporada cálida). Tranquilo y cómodo para parejas y familias."
+ },
  "מלון ארבעה כוכבים ותיק ואהוב, שלוש דקות ממוזיאון האקרופוליס, עם גג שבו ג׳קוזי ומסעדה מול הפרתנון. שקט ונוח לזוגות ולמשפחות.": {
   "en": "A long-standing, well-loved four-star hotel, three minutes from the Acropolis Museum, with a rooftop that has a hot tub and a restaurant facing the Parthenon. Quiet and comfortable for couples and families.",
   "es": "Un hotel de cuatro estrellas veterano y muy querido, a tres minutos del Museo de la Acrópolis, con una azotea con jacuzzi y restaurante frente al Partenón. Tranquilo y cómodo para parejas y familias."
@@ -4647,9 +4899,17 @@
   "en": "A lifestyle hotel on the slope of Lycabettus, with a rooftop pool and open views over the city and the Acropolis. Suits those who like a chic, quiet neighborhood.",
   "es": "Un hotel lifestyle en la ladera del Licabeto, con piscina en la azotea y vistas abiertas a la ciudad y la Acrópolis. Ideal para quien disfruta de un barrio chic y tranquilo."
  },
+ "מלון לייף־סטייל על מדרון ליקאבטוס, עם בריכת גג עונתית ונוף פתוח על העיר והאקרופוליס. מתאים למי שאוהב שכונה שיקית ושקטה.": {
+  "en": "A lifestyle hotel on the slopes of Lycabettus, with a seasonal rooftop pool and open views over the city and the Acropolis. Ideal if you like a chic, quiet neighbourhood.",
+  "es": "Un hotel lifestyle en la ladera del Licabeto, con piscina de temporada en la azotea y vistas abiertas a la ciudad y la Acrópolis. Ideal para quien busca un barrio chic y tranquilo."
+ },
  "מלון מודרני מול מקדש זאוס, צמוד למטרו אקרופולי. מסעדת הגג משקיפה גם על האקרופוליס וגם על המקדש.": {
   "en": "A modern hotel opposite the Temple of Zeus, right by Akropoli metro. The rooftop restaurant overlooks both the Acropolis and the temple.",
   "es": "Un hotel moderno frente al Templo de Zeus, junto al metro Akropoli. El restaurante de la azotea tiene vistas tanto a la Acrópolis como al templo."
+ },
+ "מלון עיצוב צבעוני ליד השוק המרכזי, עם בר ובריכה קטנה ועונתית על הגג. מחיר נוח יחסית לרמה.": {
+  "en": "A colourful design hotel near the Central Market, with a bar and a small seasonal pool on the rooftop. Good value for its standard.",
+  "es": "Un colorido hotel de diseño junto al Mercado Central, con bar y una pequeña piscina de temporada en la azotea. Precio razonable para su nivel."
  },
  "מלון עיצוב צבעוני ליד השוק המרכזי, עם בר ובריכה קטנה על הגג. מחיר נוח יחסית לרמה.": {
   "en": "A colorful design hotel near the Central Market, with a bar and a small pool on the roof. Reasonably priced for its standard.",
@@ -4726,6 +4986,10 @@
  "מסעדת הדגים המפורסמת של השף לפטריס לזרו, עם כוכב מישלן, על מרינת מיקרולימנו.": {
   "en": "Chef Lefteris Lazarou's famous Michelin-starred fish restaurant, on Mikrolimano marina.",
   "es": "El famoso restaurante de pescado del chef Lefteris Lazarou, con una estrella Michelin, en el puerto deportivo de Mikrolimano."
+ },
+ "מסעדת הדגים המפורסמת של השף לפטריס לזרו, שהחזיקה שנים רבות בכוכב מישלן, על מרינת מיקרולימנו.": {
+  "en": "The famous fish restaurant of chef Lefteris Lazarou, which held a Michelin star for many years, on Mikrolimano marina.",
+  "es": "El famoso restaurante de pescado del chef Lefteris Lazarou, que mantuvo una estrella Michelin durante muchos años, en el puerto deportivo de Mikrolimano."
  },
  "מספר אדום על הלשונית אומר שיש הודעות שלא קראת.": {
   "en": "A red number on the tab means there are messages you haven't read.",
@@ -4887,6 +5151,10 @@
   "en": "McArthurGlen outlet",
   "es": "Outlet McArthurGlen"
  },
+ "מקבלים סרבל, קסדה ואלה, ושוברים צלחות, בקבוקים ומכשירים ישנים עם מוזיקה בווליום גבוה. חצי שעה שנערים לא שוכחים.": {
+  "en": "You get coveralls, a helmet and a bat, and smash plates, bottles and old appliances with the music turned up loud. Half an hour teens won't forget.",
+  "es": "Te dan un mono, un casco y un bate, y rompes platos, botellas y aparatos viejos con la música a todo volumen. Media hora que los adolescentes no olvidan."
+ },
  "מקדש פוסידון בשקיעה – סיום גדול.": {
   "en": "The Temple of Poseidon at sunset – a grand finale.",
   "es": "El templo de Poseidón al atardecer: un gran final."
@@ -4947,6 +5215,10 @@
   "en": "Makrygianni",
   "es": "Makrygianni"
  },
+ "מקריאני (ליד האקרופוליס)": {
+  "en": "Makrygianni (near the Acropolis)",
+  "es": "Makrygianni (junto a la Acrópolis)"
+ },
  "מרוסי (צפון)": {
   "en": "Marousi (north)",
   "es": "Marousi (norte)"
@@ -4998,6 +5270,10 @@
  "משפחות עם ילדים": {
   "en": "Families with children",
   "es": "Familias con niños"
+ },
+ "משפחות עם נערים (16–19)": {
+  "en": "Families with teens (16–19)",
+  "es": "Familias con adolescentes (16–19)"
  },
  "משקה לסיום": {
   "en": "A drink to finish",
@@ -5098,6 +5374,10 @@
  "נדרש קישור הפעלה": {
   "en": "An activation link is needed",
   "es": "Hace falta un enlace de activación"
+ },
+ "נהיגה: השכרת רכב בדרך כלל מגיל 21 ומעלה, ועם רישיון בינלאומי. קטנועים וטרקטורונים דורשים רישיון מתאים, ורוב החברות משכירות רק מגיל 18–21 ומעלה. על קורקינט חשמלי לקטינים יש הגבלות – כדאי לבדוק. לנערים עדיף סיור אופניים חשמליים מודרך.": {
+  "en": "Driving: car rental is usually from age 21, with an international licence. Scooters and quad bikes require the appropriate licence, and most companies rent only from age 18–21 and up. There are restrictions on e-scooters for minors – worth checking. For teens, a guided e-bike tour is the better choice.",
+  "es": "Conducir: el alquiler de coches suele ser a partir de los 21 años y con permiso internacional. Las motos y los quads exigen el permiso correspondiente, y la mayoría de empresas solo alquila a partir de los 18–21 años. Hay restricciones para el patinete eléctrico en menores: conviene consultarlo. Para adolescentes, mejor un tour guiado en bici eléctrica."
  },
  "נואל": {
   "en": "Noel",
@@ -5247,6 +5527,10 @@
   "en": "A last souvlaki, and small gifts in Plaka.",
   "es": "Un último souvlaki y regalitos en Plaka."
  },
+ "סובלאקי בגרסה מודרנית: פיתה שנאפית במקום, בשר שנחתך מול העיניים וצ׳יפס טרי. הכיכר מלאה צעירים, בתי קפה וגלידה.": {
+  "en": "Souvlaki with a modern twist: pita baked on the spot, meat carved in front of you and fresh fries. The square is full of young people, cafés and ice cream.",
+  "es": "Souvlaki en versión moderna: pita horneada al momento, carne cortada a la vista y patatas fritas recién hechas. La plaza está llena de gente joven, cafés y heladerías."
+ },
  "סובלאקי ראשון ושוק": {
   "en": "First souvlaki and the market",
   "es": "Primer souvlaki y mercado"
@@ -5315,9 +5599,21 @@
   "en": "First stroll in the centre",
   "es": "Primera vuelta por el centro"
  },
+ "סיור אופניים חשמליים – Solebike": {
+  "en": "E-bike tour – Solebike",
+  "es": "Tour en bici eléctrica – Solebike"
+ },
+ "סיור באצטדיון ובמוזיאון של אולימפיאקוס, עשר דקות במונית מהפארק. לבדוק שיש סיורים באותו יום.": {
+  "en": "A tour of the Olympiacos stadium and museum, ten minutes by taxi from the park. Check that tours are running that day.",
+  "es": "Visita al estadio y al museo del Olympiacos, a diez minutos en taxi del parque. Comprobar que haya visitas ese día."
+ },
  "סיור בין שניים–שלושה מנזרים ונקודות תצפית": {
   "en": "Tour of two or three monasteries and viewpoints",
   "es": "Recorrido por dos o tres monasterios y miradores"
+ },
+ "סיור מאורגן באוטובוס מאתונה (סיורי הרכבת תלויים בחידוש הקו), או רכבת מתחנת לריסה עד פלאופרסלוס ומשם אוטובוס חלופי של חברת הרכבות לקלמבקה (כ־5 שעות ומעלה; הרכבת הישירה לא פועלת כרגע – כדאי לבדוק), ושם סיור מקומי או מונית בין המנזרים.": {
+  "en": "An organised bus tour from Athens (train tours depend on the line reopening), or a train from Larissa Station to Palaiofarsalos and from there the rail company's replacement bus to Kalambaka (approx. 5 hours or more; the direct train is not currently running – worth checking), then a local tour or taxi between the monasteries.",
+  "es": "Excursión organizada en autobús desde Atenas (las excursiones en tren dependen de la reapertura de la línea), o tren desde la estación de Larissa hasta Palaiofarsalos y de allí autobús sustitutorio de la compañía ferroviaria hasta Kalambaka (unas 5 horas o más; el tren directo no funciona por ahora – conviene comprobarlo), y allí una excursión local o taxi entre los monasterios."
  },
  "סיור מאורגן ברכבת או באוטובוס מאתונה, או רכבת מתחנת לריסה לקלמבקה (כ־4 שעות ומעלה, כדאי לבדוק שהקו פועל) ושם סיור מקומי או מונית בין המנזרים.": {
   "en": "An organized tour by train or bus from Athens, or a train from Larissa Station to Kalambaka (4 hours or more; check the line is running), then a local tour or taxi between the monasteries.",
@@ -5331,6 +5627,10 @@
   "en": "A half-day organized tour from the center, a half-day taxi, or a KTEL bus from the Pedion Areos area (about 2 hours each way, along the coastal road).",
   "es": "Excursión organizada de medio día desde el centro, taxi por medio día o autobús KTEL desde la zona de Pedion Areos (unas 2 horas por trayecto, por la carretera de la costa)."
  },
+ "סיור מאורגן של חצי יום מהמרכז, מונית לחצי יום, או אוטובוס KTEL מאזור פדיון ארוס (כשעתיים לכל כיוון, דרך כביש החוף; בחורף יש רק כמה אוטובוסים ביום – לבדוק מראש את שעת האוטובוס האחרון חזרה).": {
+  "en": "A half-day organised tour from the centre, a taxi for half a day, or a KTEL bus from the Pedion tou Areos area (about two hours each way, via the coastal road; in winter there are only a few buses a day – check the time of the last bus back in advance).",
+  "es": "Excursión organizada de medio día desde el centro, taxi por medio día o autobús KTEL desde la zona de Pedion tou Areos (unas dos horas por trayecto, por la carretera de la costa; en invierno solo hay unos pocos autobuses al día – consulta de antemano la hora del último autobús de vuelta)."
+ },
  "סיור מאורגן של חצי יום, רכב שכור (כשעה), או רכבת פרברים לקורינתוס (כשעה ורבע) ומשם מונית לתעלה ולעיר העתיקה.": {
   "en": "A half-day organized tour, a rental car (about an hour), or the suburban train to Corinth (about 1 hour 15 minutes) and from there a taxi to the canal and the ancient city.",
   "es": "Excursión organizada de medio día, coche de alquiler (alrededor de una hora) o tren de cercanías a Corinto (alrededor de una hora y cuarto) y desde allí taxi al canal y a la ciudad antigua."
@@ -5338,6 +5638,18 @@
  "סיור מאורגן. הספינות יוצאות בדרך כלל ממרינת פליסבוס או מפיראוס, ואפשר להזמין גם הסעה מהמלון – לבדוק בהזמנה מאיפה יוצאים.": {
   "en": "An organized tour. The ships usually leave from Flisvos Marina or Piraeus, and you can also book a hotel transfer – check the departure point when booking.",
   "es": "Excursión organizada. Los barcos suelen salir de la marina de Flisvos o del Pireo, y también se puede reservar traslado desde el hotel – comprueba al reservar de dónde sale."
+ },
+ "סיור מאורגן. הספינות יוצאות בדרך כלל ממרינת פליסבוס, ממרינת דלתא בקליתאה או מפיראוס, ואפשר להזמין גם הסעה מהמלון – לבדוק בהזמנה מאיפה יוצאים.": {
+  "en": "An organised tour. Boats usually depart from Flisvos Marina, Delta Marina in Kallithea or Piraeus, and you can also book a hotel pick-up – check the departure point when booking.",
+  "es": "Excursión organizada. Los barcos suelen salir del puerto deportivo de Flisvos, de la marina Delta en Kallithea o del Pireo, y también se puede reservar recogida en el hotel – comprueba al reservar de dónde sale."
+ },
+ "סיור מודרך סביב האקרופוליס, או פשוט לעלות לסלע עם כולם לפני החושך. בנובמבר השקיעה בערך ב־17:10.": {
+  "en": "A guided tour around the Acropolis, or simply climb the rock with everyone before dark. In November, sunset is at about 17:10.",
+  "es": "Un tour guiado alrededor de la Acrópolis, o simplemente subir a la roca con todos antes de que oscurezca. En noviembre el sol se pone hacia las 17:10."
+ },
+ "סיור מודרך של שעתיים–שלוש סביב האקרופוליס, הגבעות והמרכז ההיסטורי. המנוע עושה את העליות, אז גם מי שלא רוכב הרבה נהנה.": {
+  "en": "A two-to-three-hour guided tour around the Acropolis, the hills and the historic centre. The motor handles the climbs, so even occasional riders enjoy it.",
+  "es": "Tour guiado de dos a tres horas por la Acrópolis, las colinas y el centro histórico. El motor se encarga de las cuestas, así que lo disfruta incluso quien no monta mucho."
  },
  "סיישל": {
   "en": "Seychelles",
@@ -5350,6 +5662,10 @@
  "סימון כלא בוצע": {
   "en": "Mark as not done",
   "es": "Marcar como pendiente"
+ },
+ "סינה תיסיו – קולנוע תחת כיפת השמיים": {
+  "en": "Cine Thisio – open-air cinema",
+  "es": "Cine Thisio – cine al aire libre"
  },
  "סינטגמה": {
   "en": "Syntagma",
@@ -5390,6 +5706,18 @@
  "סלע ענק למרגלות האקרופוליס עם נוף פתוח על האגורה והעיר. נקודת שקיעה אהובה.": {
   "en": "A huge rock at the foot of the Acropolis with open views over the Agora and the city. A favourite sunset spot.",
   "es": "Una roca enorme a los pies de la Acrópolis con vistas abiertas al Ágora y a la ciudad. Un lugar muy querido para ver la puesta de sol."
+ },
+ "סמטאות ובתים לבנים באנפיוטיקה.": {
+  "en": "Alleys and white houses in Anafiotika.",
+  "es": "Callejuelas y casas blancas en Anafiotika."
+ },
+ "סמטאות וחתולים. באנפיוטיקה יש מדרגות – בלי עגלה.": {
+  "en": "Alleys and cats. Anafiotika has steps – leave the stroller behind.",
+  "es": "Callejuelas y gatos. En Anafiotika hay escaleras – mejor sin carrito."
+ },
+ "סמטאות מלאות ציורי קיר ענקיים, גרפיטי ומנורות תלויות מעל רחוב פיטאקי. מוזיאון פתוח שמסתובבים בו לבד עם טלפון ומצלמה.": {
+  "en": "Alleys full of huge murals, graffiti and lamps hanging over Pittaki Street. An open-air museum to wander on your own with a phone and a camera.",
+  "es": "Callejuelas llenas de murales enormes, grafitis y lámparas colgadas sobre la calle Pittaki. Un museo al aire libre para recorrer por tu cuenta con móvil y cámara."
  },
  "סמטאות עתיקות למרגלות האקרופוליס": {
   "en": "Ancient lanes at the foot of the Acropolis",
@@ -5518,6 +5846,10 @@
  "עולים ברכבל מרחוב אריסטיפו בקולונאקי. לשקיעה להגיע לפחות חצי שעה קודם ולהביא ז׳קט.": {
   "en": "Go up by funicular from Aristippou Street in Kolonaki. For sunset, arrive at least half an hour early and bring a jacket.",
   "es": "Se sube en funicular desde la calle Aristippou, en Kolonaki. Para la puesta de sol, llega al menos media hora antes y lleva una chaqueta."
+ },
+ "עונתי: פועל בערך מאפריל–מאי עד אוקטובר, וסגור בחורף. כרטיס בערך 8–12 אירו. בחורף – קולנוע רגיל בקניונים.": {
+  "en": "Seasonal: open roughly from April–May to October, closed in winter. Tickets about €8–12. In winter – regular cinemas in the malls.",
+  "es": "De temporada: abre aproximadamente de abril–mayo a octubre y cierra en invierno. Entrada unos 8–12 euros. En invierno: cines normales en los centros comerciales."
  },
  "עושים את זה ב־Wi‑Fi, עוד לפני הטיסה. אחרי ההורדה המפה של אתונה עובדת גם בלי חבילת גלישה, והנקודה הכחולה ממשיכה להראות את המיקום.": {
   "en": "Do this on Wi‑Fi, before the flight. Once downloaded, the Athens map works without a data plan too, and the blue dot keeps showing your location.",
@@ -5707,6 +6039,10 @@
   "en": "Pita in hand and a stroll through the flea market.",
   "es": "Pita en mano y una vuelta por el mercadillo."
  },
+ "פיתה בערך 4–6 אירו. נקודת מפגש נוחה למשפחה: כיכר קטנה וסגורה לרכב, חמש דקות ממונסטירקי.": {
+  "en": "A pita costs about €4–6. A handy family meeting point: a small car-free square, five minutes from Monastiraki.",
+  "es": "Una pita cuesta unos 4–6 euros. Buen punto de encuentro para la familia: una plaza pequeña y sin coches, a cinco minutos de Monastiraki."
+ },
  "פיתוח: דודו טל": {
   "en": "Developed by Dudu Tal",
   "es": "Desarrollo: Dudu Tal"
@@ -5747,6 +6083,10 @@
   "en": "Psyrri and Little Kook",
   "es": "Psyrri y Little Kook"
  },
+ "פסירי – מונסטירקי": {
+  "en": "Psyrri – Monastiraki",
+  "es": "Psyrri – Monastiraki"
+ },
  "פעילות": {
   "en": "On",
   "es": "Activadas"
@@ -5770,6 +6110,10 @@
  "פתוח בעיקר אחר הצהריים ובסופי שבוע. לבדוק שעות לפני שנוסעים.": {
   "en": "Open mainly in the afternoons and at weekends. Check opening hours before you go.",
   "es": "Abre sobre todo por las tardes y los fines de semana. Comprueba el horario antes de ir."
+ },
+ "פתוח רק בימי חול ועד שעות הצהריים, ונגמר כשנגמר. מזומן.": {
+  "en": "Open weekdays only, until around midday, and when it's gone, it's gone. Cash only.",
+  "es": "Abre solo entre semana y hasta el mediodía, y cuando se acaba, se acaba. Solo efectivo."
  },
  "פתוח רק עד שעות הצהריים, ונגמר כשנגמר. מזומן.": {
   "en": "Open only until around lunchtime, and when it's gone, it's gone. Cash only.",
@@ -5999,6 +6343,10 @@
   "en": "Kolonaki, hammam and an evening in Psyrri",
   "es": "Kolonaki, hammam y noche en Psyrri"
  },
+ "קולנוע קיץ ותיק במדרחוב, עם האקרופוליס המואר מעל המסך. הסרטים בשפת המקור עם כתוביות ביוונית.": {
+  "en": "A long-running summer cinema on a pedestrian street, with the floodlit Acropolis above the screen. Films are shown in the original language with Greek subtitles.",
+  "es": "Un veterano cine de verano en una calle peatonal, con la Acrópolis iluminada sobre la pantalla. Las películas se proyectan en versión original con subtítulos en griego."
+ },
  "קולר לוקאל": {
   "en": "Couleur Locale",
   "es": "Couleur Locale"
@@ -6091,6 +6439,10 @@
   "en": "Specialty coffee and brunch in a handsome stone building with a courtyard.",
   "es": "Café de especialidad y brunch en un bonito edificio de piedra con patio."
  },
+ "קצב ופיצול: נערים קמים מאוחר. את האקרופוליס עושים יום אחד מוקדם, ובשאר הימים מתחילים בעשר. שעתיים–שלוש ביום הגדולים הולכים לבד (שופינג, חדר בריחה, אמנות רחוב) והקטנים נחים, ונפגשים לארוחת ערב.": {
+  "en": "Pace and splitting up: teens get up late. Do the Acropolis early on one day, and start at ten on the others. For two to three hours a day the older ones go off on their own (shopping, escape room, street art) while the little ones rest, and everyone meets for dinner.",
+  "es": "Ritmo y dividirse: los adolescentes se levantan tarde. La Acrópolis se hace un día temprano y el resto de días se empieza a las diez. Dos o tres horas al día los mayores van por su cuenta (compras, escape room, arte urbano) mientras los pequeños descansan, y todos se reúnen para cenar."
+ },
  "קראו": {
   "en": "Read",
   "es": "Leído"
@@ -6154,6 +6506,10 @@
  "רחוב סטדיו, הרחוב של המלון": {
   "en": "Stadiou Street, the hotel's street",
   "es": "Calle Stadiou, la calle del hotel"
+ },
+ "רחוב פרוטוגנוס הקטן מלא חנויות יד שנייה וחנות תקליטים. חמש דקות משם: Kilo Shop בארמו 120, שבה משלמים לפי משקל, וחנויות תקליטים ברחוב איפסטו.": {
+  "en": "Little Protogenous Street is full of second-hand shops and a record store. Five minutes away: Kilo Shop at Ermou 120, where you pay by weight, and record shops on Ifestou Street.",
+  "es": "La pequeña calle Protogenous está llena de tiendas de segunda mano y una tienda de discos. A cinco minutos: Kilo Shop en Ermou 120, donde se paga al peso, y tiendas de discos en la calle Ifestou."
  },
  "רחובות": {
   "en": "Streets",
@@ -6290,6 +6646,10 @@
  "שטוח לגמרי ונוח לעגלה ולקורקינט. מגיעים בטראם מסינטגמה או במונית (כ־20 דקות). הכי נעים לקראת שקיעה.": {
   "en": "Completely flat and easy with a stroller or scooter. Get there by tram from Syntagma or by taxi (about 20 minutes). Nicest toward sunset.",
   "es": "Totalmente llano y cómodo para carrito y patinete. Se llega en tranvía desde Syntagma o en taxi (unos 20 minutos). Lo más agradable es hacia el atardecer."
+ },
+ "שטוח לגמרי ונוח לעגלה ולקורקינט. מגיעים במונית (כ־20 דקות) או בטראם: קו 6 מסינטגמה ומחליפים לקו 7 לכיוון פיראוס, תחנת פארקו פליסבו. הכי נעים לקראת שקיעה.": {
+  "en": "Completely flat and easy for strollers and scooters. Get there by taxi (approx. 20 minutes) or by tram: line 6 from Syntagma, changing to line 7 towards Piraeus, Parko Flisvou stop. Nicest around sunset.",
+  "es": "Totalmente llano y cómodo para carritos y patinetes. Se llega en taxi (unos 20 minutos) o en tranvía: línea 6 desde Syntagma y cambio a la línea 7 dirección Pireo, parada Parko Flisvou. Lo más agradable es ir hacia el atardecer."
  },
  "שייט יום לשלושה איים – הידרה, פורוס ואגינה": {
   "en": "One-day cruise to three islands – Hydra, Poros and Aegina",
