@@ -83,9 +83,17 @@
   "en": "(estimated – you can update it)",
   "es": "(aproximado: puedes actualizarlo)"
  },
+ "(שער יציג אירופי, {})": {
+  "en": "(ECB reference rate, {0})",
+  "es": "(tipo de referencia del BCE, {0})"
+ },
  "(שער יציג, {})": {
   "en": "(official rate, {0})",
   "es": "(tipo de cambio oficial, {0})"
+ },
+ "(שער שוק עדכני, {})": {
+  "en": "(live market rate, {0})",
+  "es": "(tipo de mercado actual, {0})"
  },
  ") ולסמן": {
   "en": ") and select",
@@ -2674,6 +2682,14 @@
  "התוכנית להיום": {
   "en": "Today's plan",
   "es": "El plan de hoy"
+ },
+ "התחזית עודכנה ב־{}": {
+  "en": "Forecast updated at {0}",
+  "es": "Pronóstico actualizado a las {0}"
+ },
+ "התחזית עודכנה ב־{}, {}": {
+  "en": "Forecast updated on {0}, {1}",
+  "es": "Pronóstico actualizado el {0}, {1}"
  },
  "התחלת נסיעה חדשה": {
   "en": "Start a new trip",

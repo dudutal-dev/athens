@@ -121,6 +121,16 @@ export default {
         }
         return json({ error: 'method' }, 405);
       }
+      if (url.pathname === '/fx') {   // שער אירו–שקל: שער שוק עדכני, נשמר ל־10 דקות; אם המקור לא עונה – השער היומי של הבנק המרכזי האירופי
+        const c = await env.SUBS.get('fx:eurils', 'json'); if (c && Date.now() - c.t < 600e3) return json(c);
+        let o = null;
+        try { const r = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/EURILS=X?interval=1d&range=1d', { headers: { 'user-agent': 'Mozilla/5.0', accept: 'application/json' } });
+          const m = (await r.json()).chart.result[0].meta, v = +m.regularMarketPrice;
+          if (v > 2 && v < 8) o = { rate: +v.toFixed(3), at: (+m.regularMarketTime || 0) * 1000, live: 1 }; } catch {}
+        if (!o) try { const j = await (await fetch('https://api.frankfurter.app/latest?from=EUR&to=ILS')).json(); if (j.rates && j.rates.ILS) o = { rate: +(+j.rates.ILS).toFixed(3), date: j.date }; } catch {}
+        if (!o) return c ? json(c) : json({ error: 'no rate' }, 502);
+        o.t = Date.now(); await env.SUBS.put('fx:eurils', JSON.stringify(o)); return json(o);
+      }
       if (url.pathname === '/key') return json({ key: (await vapid(env)).pub });
       if (req.method !== 'POST') return json({ ok: true, service: 'athens-push' });
       const b = await req.json(), g = String(b.g || '');
