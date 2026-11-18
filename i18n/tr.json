@@ -171,6 +171,10 @@
   "en": "{0} days",
   "es": "{0} días"
  },
+ "{} מלונות": {
+  "en": "{0} hotels",
+  "es": "{0} hoteles"
+ },
  "{} ממך": {
   "en": "{0} from you",
   "es": "A {0} de ti"
@@ -375,6 +379,10 @@
   "en": "Food",
   "es": "Comida"
  },
+ "אזורים ומלונות": {
+  "en": "Areas and hotels",
+  "es": "Zonas y hoteles"
+ },
  "אחד הפלנטריומים הגדולים באירופה, עם מסך כיפה ענק ותערוכת מדע אינטראקטיבית.": {
   "en": "One of the largest planetariums in Europe, with a giant dome screen and an interactive science exhibition.",
   "es": "Uno de los planetarios más grandes de Europa, con una pantalla de cúpula gigante y una exposición interactiva de ciencia."
@@ -458,6 +466,10 @@
  "אייקון משלה, מסך מלא, והתראות על הודעות.": {
   "en": "Its own icon, full screen, and message notifications.",
   "es": "Icono propio, pantalla completa y notificaciones de mensajes."
+ },
+ "איך מגיעים": {
+  "en": "How to get there",
+  "es": "Cómo llegar"
  },
  "איך מקבלים החזר מס": {
   "en": "How to get a tax refund",
@@ -546,6 +558,10 @@
  "איפה השירותים?": {
   "en": "Where is the toilet?",
   "es": "¿Dónde está el baño?"
+ },
+ "איפה כדאי לגור": {
+  "en": "Where to stay",
+  "es": "Dónde alojarse"
  },
  "איפה כולם?": {
   "en": "Where is everyone?",
@@ -2023,6 +2039,10 @@
   "en": "Show on map",
   "es": "Ver en el mapa"
  },
+ "הצגת האזור במפה": {
+  "en": "Show the area on the map",
+  "es": "Ver la zona en el mapa"
+ },
  "הצטרפות לקבוצה": {
   "en": "Join the group",
   "es": "Unirse al grupo"
@@ -2038,6 +2058,10 @@
  "הצעה גמישה. לוחצים על מקום כדי לראות פרטים ולנווט.": {
   "en": "A flexible suggestion. Tap a place to see details and navigate.",
   "es": "Una propuesta flexible. Toca un lugar para ver los detalles y navegar."
+ },
+ "הצעה ליום": {
+  "en": "A suggested day",
+  "es": "Un día sugerido"
  },
  "הצ׳אט שלנו": {
   "en": "Our chat",
@@ -2779,9 +2803,17 @@
   "en": "Every photo added here appears for the whole group.",
   "es": "Cada foto que se añade aquí aparece para todo el grupo."
  },
+ "כמה זה עולה": {
+  "en": "What it costs",
+  "es": "Cuánto cuesta"
+ },
  "כמה זה עולה?": {
   "en": "How much is it?",
   "es": "¿Cuánto cuesta?"
+ },
+ "כמה זמן": {
+  "en": "How long",
+  "es": "Cuánto dura"
  },
  "כמה מהברים הטובים בעולם במרחק הליכה אחד מהשני.": {
   "en": "Some of the best bars in the world, within walking distance of each other.",
@@ -3375,6 +3407,10 @@
   "en": "Set the hotel",
   "es": "Indicar el hotel"
  },
+ "לקבוע כמלון שלנו": {
+  "en": "Set as our hotel",
+  "es": "Fijar como nuestro hotel"
+ },
  "לקבוצה": {
   "en": "To the group",
   "es": "Al grupo"
@@ -3486,6 +3522,10 @@
  "מה היה כאן?": {
   "en": "What happened here?",
   "es": "¿Qué pasó aquí?"
+ },
+ "מה יש קרוב": {
+  "en": "What's nearby",
+  "es": "Qué hay cerca"
  },
  "מה לזכור? להזמין שולחן, לקנות מתנה…": {
   "en": "What to remember? Book a table, buy a gift…",
@@ -3842,6 +3882,14 @@
  "מלא יותר, במזומן יש עמלה נוספת.": {
   "en": "is fuller; cash carries an extra fee.",
   "es": "es más completa; en efectivo hay una comisión adicional."
+ },
+ "מלונות": {
+  "en": "Hotels",
+  "es": "Hoteles"
+ },
+ "מלונות באזור": {
+  "en": "Hotels in the area",
+  "es": "Hoteles en la zona"
  },
  "ממטרים": {
   "en": "Showers",
@@ -5451,6 +5499,10 @@
   "en": "🎬 Video",
   "es": "🎬 Vídeo"
  },
+ "📍 איפה כדאי לגור": {
+  "en": "📍 Where to stay",
+  "es": "📍 Dónde alojarse"
+ },
  "📍 אני כאן, בואו": {
   "en": "📍 I'm here, come over",
   "es": "📍 Estoy aquí, venid"
@@ -5467,64 +5519,12 @@
   "en": "📍 Directions there",
   "es": "📍 Cómo llegar"
  },
- "📷 תמונה": {
-  "en": "📷 Photo",
-  "es": "📷 Foto"
- },
- "מלונות": {
-  "en": "Hotels",
-  "es": "Hoteles"
- },
- "איפה כדאי לגור": {
-  "en": "Where to stay",
-  "es": "Dónde alojarse"
- },
- "📍 איפה כדאי לגור": {
-  "en": "📍 Where to stay",
-  "es": "📍 Dónde alojarse"
- },
- "אזורים ומלונות": {
-  "en": "Areas and hotels",
-  "es": "Zonas y hoteles"
- },
- "{} מלונות": {
-  "en": "{0} hotels",
-  "es": "{0} hoteles"
- },
- "מלונות באזור": {
-  "en": "Hotels in the area",
-  "es": "Hoteles en la zona"
- },
- "מה יש קרוב": {
-  "en": "What's nearby",
-  "es": "Qué hay cerca"
- },
- "הצגת האזור במפה": {
-  "en": "Show the area on the map",
-  "es": "Ver la zona en el mapa"
- },
- "לקבוע כמלון שלנו": {
-  "en": "Set as our hotel",
-  "es": "Fijar como nuestro hotel"
- },
- "כמה זמן": {
-  "en": "How long",
-  "es": "Cuánto dura"
- },
- "איך מגיעים": {
-  "en": "How to get there",
-  "es": "Cómo llegar"
- },
- "כמה זה עולה": {
-  "en": "What it costs",
-  "es": "Cuánto cuesta"
- },
- "הצעה ליום": {
-  "en": "A suggested day",
-  "es": "Un día sugerido"
- },
  "📍 על האזור: {}": {
   "en": "📍 About the area: {0}",
   "es": "📍 Sobre la zona: {0}"
+ },
+ "📷 תמונה": {
+  "en": "📷 Photo",
+  "es": "📷 Foto"
  }
 }
