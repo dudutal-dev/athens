@@ -239,6 +239,10 @@
   "en": "{0} joined the group",
   "es": "{0} se ha unido al grupo"
  },
+ "{} ו־{} מקלידות…": {
+  "en": "{0} and {1} are typing…",
+  "es": "{0} y {1} están escribiendo…"
+ },
  "{} טוען…": {
   "en": "{0} loading…",
   "es": "{0}: cargando…"
@@ -262,6 +266,14 @@
  "{} מקומות שמורים": {
   "en": "{0} saved places",
   "es": "{0} lugares guardados"
+ },
+ "{} מקלידה…": {
+  "en": "{0} is typing…",
+  "es": "{0} está escribiendo…"
+ },
+ "{} מקלידות…": {
+  "en": "{0} people are typing…",
+  "es": "{0} personas están escribiendo…"
  },
  "{} מתוך {}": {
   "en": "{0} of {1}",
@@ -599,6 +611,10 @@
   "en": "There's no internet and the map wasn't downloaded in advance. Connect to Wi‑Fi and download it.",
   "es": "No hay internet y el mapa no se descargó con antelación. Conéctate al Wi‑Fi y descárgalo."
  },
+ "אין גישה למיקרופון. צריך לאשר אותה בהגדרות ולנסות שוב": {
+  "en": "No microphone access. Allow it in settings and try again",
+  "es": "Sin acceso al micrófono. Permítelo en los ajustes e inténtalo de nuevo"
+ },
  "אין זמן או שהדלפק סגור? לשלשל את הטופס החתום לתיבת הדואר של חברת ההחזר שליד הדלפק.": {
   "en": "No time, or the desk is closed? Drop the stamped form into the refund company's mailbox next to the desk.",
   "es": "¿No hay tiempo o el mostrador está cerrado? Echa el formulario sellado en el buzón de la empresa de devolución que hay junto al mostrador."
@@ -622,6 +638,10 @@
  "אין חיבור – הקובץ לא נשלח": {
   "en": "No connection – file not sent",
   "es": "Sin conexión: el archivo no se ha enviado"
+ },
+ "אין חיבור – השינוי לא נשמר": {
+  "en": "No connection – the change wasn't saved",
+  "es": "Sin conexión: el cambio no se guardó"
  },
  "אין כרגע מישהו מחובר שהקובץ שמור אצלו": {
   "en": "Nobody who has the file saved is connected right now",
@@ -827,6 +847,10 @@
   "en": "You can stand on the podium for a photo.",
   "es": "Puedes subirte al podio y hacerte una foto."
  },
+ "אפשר לערוך הודעה רק ברבע השעה הראשונה": {
+  "en": "A message can only be edited in the first 15 minutes",
+  "es": "Un mensaje solo se puede editar durante los primeros 15 minutos"
+ },
  "אפשר לשלם בכרטיס?": {
   "en": "Can I pay by card?",
   "es": "¿Puedo pagar con tarjeta?"
@@ -999,6 +1023,10 @@
   "en": "Athens-{0}-{1}.pdf",
   "es": "Atenas-{0}-{1}.pdf"
  },
+ "אתמול": {
+  "en": "Yesterday",
+  "es": "Ayer"
+ },
  "אתרי Safari": {
   "en": "Safari Websites",
   "es": "Sitios web de Safari"
@@ -1150,6 +1178,10 @@
  "ביטול": {
   "en": "Cancel",
   "es": "Cancelar"
+ },
+ "ביטול ההקלטה": {
+  "en": "Cancel recording",
+  "es": "Cancelar grabación"
  },
  "בימי הפגנות הכיכר והמטרו נסגרים לפעמים לכמה שעות – שווה להתעדכן בקבלה. מטרו: סינטגמה (קווים 2 ו־3).": {
   "en": "On protest days the square and the metro sometimes close for a few hours – worth checking at reception. Metro: Syntagma (lines 2 and 3).",
@@ -1871,6 +1903,10 @@
   "en": "This browser doesn't support the encryption required",
   "es": "Este navegador no admite el cifrado necesario"
  },
+ "הדפדפן הזה לא תומך בהקלטה": {
+  "en": "This browser doesn't support recording",
+  "es": "Este navegador no admite grabación"
+ },
  "הדפדפן הזה לא תומך בשמירה לאוף־ליין": {
   "en": "This browser doesn't support saving for offline use",
   "es": "Este navegador no permite guardar para usar sin conexión"
@@ -1878,6 +1914,10 @@
  "ההגדרות האלה עוברות לכל מי שמצטרף לקבוצה.": {
   "en": "These settings are passed on to everyone who joins the group.",
   "es": "Estos ajustes llegan a todas las personas que se unen al grupo."
+ },
+ "ההודעה המקורית כבר לא שמורה כאן": {
+  "en": "The original message is no longer stored here",
+  "es": "El mensaje original ya no está guardado aquí"
  },
  "ההודעה נמחקה אצל כולם": {
   "en": "Message deleted for everyone",
@@ -1907,6 +1947,10 @@
   "en": "The refund doesn't apply to restaurants, hotels and services. Procedures and fees vary between companies, so it's worth asking in the shop.",
   "es": "La devolución no se aplica a restaurantes, hotel ni servicios. Los trámites y las comisiones varían según la empresa; conviene preguntar en la tienda."
  },
+ "ההקלטה קצרה מדי": {
+  "en": "The recording is too short",
+  "es": "La grabación es demasiado corta"
+ },
  "ההשמעה לא זמינה כרגע. צריך אינטרנט בפעם הראשונה": {
   "en": "Playback isn't available right now. It needs internet the first time",
   "es": "La reproducción no está disponible ahora. Necesita internet la primera vez"
@@ -1926,6 +1970,14 @@
  "הודעות לא מגיעות:": {
   "en": "Messages aren't arriving:",
   "es": "No llegan los mensajes:"
+ },
+ "הודעות קודמות": {
+  "en": "Earlier messages",
+  "es": "Mensajes anteriores"
+ },
+ "הודעות שלא נקראו": {
+  "en": "Unread messages",
+  "es": "Mensajes no leídos"
  },
  "הוזמנת לקבוצה \"{}\" באפליקציית אתונה 🇬🇷": {
   "en": "You've been invited to the group \"{0}\" in the Athens app 🇬🇷",
@@ -2054,6 +2106,10 @@
  "הידרה: הנמל והסמטאות, כשעה וחצי": {
   "en": "Hydra: the harbor and the lanes, about an hour and a half",
   "es": "Hidra: el puerto y las callejuelas, alrededor de hora y media"
+ },
+ "היום": {
+  "en": "Today",
+  "es": "Hoy"
  },
  "היום {}": {
   "en": "Today {0}",
@@ -2563,6 +2619,10 @@
   "en": "The link is not valid.",
   "es": "El enlace no es válido."
  },
+ "הקלטת הודעה קולית": {
+  "en": "Record a voice message",
+  "es": "Grabar un mensaje de voz"
+ },
  "הקניון האלגנטי של אתונה, מותגים בינוניים ומעלה, מסעדות טובות. לידו גם The Mall Athens הענק.": {
   "en": "Athens' elegant shopping centre, with mid-range and upmarket brands and good restaurants. The huge The Mall Athens is right next door.",
   "es": "El centro comercial elegante de Atenas, con marcas de gama media y alta y buenos restaurantes. Al lado está también el enorme The Mall Athens."
@@ -2618,6 +2678,10 @@
  "הרשתות פתוחות ברצף עד 21:00 בימי חול. הכי נעים בבוקר לפני העומס.": {
   "en": "The chains stay open all day until 21:00 on weekdays. Nicest in the morning, before the crowds.",
   "es": "Las cadenas abren sin interrupción hasta las 21:00 entre semana. Lo más agradable es ir por la mañana, antes del gentío."
+ },
+ "השבה": {
+  "en": "Reply",
+  "es": "Responder"
  },
  "השהיה": {
   "en": "Pause",
@@ -2752,6 +2816,10 @@
   "es": "Notificación de prueba 🎉"
  },
  "ו": {
+  "en": "and",
+  "es": "y"
+ },
+ "ו־": {
   "en": "and",
   "es": "y"
  },
@@ -3651,6 +3719,10 @@
   "en": "We couldn't add the files",
   "es": "No hemos podido añadir los archivos"
  },
+ "לא הצלחנו להשמיע את ההקלטה": {
+  "en": "Couldn't play the recording",
+  "es": "No se pudo reproducir la grabación"
+ },
  "לא הצלחנו לקרוא את התמונה": {
   "en": "We couldn't read the photo",
   "es": "No hemos podido leer la foto"
@@ -3678,6 +3750,10 @@
  "לא נמצאו מקומות.": {
   "en": "No places found.",
   "es": "No se han encontrado lugares."
+ },
+ "לא נשלחה · לנסות שוב": {
+  "en": "Not sent · Tap to retry",
+  "es": "No enviado · Reintentar"
  },
  "לא עכשיו": {
   "en": "Not now",
@@ -3814,6 +3890,10 @@
  "להגיע למקדש כשעה לפני השקיעה ולהסתובב באתר": {
   "en": "Arrive at the temple about an hour before sunset and wander the site",
   "es": "Llegar al templo alrededor de una hora antes del atardecer y recorrer el yacimiento"
+ },
+ "להודעות האחרונות": {
+  "en": "Jump to latest messages",
+  "es": "Ir a los últimos mensajes"
  },
  "להוסיף פריט": {
   "en": "Add an item",
@@ -4119,6 +4199,10 @@
   "en": "Tap and wait a few seconds until it's ready.",
   "es": "Toca y espera unos segundos hasta que esté lista."
  },
+ "ללחוץ כדי להסיר": {
+  "en": "Tap to remove",
+  "es": "Toca para quitar"
+ },
  "ללחוץ על כפתור השיתוף": {
   "en": "Tap the Share button",
   "es": "Toca el botón Compartir"
@@ -4190,6 +4274,10 @@
  "לניווט ממש, צעד אחרי צעד: לוחצים על מקום ואז \"ניווט בגוגל מפות\".": {
   "en": "For real turn-by-turn navigation: tap a place and then \"Navigate with Google Maps\".",
   "es": "Para navegar de verdad, paso a paso: toca un lugar y luego \"Navegar con Google Maps\"."
+ },
+ "לנסות לשלוח שוב": {
+  "en": "Try sending again",
+  "es": "Intentar enviar de nuevo"
  },
  "לסמן ♥ על מקומות": {
   "en": "Mark places with ♥",
@@ -5227,6 +5315,18 @@
   "en": "Places we've marked",
   "es": "Lugares que hemos marcado"
  },
+ "מקלידה…": {
+  "en": "is typing…",
+  "es": "está escribiendo…"
+ },
+ "מקלידות…": {
+  "en": "are typing…",
+  "es": "están escribiendo…"
+ },
+ "מקליטה…": {
+  "en": "Recording…",
+  "es": "Grabando…"
+ },
  "מקריאני": {
   "en": "Makrygianni",
   "es": "Makrygianni"
@@ -5478,6 +5578,10 @@
  "נעלי הליכה נוחות עם סוליה לא חלקה": {
   "en": "Comfortable walking shoes with non-slip soles",
   "es": "Calzado cómodo para caminar con suela antideslizante"
+ },
+ "נערכה": {
+  "en": "Edited",
+  "es": "Editado"
  },
  "נפגשים במלון": {
   "en": "Meet at the hotel",
@@ -5923,6 +6027,10 @@
   "en": "Edit",
   "es": "Editar"
  },
+ "עריכת הודעה": {
+  "en": "Edit message",
+  "es": "Editar mensaje"
+ },
  "ערפל": {
   "en": "Fog",
   "es": "Niebla"
@@ -6110,6 +6218,10 @@
  "פעילות של יום": {
   "en": "A daytime activity",
   "es": "Una actividad de día"
+ },
+ "פרטי הקבוצה": {
+  "en": "Group details",
+  "es": "Detalles del grupo"
  },
  "פרטים": {
   "en": "Details",
@@ -6735,6 +6847,10 @@
   "en": "Send on WhatsApp",
   "es": "Enviar por WhatsApp"
  },
+ "שליחת ההקלטה": {
+  "en": "Send recording",
+  "es": "Enviar grabación"
+ },
  "שלל": {
   "en": "Haul",
   "es": "Botín"
@@ -6911,6 +7027,10 @@
   "en": "Spices, honey and pistachios from the market (open on Saturdays until the afternoon), and last gifts in Plaka.",
   "es": "Especias, miel y pistachos del mercado (abre los sábados hasta la tarde) y últimos regalos en Plaka."
  },
+ "תגובות": {
+  "en": "Reactions",
+  "es": "Reacciones"
+ },
  "תודה": {
   "en": "Thank you",
   "es": "Gracias"
@@ -7059,6 +7179,10 @@
   "en": "♥ Mine",
   "es": "♥ Míos"
  },
+ "🎤 הודעה קולית": {
+  "en": "🎤 Voice message",
+  "es": "🎤 Mensaje de voz"
+ },
  "🎬 סרטון": {
   "en": "🎬 Video",
   "es": "🎬 Vídeo"
@@ -7090,5 +7214,9 @@
  "📷 תמונה": {
   "en": "📷 Photo",
   "es": "📷 Foto"
+ },
+ "🚫 ההודעה נמחקה": {
+  "en": "🚫 This message was deleted",
+  "es": "🚫 Se eliminó este mensaje"
  }
 }
